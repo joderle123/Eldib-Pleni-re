@@ -4896,11 +4896,11 @@
             <h2 style="margin-bottom: 20px; color: #333;">Dokumente exportieren</h2>
 
             <div class="form-section">
-                <h3>PEI Annexe generieren</h3>
+                <h3>Plan éducatif individualisé (PEI) generieren</h3>
                 <p style="margin-bottom: 15px; color: #666;">
-                    Das PEI-Dokument enthalt alle ausgewahlten Ziele mit den entsprechenden Ich-Zielformulierungen.
+                    Das PEI-Dokument enthält alle ausgewählten Ziele mit den entsprechenden Ich-Zielformulierungen.
                 </p>
-                <button class="btn btn-success" onclick="generatePEI()">PEI Annexe herunterladen (Word)</button>
+                <button class="btn btn-success" onclick="generatePEI()">Plan éducatif individualisé (PEI) herunterladen (Word)</button>
             </div>
 
             <div class="form-section">
@@ -9405,6 +9405,20 @@ async function generatePEI() {
                 let tableXml = docXml.substring(tblStart, tblEnd);
                 const domains = ['V', 'K', 'SOZ', 'KOG'];
 
+                // Remove cell spacing from table to eliminate white gaps between colored cells
+                if (tableXml.includes('<w:tblCellSpacing')) {
+                    tableXml = tableXml.replace(/<w:tblCellSpacing[^/]*\/>/g, '<w:tblCellSpacing w:w="0" w:type="dxa"/>');
+                } else if (tableXml.includes('</w:tblPr>')) {
+                    tableXml = tableXml.replace('</w:tblPr>', '<w:tblCellSpacing w:w="0" w:type="dxa"/></w:tblPr>');
+                }
+
+                // First pass: collect all item colors per column to determine row colors
+                // For filling gaps: determine which color to use for each cell
+                function getRowCellColor(prefix, num) {
+                    const color = getItemColor(prefix, num);
+                    return color; // returns 90EE90, FFFF00, or FFFFFF
+                }
+
                 // Process each row
                 let newTable = '';
                 let tPos = 0;
@@ -9427,7 +9441,6 @@ async function generatePEI() {
                     while (rPos < rowXml.length) {
                         const tcIdx = rowXml.indexOf('<w:tc>', rPos);
                         if (tcIdx < 0) {
-                            // Also try <w:tc > (with space/attributes) - not needed since tc has no attrs
                             newRow += rowXml.substring(rPos);
                             break;
                         }
@@ -9449,19 +9462,14 @@ async function generatePEI() {
                             if (!isNaN(num) && num >= 1 && num <= 62) {
                                 const prefix = domains[col595];
                                 const color = getItemColor(prefix, num);
-                                if (color !== 'FFFFFF') {
-                                    // Robust shading: try 3 strategies
-                                    const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
-                                    if (cellXml.includes('w:fill="')) {
-                                        // Replace existing fill color (any format)
-                                        cellXml = cellXml.replace(/w:fill="[A-Fa-f0-9a-z]+"/g, 'w:fill="' + color + '"');
-                                    } else if (cellXml.includes('</w:tcPr>')) {
-                                        // Insert shd before closing tcPr
-                                        cellXml = cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
-                                    } else {
-                                        // No tcPr exists - create one after the opening <w:tc> tag
-                                        cellXml = cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
-                                    }
+                                // Color ALL cells including white to ensure no gaps
+                                const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
+                                if (cellXml.includes('w:fill="')) {
+                                    cellXml = cellXml.replace(/w:fill="[A-Fa-f0-9a-z]+"/g, 'w:fill="' + color + '"');
+                                } else if (cellXml.includes('</w:tcPr>')) {
+                                    cellXml = cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
+                                } else {
+                                    cellXml = cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
                                 }
                             }
                             col595++;
@@ -9960,62 +9968,6 @@ async function generateComplement() {
         width: { size: 100, type: WidthType.PERCENTAGE }
     }));
 
-    children.push(new Paragraph({ spacing: { after: 300 } }));
-
-    // Section: Cours facultatifs
-    children.push(new Paragraph({
-        children: [new TextRun({ text: '☐ Cours facultatifs, activités périscolaires et stages auxquels a participé l\'élève', bold: true, size: 24 })],
-        spacing: { after: 100 }
-    }));
-
-    children.push(new Table({
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Intitulé(s)', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Implication, participation, compétences, tâches, etc. de l\'élève', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
-                ]
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Skills', size: 22})]})], borders: cellBorders }),
-                    new TableCell({ children: [new Paragraph('')], borders: cellBorders })
-                ]
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Fit for life', size: 22})]})], borders: cellBorders }),
-                    new TableCell({ children: [new Paragraph('')], borders: cellBorders })
-                ]
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Projet', size: 22})]})], borders: cellBorders }),
-                    new TableCell({ children: [new Paragraph('')], borders: cellBorders })
-                ]
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Stage en entreprise', size: 22})]})], borders: cellBorders }),
-                    new TableCell({ children: [new Paragraph('')], borders: cellBorders })
-                ]
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Atelier ...', size: 22})]})], borders: cellBorders }),
-                    new TableCell({ children: [new Paragraph('')], borders: cellBorders })
-                ]
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Option ...', size: 22})]})], borders: cellBorders }),
-                    new TableCell({ children: [new Paragraph('')], borders: cellBorders })
-                ]
-            })
-        ],
-        width: { size: 100, type: WidthType.PERCENTAGE }
-    }));
-
     const doc = new Document({
         styles: {
             default: {
@@ -10324,8 +10276,8 @@ function dsGenerateGridHTML() {
     function dsGetItemColor(prefix, nr) {
         const code = `${prefix}-${nr}`;
         const sel = state.selections[code];
-        if (sel?.status === 'erreicht') return '#70AD47';
-        if (sel?.status === 'ziel') return '#FFC000';
+        if (sel?.status === 'erreicht') return '#90EE90';
+        if (sel?.status === 'ziel') return '#FFFF00';
         return '#FFFFFF';
     }
 
@@ -10366,7 +10318,7 @@ function dsGenerateGridHTML() {
             const vNum = stufe.v[1] - i;
             if (vNum >= stufe.v[0]) {
                 const vColor = dsGetItemColor('V', vNum);
-                const vTextCol = vColor === '#70AD47' ? '#FFF' : '#000';
+                const vTextCol = vColor === '#90EE90' ? '#000' : '#000';
                 html += '<td style="border: 1pt solid #000; text-align: center; background: ' + vColor + '; color: ' + vTextCol + '; height: 3pt; padding: 0;">' + vNum + '</td>';
             } else {
                 html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 3pt;"></td>';
@@ -10376,7 +10328,7 @@ function dsGenerateGridHTML() {
             const kNum = stufe.k[1] - i;
             if (kNum >= stufe.k[0]) {
                 const kColor = dsGetItemColor('K', kNum);
-                const kTextCol = kColor === '#70AD47' ? '#FFF' : '#000';
+                const kTextCol = kColor === '#90EE90' ? '#000' : '#000';
                 html += '<td style="border: 1pt solid #000; text-align: center; background: ' + kColor + '; color: ' + kTextCol + '; height: 3pt; padding: 0;">' + kNum + '</td>';
             } else {
                 html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 3pt;"></td>';
@@ -10386,7 +10338,7 @@ function dsGenerateGridHTML() {
             const sNum = stufe.s[1] - i;
             if (sNum >= stufe.s[0]) {
                 const sColor = dsGetItemColor('SOZ', sNum);
-                const sTextCol = sColor === '#70AD47' ? '#FFF' : '#000';
+                const sTextCol = sColor === '#90EE90' ? '#000' : '#000';
                 html += '<td style="border: 1pt solid #000; text-align: center; background: ' + sColor + '; color: ' + sTextCol + '; height: 3pt; padding: 0;">' + sNum + '</td>';
             } else {
                 html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 3pt;"></td>';
@@ -10396,7 +10348,7 @@ function dsGenerateGridHTML() {
             const kogNum = stufe.kog[1] - i;
             if (kogNum >= stufe.kog[0]) {
                 const kogColor = dsGetItemColor('KOG', kogNum);
-                const kogTextCol = kogColor === '#70AD47' ? '#FFF' : '#000';
+                const kogTextCol = kogColor === '#90EE90' ? '#000' : '#000';
                 html += '<td style="border: 1pt solid #000; text-align: center; background: ' + kogColor + '; color: ' + kogTextCol + '; height: 3pt; padding: 0;">' + kogNum + '</td>';
             } else {
                 html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 3pt;"></td>';
@@ -11007,12 +10959,19 @@ async function generateDSFromTemplate(isComplete) {
             if (tblStart >= 0 && tblEnd >= 0) {
                 let tableXml = docXml.substring(tblStart, tblEnd + 8);
 
+                // Remove cell spacing from table to eliminate white gaps
+                if (tableXml.includes('<w:tblCellSpacing')) {
+                    tableXml = tableXml.replace(/<w:tblCellSpacing[^/]*\/>/g, '<w:tblCellSpacing w:w="0" w:type="dxa"/>');
+                } else if (tableXml.includes('</w:tblPr>')) {
+                    tableXml = tableXml.replace('</w:tblPr>', '<w:tblCellSpacing w:w="0" w:type="dxa"/></w:tblPr>');
+                }
+
                 // Process each row - find cells and color them
                 function getItemColor(prefix, nr) {
                     const code = prefix + '-' + nr;
                     const sel = state.selections[code];
-                    if (sel?.status === 'erreicht') return '70AD47';
-                    if (sel?.status === 'ziel') return 'FFC000';
+                    if (sel?.status === 'erreicht') return '90EE90';
+                    if (sel?.status === 'ziel') return 'FFFF00';
                     return null;
                 }
 
