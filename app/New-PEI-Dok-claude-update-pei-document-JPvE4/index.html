@@ -11951,12 +11951,17 @@ async function generateDSFromTemplate(isComplete) {
                 // Apply colors
                 function dsApplyCellColor(cellXml, color) {
                     const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
-                    if (cellXml.includes('w:fill="')) {
-                        return cellXml.replace(/w:fill="[^"]+"/g, 'w:fill="' + color + '"');
-                    } else if (cellXml.includes('</w:tcPr>')) {
-                        return cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
+                    let result = cellXml;
+                    // CRITICAL: Remove w:themeFill (overrides w:fill in Word!)
+                    result = result.replace(/\s*w:themeFill="[^"]*"/g, '');
+                    result = result.replace(/\s*w:themeFillTint="[^"]*"/g, '');
+                    result = result.replace(/\s*w:themeFillShade="[^"]*"/g, '');
+                    if (result.includes('w:fill="')) {
+                        return result.replace(/w:fill="[^"]+"/g, 'w:fill="' + color + '"');
+                    } else if (result.includes('</w:tcPr>')) {
+                        return result.replace('</w:tcPr>', shdXml + '</w:tcPr>');
                     } else {
-                        return cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
+                        return result.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
                     }
                 }
 
