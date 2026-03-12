@@ -4909,6 +4909,20 @@
         <div id="export" class="tab-content">
             <h2 style="margin-bottom: 20px; color: #333;">Dokumente exportieren</h2>
 
+            <div id="export-disclaimer" style="background: linear-gradient(135deg, rgba(0, 151, 167, 0.06) 0%, rgba(0, 131, 143, 0.04) 100%); border-left: 4px solid #0097A7; border-radius: 0 12px 12px 0; padding: 24px 28px; margin-bottom: 28px; position: relative;">
+                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                    <div style="min-width: 36px; height: 36px; background: rgba(0, 151, 167, 0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0097A7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div>
+                        <p id="disclaimer-title" style="font-weight: 700; color: #00838F; font-size: 1rem; margin: 0 0 8px 0;">Hinweis zur Dokumentenprüfung</p>
+                        <p id="disclaimer-text" style="color: #555; font-size: 0.92rem; line-height: 1.65; margin: 0;">
+                            Die nachfolgend generierten Dokumente werden automatisch auf Basis Ihrer Eingaben erstellt. Dieses Instrument dient als <strong>Arbeitshilfe</strong> — die fachliche Verantwortung für Richtigkeit und Vollständigkeit aller Angaben liegt bei den unterzeichnenden Mitarbeiter:innen. Bitte überprüfen Sie jedes Dokument sorgfältig, bevor es offiziell verwendet oder weitergeleitet wird.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-section">
                 <h3>Plan éducatif individualisé (PEI) generieren</h3>
                 <p style="margin-bottom: 15px; color: #666;">
@@ -5700,6 +5714,14 @@ function updateUILanguage() {
         }
     }
 
+    // Disclaimer
+    const disclaimerTitle = document.getElementById('disclaimer-title');
+    const disclaimerText = document.getElementById('disclaimer-text');
+    if (disclaimerTitle) disclaimerTitle.textContent = state.language === 'fr' ? 'Note relative à la vérification des documents' : 'Hinweis zur Dokumentenprüfung';
+    if (disclaimerText) disclaimerText.innerHTML = state.language === 'fr'
+        ? 'Les documents générés ci-dessous sont créés automatiquement sur la base de vos saisies. Cet outil constitue une <strong>aide au travail</strong> — la responsabilité professionnelle quant à l\'exactitude et l\'exhaustivité de toutes les indications incombe aux collaborateurs/-trices signataires. Veuillez vérifier soigneusement chaque document avant son officialisation.'
+        : 'Die nachfolgend generierten Dokumente werden automatisch auf Basis Ihrer Eingaben erstellt. Dieses Instrument dient als <strong>Arbeitshilfe</strong> — die fachliche Verantwortung für Richtigkeit und Vollständigkeit aller Angaben liegt bei den unterzeichnenden Mitarbeiter:innen. Bitte prüfen Sie jedes Dokument sorgfältig vor der Offizialierung.';
+
     // Modal
     const modalTitle = document.querySelector('.item-modal-header h3');
     if (modalTitle) modalTitle.textContent = t('itemDetails');
@@ -5769,6 +5791,12 @@ function rerenderItems() {
                         const selectedIdx = zielSelect.selectedIndex;
                         zielSelect.innerHTML = item.zielformulierungen.map((z, i) => `<option value="${i}">${z}</option>`).join('');
                         zielSelect.selectedIndex = selectedIdx;
+                        // Also update custom textarea if a standard zielformulierung is selected
+                        const sel = state.selections[item.code];
+                        if (sel && typeof sel.zielIndex === 'number' && sel.zielIndex >= 0 && item.zielformulierungen[sel.zielIndex]) {
+                            const customTextarea = itemEl.querySelector('.ziel-custom');
+                            if (customTextarea) customTextarea.value = item.zielformulierungen[sel.zielIndex];
+                        }
                     }
                 }
             });
@@ -6347,6 +6375,7 @@ function updateZieltext(code) {
         const item = findItemByCode(code);
         if (item && item.zielformulierungen[select.value]) {
             state.selections[code].zieltext = item.zielformulierungen[select.value];
+            state.selections[code].zielIndex = parseInt(select.value);
             customTextarea.value = item.zielformulierungen[select.value];
         }
     }
@@ -6355,8 +6384,43 @@ function updateZieltext(code) {
 
 function updateCustomZiel(code) {
     const customTextarea = document.getElementById(`ziel-custom-${code}`);
-    if (customTextarea && state.selections[code]) state.selections[code].zieltext = customTextarea.value;
+    if (customTextarea && state.selections[code]) {
+        state.selections[code].zieltext = customTextarea.value;
+        state.selections[code].zielIndex = -1; // custom text
+    }
     saveToLocalStorage();
+}
+
+function resolveZieltext(code, selection) {
+    const item = findItemByCode(code);
+    if (!item) return selection.zieltext || '';
+    // If a standard zielformulierung was selected (not custom), resolve from current language data
+    if (typeof selection.zielIndex === 'number' && selection.zielIndex >= 0 && item.zielformulierungen[selection.zielIndex]) {
+        return item.zielformulierungen[selection.zielIndex];
+    }
+    // Custom text or legacy (no zielIndex stored) — use stored zieltext or fallback
+    if (selection.zielIndex === -1) return selection.zieltext || '';
+    // Legacy entries without zielIndex: try to find matching index from DE data, then use current language
+    if (selection.zieltext) {
+        const deData = ELDIB_DATA;
+        const deItem = findItemByCodeInData(code, deData);
+        if (deItem) {
+            const idx = deItem.zielformulierungen.indexOf(selection.zieltext);
+            if (idx >= 0 && item.zielformulierungen[idx]) return item.zielformulierungen[idx];
+        }
+    }
+    return selection.zieltext || item.zielformulierungen[0] || '';
+}
+
+function findItemByCodeInData(code, data) {
+    for (const bereich of Object.values(data)) {
+        for (const stufe of Object.values(bereich.stufen)) {
+            for (const item of stufe.items) {
+                if (item.code === code) return item;
+            }
+        }
+    }
+    return null;
 }
 
 function findItemByCode(code) {
@@ -6412,12 +6476,13 @@ function updateZieleListe() {
         const bereich = findBereichByCode(code);
         if (!grouped[bereich]) grouped[bereich] = [];
         const item = findItemByCode(code);
-        grouped[bereich].push({ code, keyword: item?.keyword, zieltext: sel.zieltext });
+        grouped[bereich].push({ code, keyword: item?.keyword, zieltext: resolveZieltext(code, sel) });
     });
+    const data = getCurrentEldibData();
     for (const [bereich, items] of Object.entries(grouped)) {
         const bereichDiv = document.createElement('div');
         bereichDiv.style.marginBottom = '20px';
-        bereichDiv.innerHTML = `<h4 style="color: ${ELDIB_DATA[bereich].color};">${ELDIB_DATA[bereich].name}</h4>`;
+        bereichDiv.innerHTML = `<h4 style="color: ${data[bereich].color};">${data[bereich].name}</h4>`;
         items.forEach(item => {
             const itemDiv = document.createElement('div');
             itemDiv.style.cssText = 'padding:10px;background:#f9f9f9;border-radius:5px;margin-bottom:5px;';
@@ -10374,7 +10439,7 @@ async function generatePEI() {
         const bereich = findBereichByCode(code);
         const item = findItemByCode(code);
         if (bereich && item && selection.status === 'ziel') {
-            ziele[bereich].push({ code, keyword: item.keyword, description: item.description, zieltext: selection.zieltext || item.zielformulierungen[0] });
+            ziele[bereich].push({ code, keyword: item.keyword, description: item.description, zieltext: resolveZieltext(code, selection) });
         }
     }
 
@@ -11434,7 +11499,7 @@ function dsGetGoalsForDomain(domain) {
                     nr: item.nr,
                     keyword: item.keyword,
                     description: item.description,
-                    zieltext: selection.zieltext || item.zielformulierungen[0],
+                    zieltext: resolveZieltext(item.code, selection),
                     stufe: parseInt(stufeNr)
                 });
             }
@@ -12384,7 +12449,7 @@ async function generateDSFromTemplate(isComplete) {
                 function dsApplyCellColor(cellXml, color) {
                     const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
                     if (cellXml.includes('w:fill="')) {
-                        return cellXml.replace(/w:fill="[A-Fa-f0-9]+"/g, 'w:fill="' + color + '"');
+                        return cellXml.replace(/w:fill="[^"]+"/g, 'w:fill="' + color + '"');
                     } else if (cellXml.includes('</w:tcPr>')) {
                         return cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
                     } else if (cellXml.startsWith('<w:tc>')) {
