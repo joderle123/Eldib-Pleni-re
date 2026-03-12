@@ -11851,6 +11851,158 @@ async function generateDSFromTemplate(isComplete) {
     let header1Xml = await zip.file('word/header1.xml').async('string');
     let header2Xml = await zip.file('word/header2.xml').async('string');
 
+    // --- 1b. Color ELDiB grid cells FIRST (on pristine template before any modifications) ---
+    {
+        // DE template uses cells with w:w="840", FR template uses w:w="854"
+        const gridWidths = [840, 854];
+        let gridCellWidthVal = 0;
+        let markerPos = -1;
+        for (const gw of gridWidths) {
+            markerPos = docXml.lastIndexOf('w:w="' + gw + '"');
+            if (markerPos >= 0) { gridCellWidthVal = gw; break; }
+        }
+        console.log('[DS Grid] markerPos=' + markerPos + ', gridCellWidthVal=' + gridCellWidthVal);
+        if (markerPos >= 0) {
+            const tblStart = docXml.lastIndexOf('<w:tbl>', markerPos);
+            const tblEndIdx = docXml.indexOf('</w:tbl>', markerPos);
+            console.log('[DS Grid] tblStart=' + tblStart + ', tblEndIdx=' + tblEndIdx);
+            if (tblStart >= 0 && tblEndIdx >= 0) {
+                const tblEnd = tblEndIdx + 8;
+                let tableXml = docXml.substring(tblStart, tblEnd);
+                const domains = ['V', 'K', 'SOZ', 'KOG'];
+
+                // Remove cell spacing to eliminate white gaps
+                if (tableXml.includes('<w:tblCellSpacing')) {
+                    tableXml = tableXml.replace(/<w:tblCellSpacing[^/]*\/>/g, '<w:tblCellSpacing w:w="0" w:type="dxa"/>');
+                } else if (tableXml.includes('</w:tblPr>')) {
+                    tableXml = tableXml.replace('</w:tblPr>', '<w:tblCellSpacing w:w="0" w:type="dxa"/></w:tblPr>');
+                }
+
+                function getDSItemColor(prefix, nr) {
+                    const code = prefix + '-' + nr;
+                    const sel = state.selections[code];
+                    if (sel?.status === 'erreicht') return '90EE90';
+                    if (sel?.status === 'ziel') return 'FFFF00';
+                    return 'FFFFFF';
+                }
+
+                // Parse all rows
+                const allDSRows = [];
+                let tPos = 0;
+                while (tPos < tableXml.length) {
+                    const trIdx = tableXml.indexOf('<w:tr ', tPos);
+                    const trIdxAlt = tableXml.indexOf('<w:tr>', tPos);
+                    let actualTrIdx = -1;
+                    if (trIdx >= 0 && trIdxAlt >= 0) actualTrIdx = Math.min(trIdx, trIdxAlt);
+                    else if (trIdx >= 0) actualTrIdx = trIdx;
+                    else if (trIdxAlt >= 0) actualTrIdx = trIdxAlt;
+                    else break;
+                    const trEndIdx = tableXml.indexOf('</w:tr>', actualTrIdx);
+                    if (trEndIdx < 0) break;
+                    const trEndFull = trEndIdx + 7;
+                    allDSRows.push({ start: actualTrIdx, end: trEndFull, xml: tableXml.substring(actualTrIdx, trEndFull) });
+                    tPos = trEndFull;
+                }
+
+                // First pass: build color map using grid-width cells
+                const dsColorMap = [];
+                allDSRows.forEach((row) => {
+                    const rowColors = [{}, {}, {}, {}];
+                    let colG = 0;
+                    let rPos = 0;
+                    while (rPos < row.xml.length) {
+                        const tcIdx = row.xml.indexOf('<w:tc>', rPos);
+                        if (tcIdx < 0) break;
+                        const tcEndIdx = row.xml.indexOf('</w:tc>', tcIdx);
+                        if (tcEndIdx < 0) break;
+                        const cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
+                        const widthMatch = cellXml.match(/w:tcW\s+w:w="(\d+)"/);
+                        const width = widthMatch ? parseInt(widthMatch[1]) : 0;
+                        if (width === gridCellWidthVal) {
+                            if (colG < 4) {
+                                const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
+                                const cellText = textMatches.map(m => m[1]).join('').trim();
+                                const num = parseInt(cellText);
+                                if (!isNaN(num) && num >= 1 && num <= 62) {
+                                    rowColors[colG] = { color: getDSItemColor(domains[colG], num), hasNumber: true };
+                                } else {
+                                    rowColors[colG] = { color: null, hasNumber: false };
+                                }
+                            }
+                            colG++;
+                        }
+                        rPos = tcEndIdx + 7;
+                    }
+                    dsColorMap.push(rowColors);
+                });
+
+                // Fill gaps: propagate colors bottom-to-top per column
+                for (let col = 0; col < 4; col++) {
+                    let currentColor = 'FFFFFF';
+                    for (let r = dsColorMap.length - 1; r >= 0; r--) {
+                        if (dsColorMap[r][col]?.hasNumber) {
+                            currentColor = dsColorMap[r][col].color;
+                        } else if (dsColorMap[r][col] && !dsColorMap[r][col].hasNumber) {
+                            dsColorMap[r][col].color = currentColor;
+                        }
+                    }
+                }
+
+                // Apply colors
+                function dsApplyCellColor(cellXml, color) {
+                    const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
+                    if (cellXml.includes('w:fill="')) {
+                        return cellXml.replace(/w:fill="[^"]+"/g, 'w:fill="' + color + '"');
+                    } else if (cellXml.includes('</w:tcPr>')) {
+                        return cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
+                    } else {
+                        return cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
+                    }
+                }
+
+                const greenCount = dsColorMap.flat().filter(c => c.color === '90EE90').length;
+                const yellowCount = dsColorMap.flat().filter(c => c.color === 'FFFF00').length;
+                console.log('[DS Grid] rows=' + allDSRows.length + ', green=' + greenCount + ', yellow=' + yellowCount);
+                let newDSTable = tableXml.substring(0, allDSRows.length > 0 ? allDSRows[0].start : tableXml.length);
+                allDSRows.forEach((row, rowIdx) => {
+                    let colG = 0;
+                    let newRow = '';
+                    let rPos = 0;
+                    while (rPos < row.xml.length) {
+                        const tcIdx = row.xml.indexOf('<w:tc>', rPos);
+                        if (tcIdx < 0) { newRow += row.xml.substring(rPos); break; }
+                        newRow += row.xml.substring(rPos, tcIdx);
+                        const tcEndIdx = row.xml.indexOf('</w:tc>', tcIdx);
+                        if (tcEndIdx < 0) { newRow += row.xml.substring(tcIdx); break; }
+                        let cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
+                        const widthMatch = cellXml.match(/w:tcW\s+w:w="(\d+)"/);
+                        const width = widthMatch ? parseInt(widthMatch[1]) : 0;
+                        if (width === gridCellWidthVal && colG < 4) {
+                            const color = dsColorMap[rowIdx][colG]?.color || 'FFFFFF';
+                            cellXml = dsApplyCellColor(cellXml, color);
+                            colG++;
+                        } else if (width === gridCellWidthVal) {
+                            colG++;
+                        }
+                        newRow += cellXml;
+                        rPos = tcEndIdx + 7;
+                    }
+                    newDSTable += newRow;
+                    if (rowIdx < allDSRows.length - 1) {
+                        newDSTable += tableXml.substring(row.end, allDSRows[rowIdx + 1].start);
+                    }
+                });
+                if (allDSRows.length > 0) {
+                    newDSTable += tableXml.substring(allDSRows[allDSRows.length - 1].end);
+                }
+                tableXml = newDSTable;
+
+                docXml = docXml.substring(0, tblStart) + tableXml + docXml.substring(tblEnd);
+                console.log('[DS Grid] Grid coloring applied successfully');
+            }
+        }
+    }
+
     // --- 2. Gather all data ---
     const stammdaten = getStammdaten();
     const dsData = isComplete ? getDSData() : {};
@@ -12413,154 +12565,6 @@ async function generateDSFromTemplate(isComplete) {
 
             // Replace section 5.2 using robust heading search
             docXml = replaceSectionContent(docXml, isFR_DS ? '5.2 Objectifs' : '5.2 Ziele', zieleContent);
-        }
-    }
-
-    // --- 9. Color ELDiB grid cells (DS document) ---
-    // Uses width-based cell detection like the proven PEI approach
-    // DE template uses w:w="840", FR template uses w:w="854"
-    {
-        const gridCellWidthDE = 'w:w="840"';
-        const gridCellWidthFR = 'w:w="854"';
-        let markerPos = docXml.lastIndexOf(gridCellWidthDE);
-        let gridCellWidthVal = 840;
-        if (markerPos < 0) {
-            markerPos = docXml.lastIndexOf(gridCellWidthFR);
-            gridCellWidthVal = 854;
-        }
-        if (markerPos >= 0) {
-            const tblStart = docXml.lastIndexOf('<w:tbl>', markerPos);
-            const tblEndIdx = docXml.indexOf('</w:tbl>', markerPos);
-            if (tblStart >= 0 && tblEndIdx >= 0) {
-                const tblEnd = tblEndIdx + 8;
-                let tableXml = docXml.substring(tblStart, tblEnd);
-                const domains = ['V', 'K', 'SOZ', 'KOG'];
-
-                // Remove cell spacing to eliminate white gaps
-                if (tableXml.includes('<w:tblCellSpacing')) {
-                    tableXml = tableXml.replace(/<w:tblCellSpacing[^/]*\/>/g, '<w:tblCellSpacing w:w="0" w:type="dxa"/>');
-                } else if (tableXml.includes('</w:tblPr>')) {
-                    tableXml = tableXml.replace('</w:tblPr>', '<w:tblCellSpacing w:w="0" w:type="dxa"/></w:tblPr>');
-                }
-
-                function getDSItemColor(prefix, nr) {
-                    const code = prefix + '-' + nr;
-                    const sel = state.selections[code];
-                    if (sel?.status === 'erreicht') return '90EE90';
-                    if (sel?.status === 'ziel') return 'FFFF00';
-                    return 'FFFFFF';
-                }
-
-                // Parse all rows
-                const allDSRows = [];
-                let tPos = 0;
-                while (tPos < tableXml.length) {
-                    const trIdx = tableXml.indexOf('<w:tr ', tPos);
-                    const trIdxAlt = tableXml.indexOf('<w:tr>', tPos);
-                    let actualTrIdx = -1;
-                    if (trIdx >= 0 && trIdxAlt >= 0) actualTrIdx = Math.min(trIdx, trIdxAlt);
-                    else if (trIdx >= 0) actualTrIdx = trIdx;
-                    else if (trIdxAlt >= 0) actualTrIdx = trIdxAlt;
-                    else break;
-                    const trEndIdx = tableXml.indexOf('</w:tr>', actualTrIdx);
-                    if (trEndIdx < 0) break;
-                    const trEndFull = trEndIdx + 7;
-                    allDSRows.push({ start: actualTrIdx, end: trEndFull, xml: tableXml.substring(actualTrIdx, trEndFull) });
-                    tPos = trEndFull;
-                }
-
-                // First pass: build color map using 840-width cells
-                const dsColorMap = [];
-                allDSRows.forEach((row) => {
-                    const rowColors = [{}, {}, {}, {}];
-                    let col840 = 0;
-                    let rPos = 0;
-                    while (rPos < row.xml.length) {
-                        const tcIdx = row.xml.indexOf('<w:tc>', rPos);
-                        if (tcIdx < 0) break;
-                        const tcEndIdx = row.xml.indexOf('</w:tc>', tcIdx);
-                        if (tcEndIdx < 0) break;
-                        const cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
-                        const widthMatch = cellXml.match(/w:tcW\s+w:w="(\d+)"/);
-                        const width = widthMatch ? parseInt(widthMatch[1]) : 0;
-                        if (width === gridCellWidthVal) {
-                            if (col840 < 4) {
-                                const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
-                                const cellText = textMatches.map(m => m[1]).join('').trim();
-                                const num = parseInt(cellText);
-                                if (!isNaN(num) && num >= 1 && num <= 62) {
-                                    rowColors[col840] = { color: getDSItemColor(domains[col840], num), hasNumber: true };
-                                } else {
-                                    rowColors[col840] = { color: null, hasNumber: false };
-                                }
-                            }
-                            col840++;
-                        }
-                        rPos = tcEndIdx + 7;
-                    }
-                    dsColorMap.push(rowColors);
-                });
-
-                // Fill gaps: propagate colors bottom-to-top per column
-                for (let col = 0; col < 4; col++) {
-                    let currentColor = 'FFFFFF';
-                    for (let r = dsColorMap.length - 1; r >= 0; r--) {
-                        if (dsColorMap[r][col]?.hasNumber) {
-                            currentColor = dsColorMap[r][col].color;
-                        } else if (dsColorMap[r][col] && !dsColorMap[r][col].hasNumber) {
-                            dsColorMap[r][col].color = currentColor;
-                        }
-                    }
-                }
-
-                // Apply colors
-                function dsApplyCellColor(cellXml, color) {
-                    const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
-                    if (cellXml.includes('w:fill="')) {
-                        return cellXml.replace(/w:fill="[^"]+"/g, 'w:fill="' + color + '"');
-                    } else if (cellXml.includes('</w:tcPr>')) {
-                        return cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
-                    } else {
-                        return cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
-                    }
-                }
-
-                let newDSTable = tableXml.substring(0, allDSRows.length > 0 ? allDSRows[0].start : tableXml.length);
-                allDSRows.forEach((row, rowIdx) => {
-                    let col840 = 0;
-                    let newRow = '';
-                    let rPos = 0;
-                    while (rPos < row.xml.length) {
-                        const tcIdx = row.xml.indexOf('<w:tc>', rPos);
-                        if (tcIdx < 0) { newRow += row.xml.substring(rPos); break; }
-                        newRow += row.xml.substring(rPos, tcIdx);
-                        const tcEndIdx = row.xml.indexOf('</w:tc>', tcIdx);
-                        if (tcEndIdx < 0) { newRow += row.xml.substring(tcIdx); break; }
-                        let cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
-                        const widthMatch = cellXml.match(/w:tcW\s+w:w="(\d+)"/);
-                        const width = widthMatch ? parseInt(widthMatch[1]) : 0;
-                        if (width === gridCellWidthVal && col840 < 4) {
-                            const color = dsColorMap[rowIdx][col840]?.color || 'FFFFFF';
-                            cellXml = dsApplyCellColor(cellXml, color);
-                            col840++;
-                        } else if (width === gridCellWidthVal) {
-                            col840++;
-                        }
-                        newRow += cellXml;
-                        rPos = tcEndIdx + 7;
-                    }
-                    newDSTable += newRow;
-                    if (rowIdx < allDSRows.length - 1) {
-                        newDSTable += tableXml.substring(row.end, allDSRows[rowIdx + 1].start);
-                    }
-                });
-                if (allDSRows.length > 0) {
-                    newDSTable += tableXml.substring(allDSRows[allDSRows.length - 1].end);
-                }
-                tableXml = newDSTable;
-
-                docXml = docXml.substring(0, tblStart) + tableXml + docXml.substring(tblEnd);
-            }
         }
     }
 
