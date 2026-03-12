@@ -11326,10 +11326,24 @@ function dsGetStageRoman(stage) {
 }
 
 function dsGetStageDescription(stage) {
+    if (state.language === 'fr') {
+        const labels = { 1: "0-2 ans", 2: "2-5 ans", 3: "6-9 ans", 4: "10-12 ans", 5: "13-16 ans" };
+        return labels[stage] || '';
+    }
     return DS_STAGE_DATA[stage]?.label || '';
 }
 
 function dsGetStageRichtziel(stage) {
+    if (state.language === 'fr') {
+        const richtziele = {
+            1: "Réagir avec plaisir à l'environnement",
+            2: "Réagir avec succès à l'environnement",
+            3: "Acquérir des compétences pour participer avec succès en groupe",
+            4: "S'impliquer dans les processus de groupe",
+            5: "Appliquer les compétences dans de nouvelles situations"
+        };
+        return richtziele[stage] || '';
+    }
     const richtziele = {
         1: "Mit Freude auf die Umwelt reagieren",
         2: "Erfolgreich auf die Umwelt reagieren",
@@ -11341,12 +11355,11 @@ function dsGetStageRichtziel(stage) {
 }
 
 function dsGetDomainName(domain) {
-    const names = {
-        verhalten: 'Verhalten',
-        kommunikation: 'Kommunikation',
-        sozialisation: 'Sozialisation',
-        kognition: 'Kognition'
-    };
+    if (state.language === 'fr') {
+        const names = { verhalten: 'Comportement', kommunikation: 'Communication', sozialisation: 'Socialisation', kognition: 'Cognition' };
+        return names[domain] || domain;
+    }
+    const names = { verhalten: 'Verhalten', kommunikation: 'Kommunikation', sozialisation: 'Sozialisation', kognition: 'Kognition' };
     return names[domain] || domain;
 }
 
@@ -11377,7 +11390,7 @@ function dsCalculateBiologicalAge(birthDate) {
 
 function dsGetGoalsForDomain(domain) {
     const goals = [];
-    const bereichData = ELDIB_DATA[domain];
+    const bereichData = getCurrentEldibData()[domain];
     if (!bereichData) return goals;
 
     for (const [stufeNr, stufe] of Object.entries(bereichData.stufen)) {
@@ -11400,7 +11413,7 @@ function dsGetGoalsForDomain(domain) {
 
 function dsGetReachedForDomain(domain) {
     const reached = [];
-    const bereichData = ELDIB_DATA[domain];
+    const bereichData = getCurrentEldibData()[domain];
     if (!bereichData) return reached;
 
     for (const [stufeNr, stufe] of Object.entries(bereichData.stufen)) {
@@ -11744,18 +11757,18 @@ async function generateDSFromTemplate(isComplete) {
     // --- 2. Gather all data ---
     const stammdaten = getStammdaten();
     const dsData = isComplete ? getDSData() : {};
-    const today = new Date().toLocaleDateString('de-DE');
+    const today = new Date().toLocaleDateString(isFR_DS ? 'fr-FR' : 'de-DE');
     const birthDate = document.getElementById('geburtsdatum')?.value;
     const biologicalAge = dsCalculateBiologicalAge(birthDate);
     const devAges = dsCalculateAllDevelopmentalAges();
-    const studentName = stammdaten.schueler_name?.split(',')[0]?.trim() || 'der/die Schüler:in';
+    const studentName = stammdaten.schueler_name?.split(',')[0]?.trim() || (isFR_DS ? 'l\'élève' : 'der/die Schüler:in');
 
     // --- XML helper functions ---
     function escapeXml(str) {
         return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
     function makeRun(text, bold, italic) {
-        let rPr = '<w:rPr><w:lang w:val="de-DE"/>';
+        let rPr = '<w:rPr><w:lang w:val="' + (isFR_DS ? 'fr-FR' : 'de-DE') + '"/>';
         if (bold) rPr += '<w:b/>';
         if (italic) rPr += '<w:i/>';
         rPr += '</w:rPr>';
@@ -11892,7 +11905,7 @@ async function generateDSFromTemplate(isComplete) {
                     const cellXml = docXml.substring(nextTc, tcEnd + 7);
                     const tcPrMatch = cellXml.match(/<w:tcPr>.*?<\/w:tcPr>/s);
                     const tcPr = tcPrMatch ? tcPrMatch[0] : '';
-                    const alterValue = biologicalAge ? biologicalAge.years + ' Jahre, ' + biologicalAge.months + ' Monate' : '';
+                    const alterValue = biologicalAge ? biologicalAge.years + (isFR_DS ? ' ans, ' : ' Jahre, ') + biologicalAge.months + (isFR_DS ? ' mois' : ' Monate') : '';
                     const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="de-DE"/></w:rPr><w:t xml:space="preserve">' + escapeXml(alterValue) + '</w:t></w:r></w:p></w:tc>';
                     docXml = docXml.substring(0, nextTc) + newCell + docXml.substring(tcEnd + 7);
                 }
@@ -12054,82 +12067,93 @@ async function generateDSFromTemplate(isComplete) {
             return lines.map(line => makePara(makeRun(line))).join('');
         }
 
-        // Replace section 1: Auftragsklärung
-        docXml = replaceSectionContent(docXml, 'Auftragsklärung', textToParas(auftragsklarungText));
+        // Replace section 1: Auftragsklärung / Clarification du mandat
+        docXml = replaceSectionContent(docXml, isFR_DS ? 'Clarification du mandat' : 'Auftragsklärung', textToParas(auftragsklarungText));
 
-        // Replace section 2.1: Vorgeschichte (keep Maßnahmen table from template)
-        docXml = replaceSectionContent(docXml, '2.1 Vorgeschichte', textToParas(vorgeschichteText));
+        // Replace section 2.1: Vorgeschichte / Historique
+        docXml = replaceSectionContent(docXml, isFR_DS ? '2.1 Historique' : '2.1 Vorgeschichte', textToParas(vorgeschichteText));
 
-        // Replace section 2.2: Sozialbericht
-        docXml = replaceSectionContent(docXml, '2.2 Sozialbericht', textToParas(sozialberichtText));
+        // Replace section 2.2: Sozialbericht / Rapport social
+        docXml = replaceSectionContent(docXml, isFR_DS ? '2.2 Rapport social' : '2.2 Sozialbericht', textToParas(sozialberichtText));
 
-        // Replace section 3: Aktuelle Situation intro text
-        docXml = replaceSectionContent(docXml, 'Aktuelle Situation', textToParas(aktuelleSituationText));
+        // Replace section 3: Aktuelle Situation / Situation actuelle
+        docXml = replaceSectionContent(docXml, isFR_DS ? 'Situation actuelle' : 'Aktuelle Situation', textToParas(aktuelleSituationText));
 
-        // Replace section 3.1: Aktuelle Maßnahmen (content after heading has placeholder table)
-        // We use replaceSectionContent to replace the placeholder instructions
+        // Replace section 3.1: Aktuelle Maßnahmen / Mesures actuelles
         if (dsData.aktuelleMassnahmen && dsData.aktuelleMassnahmen.length > 0) {
             let massnahmenParas = '';
             dsData.aktuelleMassnahmen.forEach(m => {
                 massnahmenParas += makePara(makeRun((m.zeitraum || '') + ' | ' + (m.klasse || '') + ' | ' + (MASSNAHME_NAMEN[m.art] || m.art || '') + ' | ' + (m.akteur || '')));
             });
-            docXml = replaceSectionContent(docXml, '3.1 Aktuelle', massnahmenParas);
+            docXml = replaceSectionContent(docXml, isFR_DS ? '3.1 Mesures' : '3.1 Aktuelle', massnahmenParas);
         }
 
-        // Replace section 3.2: Sichtweise der Schule
-        docXml = replaceSectionContent(docXml, '3.2 Sichtweise der Schule', textToParas(sichtweiseSchuleText));
+        // Replace section 3.2: Sichtweise der Schule / Point de vue de l'école
+        docXml = replaceSectionContent(docXml, isFR_DS ? '3.2 Point de vue de l' : '3.2 Sichtweise der Schule', textToParas(sichtweiseSchuleText));
 
-        // Replace section 3.3: Sichtweise des Schülers
-        docXml = replaceSectionContent(docXml, '3.3 Sichtweise des Sch', textToParas(sichtweiseSchuelerText));
+        // Replace section 3.3: Sichtweise des Schülers / Point de vue de l'élève
+        docXml = replaceSectionContent(docXml, isFR_DS ? '3.3 Point de vue de l' : '3.3 Sichtweise des Sch', textToParas(sichtweiseSchuelerText));
 
-        // Replace section 3.4: Sichtweise der Eltern
-        docXml = replaceSectionContent(docXml, '3.4 Sichtweise der Eltern', textToParas(sichtweiseElternText));
+        // Replace section 3.4: Sichtweise der Eltern / Point de vue des parents
+        docXml = replaceSectionContent(docXml, isFR_DS ? '3.4 Point de vue des parents' : '3.4 Sichtweise der Eltern', textToParas(sichtweiseElternText));
 
-        // Replace section "Diagnostische Verfahren" intro text
+        // Replace section "Diagnostische Verfahren" / "Procédures diagnostiques"
         {
-            const diagIntro = 'Die vorliegende Einschätzung basiert auf ' + (dsData.ds_testmethoden || 'dem ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen)') + ' sowie auf systematischen Verhaltensbeobachtungen' + (dsData.ds_test_ort ? ', die in ' + dsData.ds_test_ort + ' durchgeführt wurden' : '') + '.';
-            docXml = replaceSectionContent(docXml, 'Diagnostische Verfahren', makePara(makeRun(diagIntro)));
+            const diagIntro = isFR_DS
+                ? 'L\'évaluation présente est basée sur ' + (dsData.ds_testmethoden || 'l\'ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen)') + ' ainsi que sur des observations comportementales systématiques' + (dsData.ds_test_ort ? ', réalisées à ' + dsData.ds_test_ort : '') + '.'
+                : 'Die vorliegende Einschätzung basiert auf ' + (dsData.ds_testmethoden || 'dem ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen)') + ' sowie auf systematischen Verhaltensbeobachtungen' + (dsData.ds_test_ort ? ', die in ' + dsData.ds_test_ort + ' durchgeführt wurden' : '') + '.';
+            docXml = replaceSectionContent(docXml, isFR_DS ? 'Proc\u00e9dures diagnostiques' : 'Diagnostische Verfahren', makePara(makeRun(diagIntro)));
         }
 
-        // Replace section 4.1: Verhaltensbeobachtungen
-        docXml = replaceSectionContent(docXml, '4.1 Verhaltensbeobachtungen',
+        // Replace section 4.1: Verhaltensbeobachtungen / Observations comportementales
+        docXml = replaceSectionContent(docXml, isFR_DS ? '4.1 Observations' : '4.1 Verhaltensbeobachtungen',
             makePara(makeRun(verhaltensbeobachtungenText)));
 
-        // Replace section 4.3: Interpretation
-        docXml = replaceSectionContent(docXml, '4.3 Interpretation', textToParas(interpretationText));
+        // Replace section 4.3: Interpretation / Interprétation
+        docXml = replaceSectionContent(docXml, isFR_DS ? '4.3 Interpr\u00e9tation' : '4.3 Interpretation', textToParas(interpretationText));
 
-        // Replace section 5.1: Spezifische Bedürfnisse
-        docXml = replaceSectionContent(docXml, '5.1 Spezifische Bed', textToParas(spezifischeBeduerfnisseText));
+        // Replace section 5.1: Spezifische Bedürfnisse / Besoins spécifiques
+        docXml = replaceSectionContent(docXml, isFR_DS ? '5.1 Besoins sp\u00e9cifiques' : '5.1 Spezifische Bed', textToParas(spezifischeBeduerfnisseText));
 
-        // Replace section 5.3: Empfehlungen
+        // Replace section 5.3: Empfehlungen / Recommandations
         {
             let empfParas = '';
             const empfLines = empfehlungenText.split('\n');
             empfLines.forEach(line => {
                 if (line.trim()) empfParas += makePara(makeRun(line.trim()));
             });
-            docXml = replaceSectionContent(docXml, '5.3 Empfehlungen',
+            docXml = replaceSectionContent(docXml, isFR_DS ? '5.3 Recommandations' : '5.3 Empfehlungen',
                 empfParas || makePara(makeRun(empfehlungenText)));
         }
 
-        // Schlussfolgerung intro text - replace content between "Schlussfolgerung" heading and "5.1"
+        // Schlussfolgerung / Conclusion
         {
             let schlussText = '';
-            if (dsData.ds_empfehlungen_abgestimmt === 'ja_einverstanden') {
-                schlussText = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden in enger Abstimmung mit ' + (biologicalAge && biologicalAge.years >= 12 ? 'dem Schüler bzw. der Schülerin sowie ' : '') + 'den Eltern gezielte Förderbedarfe identifiziert. Daraus abgeleitet wurden gemeinsam Empfehlungen formuliert, die die individuelle Entwicklung wirksam unterstützen sollen.';
-            } else if (dsData.ds_empfehlungen_abgestimmt === 'ja_vorbehalte') {
-                schlussText = 'Auf Grundlage der vorliegenden Testergebnisse, Beobachtungen und anamnestischen Informationen wurden spezifische Förderbedarfe identifiziert. In Gesprächen mit ' + (biologicalAge && biologicalAge.years >= 12 ? 'dem Schüler bzw. der Schülerin sowie ' : '') + 'den Eltern konnten Empfehlungen zur weiteren Unterstützung der individuellen Entwicklung erarbeitet werden. Dabei wurden einzelne vorgeschlagene Maßnahmen von Seiten der Eltern bzw. des/der Schüler:in kritisch hinterfragt bzw. nicht vollständig befürwortet.' + (dsData.ds_vorbehalte_details ? ' ' + dsData.ds_vorbehalte_details : '');
+            if (isFR_DS) {
+                if (dsData.ds_empfehlungen_abgestimmt === 'ja_einverstanden') {
+                    schlussText = 'Sur la base des résultats des tests, des observations et des informations anamnestiques recueillies, des besoins de soutien ciblés ont été identifiés en étroite concertation avec ' + (biologicalAge && biologicalAge.years >= 12 ? 'l\'élève ainsi qu\'avec ' : '') + 'les parents. Des recommandations ont été formulées conjointement pour soutenir efficacement le développement individuel.';
+                } else if (dsData.ds_empfehlungen_abgestimmt === 'ja_vorbehalte') {
+                    schlussText = 'Sur la base des résultats des tests, des observations et des informations anamnestiques, des besoins de soutien spécifiques ont été identifiés. Lors d\'entretiens avec ' + (biologicalAge && biologicalAge.years >= 12 ? 'l\'élève ainsi qu\'avec ' : '') + 'les parents, des recommandations pour le soutien du développement individuel ont pu être élaborées. Certaines mesures proposées ont toutefois été remises en question ou n\'ont pas été entièrement approuvées par les parents.' + (dsData.ds_vorbehalte_details ? ' ' + dsData.ds_vorbehalte_details : '');
+                } else {
+                    schlussText = 'Sur la base des résultats des tests, des observations et des informations anamnestiques recueillies, des besoins de soutien ciblés ont été identifiés et des recommandations formulées.';
+                }
             } else {
-                schlussText = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden gezielte Förderbedarfe identifiziert und Empfehlungen formuliert.';
+                if (dsData.ds_empfehlungen_abgestimmt === 'ja_einverstanden') {
+                    schlussText = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden in enger Abstimmung mit ' + (biologicalAge && biologicalAge.years >= 12 ? 'dem Schüler bzw. der Schülerin sowie ' : '') + 'den Eltern gezielte Förderbedarfe identifiziert. Daraus abgeleitet wurden gemeinsam Empfehlungen formuliert, die die individuelle Entwicklung wirksam unterstützen sollen.';
+                } else if (dsData.ds_empfehlungen_abgestimmt === 'ja_vorbehalte') {
+                    schlussText = 'Auf Grundlage der vorliegenden Testergebnisse, Beobachtungen und anamnestischen Informationen wurden spezifische Förderbedarfe identifiziert. In Gesprächen mit ' + (biologicalAge && biologicalAge.years >= 12 ? 'dem Schüler bzw. der Schülerin sowie ' : '') + 'den Eltern konnten Empfehlungen zur weiteren Unterstützung der individuellen Entwicklung erarbeitet werden. Dabei wurden einzelne vorgeschlagene Maßnahmen von Seiten der Eltern bzw. des/der Schüler:in kritisch hinterfragt bzw. nicht vollständig befürwortet.' + (dsData.ds_vorbehalte_details ? ' ' + dsData.ds_vorbehalte_details : '');
+                } else {
+                    schlussText = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden gezielte Förderbedarfe identifiziert und Empfehlungen formuliert.';
+                }
             }
-            docXml = replaceSectionContent(docXml, 'Schlussfolgerung', makePara(makeRun(schlussText)));
+            docXml = replaceSectionContent(docXml, isFR_DS ? 'Conclusion' : 'Schlussfolgerung', makePara(makeRun(schlussText)));
         }
 
-        // Replace section 5.4: Empfehlungen - CNI (include Verfasser block)
+        // Replace section 5.4: Empfehlungen - CNI / Recommandations - CNI
         {
             const cniText = dsData.ds_cni_begruendung || '';
-            const verfasserName = dsData.ds_verfasser_name || 'Name des Verfassers des Berichts';
-            const verfasserBeruf = dsData.ds_verfasser_beruf || 'Berufsbezeichnung';
+            const verfasserName = dsData.ds_verfasser_name || (isFR_DS ? 'Nom de l\'auteur du rapport' : 'Name des Verfassers des Berichts');
+            const verfasserBeruf = dsData.ds_verfasser_beruf || (isFR_DS ? 'Fonction' : 'Berufsbezeichnung');
             const cniContent = makePara(makeRun(cniText)) +
                 makePara(makeRun('')) +
                 makePara(makeRun('')) +
@@ -12137,7 +12161,7 @@ async function generateDSFromTemplate(isComplete) {
                 makePara(makeRun(verfasserName)) +
                 makePara(makeRun(verfasserBeruf)) +
                 makePara(makeRun('Unité de diagnostic, de conseil et de suivi'));
-            docXml = replaceSectionContent(docXml, '5.4 Empfehlungen - CNI', cniContent);
+            docXml = replaceSectionContent(docXml, isFR_DS ? '5.4 Recommandations - CNI' : '5.4 Empfehlungen - CNI', cniContent);
         }
     }
 
@@ -12145,56 +12169,97 @@ async function generateDSFromTemplate(isComplete) {
     {
         const sortedDomains = dsGetSortedDomainsByAge(devAges);
         if (sortedDomains.length > 0) {
-            // Build the 4.2 content as WordML paragraphs
             let section42 = '';
+            const sName = studentName || (isFR_DS ? 'l\'élève' : 'der/die Schüler:in');
 
-            // ELDiB intro
-            section42 += makePara(makeRun('ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen):', true));
-            section42 += makePara(makeRun('Der ELDiB ist ein standardisiertes Einschätzungsinstrument, das dazu dient, die soziale und emotionale Entwicklung von Kindern und Jugendlichen im Alter zwischen Geburt und sechzehn Jahren zu erfassen.'));
-            section42 += makePara(makeRun(''));
-
-            // Summary per domain
-            sortedDomains.forEach((domain, index) => {
-                const age = devAges[domain] || 0;
-                const stage = dsGetStageForAge(age);
-                const goals = dsGetGoalsForDomain(domain);
-                const reached = dsGetReachedForDomain(domain);
-                const domainLabel = dsGetDomainName(domain);
-                const domainPrefix = dsGetDomainPrefix(domain);
-
-                const sName = studentName || 'der/die Schüler:in';
-                let intro = '';
-                if (index === 0) {
-                    intro = 'Am weitesten entwickelt zeigt sich ' + sName + ' im Bereich ';
-                } else if (index === sortedDomains.length - 1) {
-                    intro = 'Den größten Förderbedarf weist ' + sName + ' im Bereich ';
-                } else {
-                    intro = 'Im Bereich ';
-                }
-
-                let text = intro + domainLabel + ': Hier befindet sich ' + sName + ' auf Entwicklungsstufe ' + stage;
-                text += ' (' + dsGetStageDescription(stage) + ').';
-
-                if (reached.length > 0) {
-                    const lastItems = reached.slice(-3);
-                    text += ' Zu den zuletzt erreichten Kompetenzen zählen: ';
-                    text += lastItems.map(item => item.code + ' (' + item.keyword + ')').join(', ') + '.';
-                }
-
-                section42 += makePara(makeRun(text));
-
-                if (goals.length > 0) {
-                    section42 += makePara(makeRun('Ausgehend vom Richtziel ergaben sich folgende Lernziele:'));
-                    goals.forEach(g => {
-                        section42 += makeBulletPara(makeRun(g.code + ' – ' + g.keyword));
-                    });
-                }
-
+            if (isFR_DS) {
+                // French version
+                section42 += makePara(makeRun('ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen) :', true));
+                section42 += makePara(makeRun('L\'ELDiB est un instrument d\'évaluation standardisé conçu pour mesurer le développement social et émotionnel des enfants et des adolescents à partir de la naissance jusqu\'à l\'âge de seize ans.'));
                 section42 += makePara(makeRun(''));
-            });
 
-            // Replace section 4.2 content using the robust heading search
-            docXml = replaceSectionContent(docXml, '4.2 Ergebnisse', section42);
+                sortedDomains.forEach((domain, index) => {
+                    const age = devAges[domain] || 0;
+                    const stage = dsGetStageForAge(age);
+                    const goals = dsGetGoalsForDomain(domain);
+                    const reached = dsGetReachedForDomain(domain);
+                    const domainLabel = dsGetDomainName(domain);
+
+                    let intro = '';
+                    if (index === 0) {
+                        intro = 'Les compétences les plus développées chez ' + sName + ' sont celles du domaine ';
+                    } else if (index === sortedDomains.length - 1) {
+                        intro = 'Les compétences les moins développées chez ' + sName + ' sont celles du domaine ';
+                    } else {
+                        intro = 'Dans le domaine ';
+                    }
+
+                    let text = intro + domainLabel + ' : ' + sName + ' se situe au stade de développement ' + stage;
+                    text += ' (' + dsGetStageDescription(stage) + ').';
+
+                    if (reached.length > 0) {
+                        const lastItems = reached.slice(-3);
+                        text += ' Parmi les dernières compétences atteintes : ';
+                        text += lastItems.map(item => item.code + ' (' + item.keyword + ')').join(', ') + '.';
+                    }
+
+                    section42 += makePara(makeRun(text));
+
+                    if (goals.length > 0) {
+                        section42 += makePara(makeRun('En partant de l\'objectif général, les objectifs d\'apprentissage suivants ont été définis :'));
+                        goals.forEach(g => {
+                            section42 += makeBulletPara(makeRun(g.code + ' – ' + g.keyword));
+                        });
+                    }
+
+                    section42 += makePara(makeRun(''));
+                });
+            } else {
+                // German version (original)
+                section42 += makePara(makeRun('ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen):', true));
+                section42 += makePara(makeRun('Der ELDiB ist ein standardisiertes Einschätzungsinstrument, das dazu dient, die soziale und emotionale Entwicklung von Kindern und Jugendlichen im Alter zwischen Geburt und sechzehn Jahren zu erfassen.'));
+                section42 += makePara(makeRun(''));
+
+                sortedDomains.forEach((domain, index) => {
+                    const age = devAges[domain] || 0;
+                    const stage = dsGetStageForAge(age);
+                    const goals = dsGetGoalsForDomain(domain);
+                    const reached = dsGetReachedForDomain(domain);
+                    const domainLabel = dsGetDomainName(domain);
+
+                    let intro = '';
+                    if (index === 0) {
+                        intro = 'Am weitesten entwickelt zeigt sich ' + sName + ' im Bereich ';
+                    } else if (index === sortedDomains.length - 1) {
+                        intro = 'Den größten Förderbedarf weist ' + sName + ' im Bereich ';
+                    } else {
+                        intro = 'Im Bereich ';
+                    }
+
+                    let text = intro + domainLabel + ': Hier befindet sich ' + sName + ' auf Entwicklungsstufe ' + stage;
+                    text += ' (' + dsGetStageDescription(stage) + ').';
+
+                    if (reached.length > 0) {
+                        const lastItems = reached.slice(-3);
+                        text += ' Zu den zuletzt erreichten Kompetenzen zählen: ';
+                        text += lastItems.map(item => item.code + ' (' + item.keyword + ')').join(', ') + '.';
+                    }
+
+                    section42 += makePara(makeRun(text));
+
+                    if (goals.length > 0) {
+                        section42 += makePara(makeRun('Ausgehend vom Richtziel ergaben sich folgende Lernziele:'));
+                        goals.forEach(g => {
+                            section42 += makeBulletPara(makeRun(g.code + ' – ' + g.keyword));
+                        });
+                    }
+
+                    section42 += makePara(makeRun(''));
+                });
+            }
+
+            // Replace section 4.2 content - use FR heading if French template
+            docXml = replaceSectionContent(docXml, isFR_DS ? '4.2 R\u00e9sultats' : '4.2 Ergebnisse', section42);
         }
     }
 
@@ -12216,13 +12281,16 @@ async function generateDSFromTemplate(isComplete) {
         });
 
         if (allGoals.length > 0) {
-            let zieleContent = makePara(makeRun('Ausgehend von den formulierten ELDiB-Zielen wurden folgende Förderziele definiert:'));
+            let zieleContent = makePara(makeRun(isFR_DS
+                ? 'À partir des objectifs ELDiB formulés, les objectifs de soutien suivants ont été définis :'
+                : 'Ausgehend von den formulierten ELDiB-Zielen wurden folgende Förderziele definiert:'));
 
             // Build a simple table in WordML
             let tblXml = '<w:tbl><w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:w="0" w:type="auto"/></w:tblPr><w:tblGrid><w:gridCol w:w="1000"/><w:gridCol w:w="2000"/><w:gridCol w:w="3000"/><w:gridCol w:w="3000"/></w:tblGrid>';
             // Header row
             tblXml += '<w:tr>';
-            ['Item', 'Kompetenz', 'Zielformulierung', 'Intervention'].forEach(h => {
+            const headers = isFR_DS ? ['Item', 'Compétence', 'Formulation de l\'objectif', 'Intervention'] : ['Item', 'Kompetenz', 'Zielformulierung', 'Intervention'];
+            headers.forEach(h => {
                 tblXml += '<w:tc><w:tcPr><w:shd w:val="clear" w:color="auto" w:fill="BFBFBF"/></w:tcPr><w:p><w:r><w:rPr><w:b/></w:rPr><w:t>' + escapeXml(h) + '</w:t></w:r></w:p></w:tc>';
             });
             tblXml += '</w:tr>';
@@ -12243,11 +12311,11 @@ async function generateDSFromTemplate(isComplete) {
 
             // Additional goals
             if (isComplete && dsData.ds_zusaetzliche_ziele) {
-                zieleContent += makePara(makeRun('Zusätzliche Ziele: ' + dsData.ds_zusaetzliche_ziele));
+                zieleContent += makePara(makeRun((isFR_DS ? 'Objectifs supplémentaires : ' : 'Zusätzliche Ziele: ') + dsData.ds_zusaetzliche_ziele));
             }
 
             // Replace section 5.2 using robust heading search
-            docXml = replaceSectionContent(docXml, '5.2 Ziele', zieleContent);
+            docXml = replaceSectionContent(docXml, isFR_DS ? '5.2 Objectifs' : '5.2 Ziele', zieleContent);
         }
     }
 
