@@ -10687,77 +10687,109 @@ async function generatePEI() {
                     tableXml = tableXml.replace('</w:tblPr>', '<w:tblCellSpacing w:w="0" w:type="dxa"/></w:tblPr>');
                 }
 
-                // First pass: collect all item colors per column to determine row colors
-                // For filling gaps: determine which color to use for each cell
-                function getRowCellColor(prefix, num) {
-                    const color = getItemColor(prefix, num);
-                    return color; // returns 90EE90, FFFF00, or FFFFFF
-                }
-
-                // Process each row
-                let newTable = '';
+                // Two-pass approach: first collect all rows and cells, then color with gap filling
+                // Parse all rows and their 595-width cells
+                const allRows = [];
                 let tPos = 0;
                 while (tPos < tableXml.length) {
                     const trIdx = tableXml.indexOf('<w:tr ', tPos);
-                    if (trIdx < 0) {
-                        newTable += tableXml.substring(tPos);
-                        break;
-                    }
-                    newTable += tableXml.substring(tPos, trIdx);
+                    if (trIdx < 0) break;
                     const trEndIdx = tableXml.indexOf('</w:tr>', trIdx);
-                    if (trEndIdx < 0) { newTable += tableXml.substring(trIdx); break; }
+                    if (trEndIdx < 0) break;
                     const trEndFull = trEndIdx + 7;
-                    let rowXml = tableXml.substring(trIdx, trEndFull);
+                    allRows.push({ start: trIdx, end: trEndFull, xml: tableXml.substring(trIdx, trEndFull) });
+                    tPos = trEndFull;
+                }
 
-                    // Process cells in this row
+                // First pass: build a color map per column per row
+                // Grid rows go top-to-bottom in XML, but items go from high numbers (top) to 1 (bottom)
+                const colorMap = []; // colorMap[rowIdx][colIdx] = { color, hasNumber }
+                allRows.forEach((row, rowIdx) => {
+                    const rowColors = [{}, {}, {}, {}];
+                    let col595 = 0;
+                    let rPos = 0;
+                    while (rPos < row.xml.length) {
+                        const tcIdx = row.xml.indexOf('<w:tc>', rPos);
+                        if (tcIdx < 0) break;
+                        const tcEndIdx = row.xml.indexOf('</w:tc>', tcIdx);
+                        if (tcEndIdx < 0) break;
+                        const cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
+                        const widthMatch = cellXml.match(/w:tcW w:w="(\d+)"/);
+                        const width = widthMatch ? parseInt(widthMatch[1]) : 0;
+                        if (width === 595) {
+                            if (col595 < 4) {
+                                const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
+                                const cellText = textMatches.map(m => m[1]).join('').trim();
+                                const num = parseInt(cellText);
+                                if (!isNaN(num) && num >= 1 && num <= 62) {
+                                    rowColors[col595] = { color: getItemColor(domains[col595], num), hasNumber: true };
+                                } else {
+                                    rowColors[col595] = { color: null, hasNumber: false };
+                                }
+                            }
+                            col595++;
+                        }
+                        rPos = tcEndIdx + 7;
+                    }
+                    colorMap.push(rowColors);
+                });
+
+                // Second pass: fill gaps - for empty cells, use color of nearest numbered cell below (higher row index)
+                for (let col = 0; col < 4; col++) {
+                    let currentColor = 'FFFFFF';
+                    // Go bottom-to-top (from last row to first) to propagate color upward
+                    for (let r = colorMap.length - 1; r >= 0; r--) {
+                        if (colorMap[r][col]?.hasNumber) {
+                            currentColor = colorMap[r][col].color;
+                        } else if (colorMap[r][col] && !colorMap[r][col].hasNumber) {
+                            colorMap[r][col].color = currentColor;
+                        }
+                    }
+                }
+
+                // Third pass: apply colors to all cells
+                function applyCellColor(cellXml, color) {
+                    const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
+                    if (cellXml.includes('w:fill="')) {
+                        return cellXml.replace(/w:fill="[A-Fa-f0-9a-z]+"/g, 'w:fill="' + color + '"');
+                    } else if (cellXml.includes('</w:tcPr>')) {
+                        return cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
+                    } else {
+                        return cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
+                    }
+                }
+
+                let newTable = tableXml.substring(0, allRows.length > 0 ? allRows[0].start : tableXml.length);
+                allRows.forEach((row, rowIdx) => {
                     let col595 = 0;
                     let newRow = '';
                     let rPos = 0;
-                    while (rPos < rowXml.length) {
-                        const tcIdx = rowXml.indexOf('<w:tc>', rPos);
-                        if (tcIdx < 0) {
-                            newRow += rowXml.substring(rPos);
-                            break;
-                        }
-                        newRow += rowXml.substring(rPos, tcIdx);
-                        const tcEndIdx = rowXml.indexOf('</w:tc>', tcIdx);
-                        if (tcEndIdx < 0) { newRow += rowXml.substring(tcIdx); break; }
-                        const tcEndFull = tcEndIdx + 7;
-                        let cellXml = rowXml.substring(tcIdx, tcEndFull);
-
-                        // Check cell width
+                    while (rPos < row.xml.length) {
+                        const tcIdx = row.xml.indexOf('<w:tc>', rPos);
+                        if (tcIdx < 0) { newRow += row.xml.substring(rPos); break; }
+                        newRow += row.xml.substring(rPos, tcIdx);
+                        const tcEndIdx = row.xml.indexOf('</w:tc>', tcIdx);
+                        if (tcEndIdx < 0) { newRow += row.xml.substring(tcIdx); break; }
+                        let cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
                         const widthMatch = cellXml.match(/w:tcW w:w="(\d+)"/);
                         const width = widthMatch ? parseInt(widthMatch[1]) : 0;
-
                         if (width === 595 && col595 < 4) {
-                            // Grid cell in one of the 4 domain columns - check for number content
-                            const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
-                            const cellText = textMatches.map(m => m[1]).join('').trim();
-                            const num = parseInt(cellText);
-                            if (!isNaN(num) && num >= 1 && num <= 62) {
-                                const prefix = domains[col595];
-                                const color = getItemColor(prefix, num);
-                                // Color ALL cells including white to ensure no gaps
-                                const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
-                                if (cellXml.includes('w:fill="')) {
-                                    cellXml = cellXml.replace(/w:fill="[A-Fa-f0-9a-z]+"/g, 'w:fill="' + color + '"');
-                                } else if (cellXml.includes('</w:tcPr>')) {
-                                    cellXml = cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
-                                } else {
-                                    cellXml = cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
-                                }
-                            }
+                            const color = colorMap[rowIdx][col595]?.color || 'FFFFFF';
+                            cellXml = applyCellColor(cellXml, color);
                             col595++;
                         } else if (width === 595) {
                             col595++;
                         }
-
                         newRow += cellXml;
-                        rPos = tcEndFull;
+                        rPos = tcEndIdx + 7;
                     }
-
                     newTable += newRow;
-                    tPos = trEndFull;
+                    if (rowIdx < allRows.length - 1) {
+                        newTable += tableXml.substring(row.end, allRows[rowIdx + 1].start);
+                    }
+                });
+                if (allRows.length > 0) {
+                    newTable += tableXml.substring(allRows[allRows.length - 1].end);
                 }
 
                 docXml = docXml.substring(0, tblStart) + newTable + docXml.substring(tblEnd);
@@ -12319,12 +12351,13 @@ async function generateDSFromTemplate(isComplete) {
         }
     }
 
-    // --- 9. Color ELDiB grid cells (Table 5) ---
+    // --- 9. Color ELDiB grid cells (DS document) ---
     {
-        // The ELDiB table is the last table in the document
-        // Find it by looking for the header row with V, KOMM, SOZ, KOG
-        const gridMarker = '>V</w:t>';
-        let gridPos = docXml.lastIndexOf(gridMarker);
+        // Find ELDiB table - try both DE and FR markers
+        const gridMarkerDE = '>V</w:t>';
+        const gridMarkerFR = '>COMP</w:t>';
+        let gridPos = docXml.lastIndexOf(gridMarkerDE);
+        if (gridPos < 0) gridPos = docXml.lastIndexOf(gridMarkerFR);
         if (gridPos > 0) {
             const tblStart = docXml.lastIndexOf('<w:tbl>', gridPos);
             const tblEnd = docXml.indexOf('</w:tbl>', gridPos);
@@ -12338,76 +12371,103 @@ async function generateDSFromTemplate(isComplete) {
                     tableXml = tableXml.replace('</w:tblPr>', '<w:tblCellSpacing w:w="0" w:type="dxa"/></w:tblPr>');
                 }
 
-                // Process each row - find cells and color them
-                function getItemColor(prefix, nr) {
+                function getDSItemColor(prefix, nr) {
                     const code = prefix + '-' + nr;
                     const sel = state.selections[code];
                     if (sel?.status === 'erreicht') return '90EE90';
                     if (sel?.status === 'ziel') return 'FFFF00';
-                    return null;
+                    return 'FFFFFF';
                 }
 
-                // ELDiB grid: 5 columns - V(0), KOMM(1), SOZ(2), KOG(3), Description(4)
                 const colPrefixes = ['V', 'K', 'SOZ', 'KOG'];
 
-                // Process row by row to track column positions
+                function dsApplyCellColor(cellXml, color) {
+                    const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
+                    if (cellXml.includes('w:fill="')) {
+                        return cellXml.replace(/w:fill="[A-Fa-f0-9]+"/g, 'w:fill="' + color + '"');
+                    } else if (cellXml.includes('</w:tcPr>')) {
+                        return cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
+                    } else if (cellXml.startsWith('<w:tc>')) {
+                        return cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
+                    }
+                    return cellXml;
+                }
+
+                // Parse rows
+                const dsRows = [];
                 const rowRegex = /<w:tr[ >][\s\S]*?<\/w:tr>/gs;
                 let rowMatch;
-                let newTableParts = [];
-                let lastRowEnd = 0;
-
                 while ((rowMatch = rowRegex.exec(tableXml)) !== null) {
-                    // Add content before this row
-                    newTableParts.push(tableXml.substring(lastRowEnd, rowMatch.index));
+                    dsRows.push({ index: rowMatch.index, length: rowMatch[0].length, xml: rowMatch[0] });
+                }
 
-                    let rowXml = rowMatch[0];
-                    // Find cells in this row - match both <w:tc> and <w:tc > (with possible attributes)
-                    const cellRegex2 = /<w:tc[ >][\s\S]*?<\/w:tc>/gs;
-                    let cellMatch2;
+                // First pass: build color map per column per row
+                const dsColorMap = [];
+                dsRows.forEach((row) => {
+                    const rowColors = [{}, {}, {}, {}];
+                    const cellRegex = /<w:tc[ >][\s\S]*?<\/w:tc>/gs;
+                    let cellMatch;
+                    let colIdx = 0;
+                    while ((cellMatch = cellRegex.exec(row.xml)) !== null) {
+                        const cellXml = cellMatch[0];
+                        const gridSpanMatch = cellXml.match(/w:gridSpan\s+w:val="(\d+)"/);
+                        const span = gridSpanMatch ? parseInt(gridSpanMatch[1]) : 1;
+                        if (colIdx < 4) {
+                            const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
+                            const cellText = textMatches.map(m => m[1]).join('').trim();
+                            const num = parseInt(cellText);
+                            if (!isNaN(num) && num >= 1 && num <= 62) {
+                                rowColors[colIdx] = { color: getDSItemColor(colPrefixes[colIdx], num), hasNumber: true };
+                            } else {
+                                rowColors[colIdx] = { color: null, hasNumber: false };
+                            }
+                        }
+                        colIdx += span;
+                    }
+                    dsColorMap.push(rowColors);
+                });
+
+                // Fill gaps: propagate colors bottom-to-top per column
+                for (let col = 0; col < 4; col++) {
+                    let currentColor = 'FFFFFF';
+                    for (let r = dsColorMap.length - 1; r >= 0; r--) {
+                        if (dsColorMap[r][col]?.hasNumber) {
+                            currentColor = dsColorMap[r][col].color;
+                        } else if (dsColorMap[r][col] && !dsColorMap[r][col].hasNumber) {
+                            dsColorMap[r][col].color = currentColor;
+                        }
+                    }
+                }
+
+                // Second pass: apply colors
+                let newTableParts = [tableXml.substring(0, dsRows.length > 0 ? dsRows[0].index : tableXml.length)];
+                dsRows.forEach((row, rowIdx) => {
+                    const cellRegex = /<w:tc[ >][\s\S]*?<\/w:tc>/gs;
+                    let cellMatch;
                     let colIdx = 0;
                     let newRowParts = [];
                     let lastCellEnd = 0;
-
-                    while ((cellMatch2 = cellRegex2.exec(rowXml)) !== null) {
-                        newRowParts.push(rowXml.substring(lastCellEnd, cellMatch2.index));
-
-                        let cellXml = cellMatch2[0];
-                        // Account for gridSpan (merged cells)
+                    while ((cellMatch = cellRegex.exec(row.xml)) !== null) {
+                        newRowParts.push(row.xml.substring(lastCellEnd, cellMatch.index));
+                        let cellXml = cellMatch[0];
                         const gridSpanMatch = cellXml.match(/w:gridSpan\s+w:val="(\d+)"/);
                         const span = gridSpanMatch ? parseInt(gridSpanMatch[1]) : 1;
-
-                        const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
-                        const cellText = textMatches.map(m => m[1]).join('').trim();
-                        const num = parseInt(cellText);
-
-                        // Only color cells in columns 0-3 (V, K, SOZ, KOG) with valid numbers
-                        if (colIdx < 4 && !isNaN(num) && num >= 1 && num <= 62) {
-                            const prefix = colPrefixes[colIdx];
-                            const color = getItemColor(prefix, num);
-                            if (color) {
-                                const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
-                                if (cellXml.includes('w:fill="')) {
-                                    // Replace existing fill color
-                                    cellXml = cellXml.replace(/w:fill="[A-Fa-f0-9]+"/g, 'w:fill="' + color + '"');
-                                } else if (cellXml.includes('</w:tcPr>')) {
-                                    // Insert shd before closing tcPr
-                                    cellXml = cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
-                                } else {
-                                    // No tcPr exists - create one after the opening <w:tc> tag
-                                    cellXml = cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
-                                }
-                            }
+                        if (colIdx < 4 && dsColorMap[rowIdx][colIdx]?.color) {
+                            cellXml = dsApplyCellColor(cellXml, dsColorMap[rowIdx][colIdx].color);
                         }
-
                         newRowParts.push(cellXml);
-                        lastCellEnd = cellMatch2.index + cellMatch2[0].length;
+                        lastCellEnd = cellMatch.index + cellMatch[0].length;
                         colIdx += span;
                     }
-                    newRowParts.push(rowXml.substring(lastCellEnd));
+                    newRowParts.push(row.xml.substring(lastCellEnd));
                     newTableParts.push(newRowParts.join(''));
-                    lastRowEnd = rowMatch.index + rowMatch[0].length;
+                    if (rowIdx < dsRows.length - 1) {
+                        newTableParts.push(tableXml.substring(row.index + row.length, dsRows[rowIdx + 1].index));
+                    }
+                });
+                if (dsRows.length > 0) {
+                    newTableParts.push(tableXml.substring(dsRows[dsRows.length - 1].index + dsRows[dsRows.length - 1].length));
                 }
-                newTableParts.push(tableXml.substring(lastRowEnd));
                 tableXml = newTableParts.join('');
 
                 docXml = docXml.substring(0, tblStart) + tableXml + docXml.substring(tblEnd + 8);
