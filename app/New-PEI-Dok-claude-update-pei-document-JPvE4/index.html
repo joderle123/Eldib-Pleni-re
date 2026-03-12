@@ -5711,40 +5711,72 @@ function updateUILanguage() {
 
 function rerenderItems() {
     const data = getCurrentEldibData();
+    const isFR = state.language === 'fr';
+    const btnLabels = isFR
+        ? { erreicht: 'Atteint', nichtErreicht: 'Non atteint', ziel: 'Objectif', alleErreicht: 'Tous atteints', bereichsziel: 'Objectif du domaine', zielformulierung: 'Formulation de l\'objectif :', placeholder: 'Ou formulation personnelle...' }
+        : { erreicht: 'Erreicht', nichtErreicht: 'Nicht erreicht', ziel: 'Ziel', alleErreicht: 'Alle erreicht', bereichsziel: 'Bereichsziel', zielformulierung: 'Zielformulierung:', placeholder: 'Oder eigene Formulierung...' };
+
     for (const [bereichKey, bereich] of Object.entries(data)) {
         // Update Bereich headers
         const header = document.querySelector(`#${bereichKey} .bereich-header h2`);
-        if (header) header.textContent = t('bereich') + ' ' + bereich.name;
+        if (header) header.textContent = (isFR ? 'Domaine ' : 'Bereich ') + bereich.name;
         const headerP = document.querySelector(`#${bereichKey} .bereich-header p`);
-        if (headerP) headerP.textContent = bereich.code + '-1 ' + t('bis') + ' ' + bereich.code + '-' + Object.values(bereich.stufen).reduce((sum, s) => sum + s.items.length, 0);
+        if (headerP) headerP.textContent = bereich.code + '-1 ' + (isFR ? 'à' : 'bis') + ' ' + bereich.code + '-' + Object.values(bereich.stufen).reduce((sum, s) => sum + s.items.length, 0);
 
         for (const [stufeNr, stufe] of Object.entries(bereich.stufen)) {
-            // Update Stufe headers
+            // Update Stufe headers (name + Bereichsziel)
             const stufeHeader = document.querySelector(`#${bereichKey}-content .stufe:nth-child(${stufeNr}) .stufe-header-text strong`);
             if (stufeHeader) stufeHeader.textContent = stufe.name;
+            const stufeZiel = document.querySelector(`#${bereichKey}-content .stufe:nth-child(${stufeNr}) .stufe-header-text em`);
+            if (stufeZiel && stufe.ziel) stufeZiel.textContent = btnLabels.bereichsziel + ': ' + stufe.ziel;
 
-            // Update item contents (keyword, description) while preserving selection state
+            // Update "Alle erreicht" labels
+            const alleLabel = document.querySelector(`#${bereichKey}-content .stufe:nth-child(${stufeNr}) .checkbox-label`);
+            if (alleLabel) alleLabel.textContent = btnLabels.alleErreicht;
+
+            // Update item contents (keyword, description, button labels) while preserving selection state
             stufe.items.forEach(item => {
-                const itemEl = document.querySelector(`[data-code="${item.code}"]`);
+                const itemEl = document.getElementById(`item-${item.code}`);
                 if (itemEl) {
                     const keywordEl = itemEl.querySelector('.item-keyword');
-                    if (keywordEl) keywordEl.textContent = item.keyword;
+                    if (keywordEl) keywordEl.textContent = item.keyword + ':';
                     const descEl = itemEl.querySelector('.item-description');
-                    if (descEl) descEl.textContent = item.description;
+                    if (descEl) {
+                        // Preserve the keyword span, update the text after it
+                        const keywordSpan = descEl.querySelector('.item-keyword');
+                        if (keywordSpan) {
+                            keywordSpan.textContent = item.keyword + ':';
+                            // Replace the text node after the keyword span
+                            const textNode = keywordSpan.nextSibling;
+                            if (textNode) textNode.textContent = ' ' + item.description;
+                        }
+                    }
+                    // Update button labels
+                    const btns = itemEl.querySelectorAll('.option-btn');
+                    btns.forEach(btn => {
+                        if (btn.classList.contains('erreicht')) btn.textContent = btnLabels.erreicht;
+                        else if (btn.classList.contains('nicht-erreicht')) btn.textContent = btnLabels.nichtErreicht;
+                        else if (btn.classList.contains('ziel')) btn.textContent = btnLabels.ziel;
+                    });
+                    // Update ziel-box labels
+                    const zielH4 = itemEl.querySelector('.ziel-box h4');
+                    if (zielH4) zielH4.textContent = btnLabels.zielformulierung;
+                    const zielTextarea = itemEl.querySelector('.ziel-custom');
+                    if (zielTextarea) zielTextarea.placeholder = btnLabels.placeholder;
+                    // Update ziel select options
+                    const zielSelect = itemEl.querySelector('.ziel-select');
+                    if (zielSelect && item.zielformulierungen) {
+                        const selectedIdx = zielSelect.selectedIndex;
+                        zielSelect.innerHTML = item.zielformulierungen.map((z, i) => `<option value="${i}">${z}</option>`).join('');
+                        zielSelect.selectedIndex = selectedIdx;
+                    }
                 }
             });
         }
     }
 
     // Update stats text
-    const statsEls = document.querySelectorAll('[id^="stats-"][id$="-erreicht"]');
-    statsEls.forEach(el => {
-        if (state.language === 'fr') {
-            el.textContent = el.textContent.replace('erreicht', 'atteint(s)');
-        } else {
-            el.textContent = el.textContent.replace('atteint(s)', 'erreicht');
-        }
-    });
+    updateStats();
 }
 
 function restoreZusatzSelections() {
@@ -6448,9 +6480,9 @@ function loadFromLocalStorage() {
     const saved = localStorage.getItem('eldib-data');
     if (saved) {
         const data = JSON.parse(saved);
-        if (data.language) {
-            state.language = data.language;
-            switchLanguage(state.language);
+        if (data.language && data.language !== 'de') {
+            state.language = 'de'; // Reset to default so switchLanguage guard doesn't block
+            switchLanguage(data.language);
         }
         state.selections = data.selections || {};
         state.zusaetzlicheZiele = data.zusaetzlicheZiele || {
