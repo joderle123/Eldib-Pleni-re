@@ -4909,15 +4909,15 @@
         <div id="export" class="tab-content">
             <h2 style="margin-bottom: 20px; color: #333;">Dokumente exportieren</h2>
 
-            <div id="export-disclaimer" style="background: linear-gradient(135deg, rgba(0, 151, 167, 0.06) 0%, rgba(0, 131, 143, 0.04) 100%); border-left: 4px solid #0097A7; border-radius: 0 12px 12px 0; padding: 24px 28px; margin-bottom: 28px; position: relative;">
+            <div id="export-disclaimer" style="background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%); border: 2px solid #F57C00; border-radius: 12px; padding: 24px 28px; margin-bottom: 28px; position: relative; box-shadow: 0 2px 12px rgba(245, 124, 0, 0.15);">
                 <div style="display: flex; align-items: flex-start; gap: 16px;">
-                    <div style="min-width: 36px; height: 36px; background: rgba(0, 151, 167, 0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0097A7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <div style="min-width: 44px; height: 44px; background: #F57C00; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; box-shadow: 0 2px 8px rgba(245, 124, 0, 0.3);">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     </div>
                     <div>
-                        <p id="disclaimer-title" style="font-weight: 700; color: #00838F; font-size: 1rem; margin: 0 0 8px 0;">Hinweis zur Dokumentenprüfung</p>
-                        <p id="disclaimer-text" style="color: #555; font-size: 0.92rem; line-height: 1.65; margin: 0;">
-                            Die nachfolgend generierten Dokumente werden automatisch auf Basis Ihrer Eingaben erstellt. Dieses Instrument dient als <strong>Arbeitshilfe</strong> — die fachliche Verantwortung für Richtigkeit und Vollständigkeit aller Angaben liegt bei den unterzeichnenden Mitarbeiter:innen. Bitte überprüfen Sie jedes Dokument sorgfältig, bevor es offiziell verwendet oder weitergeleitet wird.
+                        <p id="disclaimer-title" style="font-weight: 800; color: #E65100; font-size: 1.08rem; margin: 0 0 10px 0; letter-spacing: 0.3px;">Hinweis zur Dokumentenprüfung</p>
+                        <p id="disclaimer-text" style="color: #4E342E; font-size: 0.95rem; line-height: 1.7; margin: 0;">
+                            Die nachfolgend generierten Dokumente werden automatisch auf Basis Ihrer Eingaben erstellt. Dieses Instrument dient als <strong>Arbeitshilfe</strong> — die fachliche Verantwortung für Richtigkeit und Vollständigkeit aller Angaben liegt bei den unterzeichnenden Mitarbeiter:innen. Bitte prüfen Sie jedes Dokument sorgfältig vor der Offizialierung.
                         </p>
                     </div>
                 </div>
@@ -12417,19 +12417,26 @@ async function generateDSFromTemplate(isComplete) {
     }
 
     // --- 9. Color ELDiB grid cells (DS document) ---
+    // Uses width-based cell detection like the proven PEI approach
+    // DE template uses w:w="840", FR template uses w:w="854"
     {
-        // Find ELDiB table - try both DE and FR markers
-        const gridMarkerDE = '>V</w:t>';
-        const gridMarkerFR = '>COMP</w:t>';
-        let gridPos = docXml.lastIndexOf(gridMarkerDE);
-        if (gridPos < 0) gridPos = docXml.lastIndexOf(gridMarkerFR);
-        if (gridPos > 0) {
-            const tblStart = docXml.lastIndexOf('<w:tbl>', gridPos);
-            const tblEnd = docXml.indexOf('</w:tbl>', gridPos);
-            if (tblStart >= 0 && tblEnd >= 0) {
-                let tableXml = docXml.substring(tblStart, tblEnd + 8);
+        const gridCellWidthDE = 'w:w="840"';
+        const gridCellWidthFR = 'w:w="854"';
+        let markerPos = docXml.lastIndexOf(gridCellWidthDE);
+        let gridCellWidthVal = 840;
+        if (markerPos < 0) {
+            markerPos = docXml.lastIndexOf(gridCellWidthFR);
+            gridCellWidthVal = 854;
+        }
+        if (markerPos >= 0) {
+            const tblStart = docXml.lastIndexOf('<w:tbl>', markerPos);
+            const tblEndIdx = docXml.indexOf('</w:tbl>', markerPos);
+            if (tblStart >= 0 && tblEndIdx >= 0) {
+                const tblEnd = tblEndIdx + 8;
+                let tableXml = docXml.substring(tblStart, tblEnd);
+                const domains = ['V', 'K', 'SOZ', 'KOG'];
 
-                // Remove cell spacing from table to eliminate white gaps
+                // Remove cell spacing to eliminate white gaps
                 if (tableXml.includes('<w:tblCellSpacing')) {
                     tableXml = tableXml.replace(/<w:tblCellSpacing[^/]*\/>/g, '<w:tblCellSpacing w:w="0" w:type="dxa"/>');
                 } else if (tableXml.includes('</w:tblPr>')) {
@@ -12444,50 +12451,52 @@ async function generateDSFromTemplate(isComplete) {
                     return 'FFFFFF';
                 }
 
-                const colPrefixes = ['V', 'K', 'SOZ', 'KOG'];
-
-                function dsApplyCellColor(cellXml, color) {
-                    const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
-                    if (cellXml.includes('w:fill="')) {
-                        return cellXml.replace(/w:fill="[^"]+"/g, 'w:fill="' + color + '"');
-                    } else if (cellXml.includes('</w:tcPr>')) {
-                        return cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
-                    } else if (cellXml.startsWith('<w:tc>')) {
-                        return cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
-                    }
-                    return cellXml;
+                // Parse all rows
+                const allDSRows = [];
+                let tPos = 0;
+                while (tPos < tableXml.length) {
+                    const trIdx = tableXml.indexOf('<w:tr ', tPos);
+                    const trIdxAlt = tableXml.indexOf('<w:tr>', tPos);
+                    let actualTrIdx = -1;
+                    if (trIdx >= 0 && trIdxAlt >= 0) actualTrIdx = Math.min(trIdx, trIdxAlt);
+                    else if (trIdx >= 0) actualTrIdx = trIdx;
+                    else if (trIdxAlt >= 0) actualTrIdx = trIdxAlt;
+                    else break;
+                    const trEndIdx = tableXml.indexOf('</w:tr>', actualTrIdx);
+                    if (trEndIdx < 0) break;
+                    const trEndFull = trEndIdx + 7;
+                    allDSRows.push({ start: actualTrIdx, end: trEndFull, xml: tableXml.substring(actualTrIdx, trEndFull) });
+                    tPos = trEndFull;
                 }
 
-                // Parse rows
-                const dsRows = [];
-                const rowRegex = /<w:tr[ >][\s\S]*?<\/w:tr>/gs;
-                let rowMatch;
-                while ((rowMatch = rowRegex.exec(tableXml)) !== null) {
-                    dsRows.push({ index: rowMatch.index, length: rowMatch[0].length, xml: rowMatch[0] });
-                }
-
-                // First pass: build color map per column per row
+                // First pass: build color map using 840-width cells
                 const dsColorMap = [];
-                dsRows.forEach((row) => {
+                allDSRows.forEach((row) => {
                     const rowColors = [{}, {}, {}, {}];
-                    const cellRegex = /<w:tc[ >][\s\S]*?<\/w:tc>/gs;
-                    let cellMatch;
-                    let colIdx = 0;
-                    while ((cellMatch = cellRegex.exec(row.xml)) !== null) {
-                        const cellXml = cellMatch[0];
-                        const gridSpanMatch = cellXml.match(/w:gridSpan\s+w:val="(\d+)"/);
-                        const span = gridSpanMatch ? parseInt(gridSpanMatch[1]) : 1;
-                        if (colIdx < 4) {
-                            const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
-                            const cellText = textMatches.map(m => m[1]).join('').trim();
-                            const num = parseInt(cellText);
-                            if (!isNaN(num) && num >= 1 && num <= 62) {
-                                rowColors[colIdx] = { color: getDSItemColor(colPrefixes[colIdx], num), hasNumber: true };
-                            } else {
-                                rowColors[colIdx] = { color: null, hasNumber: false };
+                    let col840 = 0;
+                    let rPos = 0;
+                    while (rPos < row.xml.length) {
+                        const tcIdx = row.xml.indexOf('<w:tc>', rPos);
+                        if (tcIdx < 0) break;
+                        const tcEndIdx = row.xml.indexOf('</w:tc>', tcIdx);
+                        if (tcEndIdx < 0) break;
+                        const cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
+                        const widthMatch = cellXml.match(/w:tcW\s+w:w="(\d+)"/);
+                        const width = widthMatch ? parseInt(widthMatch[1]) : 0;
+                        if (width === gridCellWidthVal) {
+                            if (col840 < 4) {
+                                const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
+                                const cellText = textMatches.map(m => m[1]).join('').trim();
+                                const num = parseInt(cellText);
+                                if (!isNaN(num) && num >= 1 && num <= 62) {
+                                    rowColors[col840] = { color: getDSItemColor(domains[col840], num), hasNumber: true };
+                                } else {
+                                    rowColors[col840] = { color: null, hasNumber: false };
+                                }
                             }
+                            col840++;
                         }
-                        colIdx += span;
+                        rPos = tcEndIdx + 7;
                     }
                     dsColorMap.push(rowColors);
                 });
@@ -12504,38 +12513,53 @@ async function generateDSFromTemplate(isComplete) {
                     }
                 }
 
-                // Second pass: apply colors
-                let newTableParts = [tableXml.substring(0, dsRows.length > 0 ? dsRows[0].index : tableXml.length)];
-                dsRows.forEach((row, rowIdx) => {
-                    const cellRegex = /<w:tc[ >][\s\S]*?<\/w:tc>/gs;
-                    let cellMatch;
-                    let colIdx = 0;
-                    let newRowParts = [];
-                    let lastCellEnd = 0;
-                    while ((cellMatch = cellRegex.exec(row.xml)) !== null) {
-                        newRowParts.push(row.xml.substring(lastCellEnd, cellMatch.index));
-                        let cellXml = cellMatch[0];
-                        const gridSpanMatch = cellXml.match(/w:gridSpan\s+w:val="(\d+)"/);
-                        const span = gridSpanMatch ? parseInt(gridSpanMatch[1]) : 1;
-                        if (colIdx < 4 && dsColorMap[rowIdx][colIdx]?.color) {
-                            cellXml = dsApplyCellColor(cellXml, dsColorMap[rowIdx][colIdx].color);
-                        }
-                        newRowParts.push(cellXml);
-                        lastCellEnd = cellMatch.index + cellMatch[0].length;
-                        colIdx += span;
+                // Apply colors
+                function dsApplyCellColor(cellXml, color) {
+                    const shdXml = '<w:shd w:val="clear" w:color="auto" w:fill="' + color + '"/>';
+                    if (cellXml.includes('w:fill="')) {
+                        return cellXml.replace(/w:fill="[^"]+"/g, 'w:fill="' + color + '"');
+                    } else if (cellXml.includes('</w:tcPr>')) {
+                        return cellXml.replace('</w:tcPr>', shdXml + '</w:tcPr>');
+                    } else {
+                        return cellXml.replace(/(<w:tc>)/, '$1<w:tcPr>' + shdXml + '</w:tcPr>');
                     }
-                    newRowParts.push(row.xml.substring(lastCellEnd));
-                    newTableParts.push(newRowParts.join(''));
-                    if (rowIdx < dsRows.length - 1) {
-                        newTableParts.push(tableXml.substring(row.index + row.length, dsRows[rowIdx + 1].index));
+                }
+
+                let newDSTable = tableXml.substring(0, allDSRows.length > 0 ? allDSRows[0].start : tableXml.length);
+                allDSRows.forEach((row, rowIdx) => {
+                    let col840 = 0;
+                    let newRow = '';
+                    let rPos = 0;
+                    while (rPos < row.xml.length) {
+                        const tcIdx = row.xml.indexOf('<w:tc>', rPos);
+                        if (tcIdx < 0) { newRow += row.xml.substring(rPos); break; }
+                        newRow += row.xml.substring(rPos, tcIdx);
+                        const tcEndIdx = row.xml.indexOf('</w:tc>', tcIdx);
+                        if (tcEndIdx < 0) { newRow += row.xml.substring(tcIdx); break; }
+                        let cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
+                        const widthMatch = cellXml.match(/w:tcW\s+w:w="(\d+)"/);
+                        const width = widthMatch ? parseInt(widthMatch[1]) : 0;
+                        if (width === gridCellWidthVal && col840 < 4) {
+                            const color = dsColorMap[rowIdx][col840]?.color || 'FFFFFF';
+                            cellXml = dsApplyCellColor(cellXml, color);
+                            col840++;
+                        } else if (width === gridCellWidthVal) {
+                            col840++;
+                        }
+                        newRow += cellXml;
+                        rPos = tcEndIdx + 7;
+                    }
+                    newDSTable += newRow;
+                    if (rowIdx < allDSRows.length - 1) {
+                        newDSTable += tableXml.substring(row.end, allDSRows[rowIdx + 1].start);
                     }
                 });
-                if (dsRows.length > 0) {
-                    newTableParts.push(tableXml.substring(dsRows[dsRows.length - 1].index + dsRows[dsRows.length - 1].length));
+                if (allDSRows.length > 0) {
+                    newDSTable += tableXml.substring(allDSRows[allDSRows.length - 1].end);
                 }
-                tableXml = newTableParts.join('');
+                tableXml = newDSTable;
 
-                docXml = docXml.substring(0, tblStart) + tableXml + docXml.substring(tblEnd + 8);
+                docXml = docXml.substring(0, tblStart) + tableXml + docXml.substring(tblEnd);
             }
         }
     }
