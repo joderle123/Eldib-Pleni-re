@@ -6348,9 +6348,12 @@ function updateStats() {
         }
     }
     for (const [bereich, data] of Object.entries(stats)) {
-        document.getElementById(`stats-${bereich}-ziele`).textContent = data.ziele;
-        document.getElementById(`stats-${bereich}-erreicht`).textContent = `${data.erreicht}/${data.total} ${state.language === 'fr' ? 'atteint(s)' : 'erreicht'}`;
-        document.getElementById(`progress-${bereich}`).style.width = `${(data.erreicht / data.total) * 100}%`;
+        const zieleEl = document.getElementById(`stats-${bereich}-ziele`);
+        const erreichtEl = document.getElementById(`stats-${bereich}-erreicht`);
+        const progressEl = document.getElementById(`progress-${bereich}`);
+        if (zieleEl) zieleEl.textContent = data.ziele;
+        if (erreichtEl) erreichtEl.textContent = `${data.erreicht}/${data.total} ${state.language === 'fr' ? 'atteint(s)' : 'erreicht'}`;
+        if (progressEl) progressEl.style.width = `${(data.erreicht / data.total) * 100}%`;
     }
     updateZieleListe();
     updateErreichteListe();
@@ -6358,6 +6361,7 @@ function updateStats() {
 
 function updateZieleListe() {
     const container = document.getElementById('ziele-liste');
+    if (!container) return;
     container.innerHTML = '';
     const ziele = Object.entries(state.selections).filter(([code, sel]) => sel.status === 'ziel');
     if (ziele.length === 0) { container.innerHTML = '<p style="color: #888;">Noch keine Ziele ausgewählt.</p>'; return; }
@@ -6384,6 +6388,7 @@ function updateZieleListe() {
 
 function updateErreichteListe() {
     const container = document.getElementById('erreichte-liste');
+    if (!container) return;
     container.innerHTML = '';
     ['verhalten', 'kommunikation', 'sozialisation', 'kognition'].forEach(bereich => {
         const erreichte = Object.entries(state.selections)
@@ -8728,13 +8733,8 @@ function loadData(event) {
     reader.onload = function(e) {
         try {
             const data = JSON.parse(e.target.result);
-            state.selections = data.selections || {};
-            if (data.stammdaten) {
-                for (const [key, value] of Object.entries(data.stammdaten)) {
-                    const element = document.getElementById(key);
-                    if (element && value) element.value = value;
-                }
-            }
+            // Save loaded data to localStorage before reload so it persists
+            localStorage.setItem('eldib-data', JSON.stringify(data));
             location.reload();
         } catch (err) { alert('Fehler: ' + err.message); }
     };
@@ -26776,7 +26776,7 @@ async function generateComplement() {
     const nameParts = (stammdaten.schueler_name || '').split(' ');
     const nom = nameParts[0] || '';
     const prenom = nameParts.slice(1).join(' ') || '';
-    const vorname = prenom || nom || 'Der Schüler'; // Vorname für die Formulierungen
+    const vorname = prenom || nom || (isFR_C ? 'L\'élève' : 'Der Schüler'); // Vorname für die Formulierungen
 
     const cellBorders = { top: {style: BorderStyle.SINGLE, size: 1}, bottom: {style: BorderStyle.SINGLE, size: 1}, left: {style: BorderStyle.SINGLE, size: 1}, right: {style: BorderStyle.SINGLE, size: 1} };
     const noBorders = { top: {style: BorderStyle.NONE}, bottom: {style: BorderStyle.NONE}, left: {style: BorderStyle.NONE}, right: {style: BorderStyle.NONE} };
@@ -26802,7 +26802,7 @@ async function generateComplement() {
                 new TableCell({
                     children: [
                         new Paragraph({children: [new TextRun({text: domainName, bold: true, size: 22})]}),
-                        isEldib ? new Paragraph({children: [new TextRun({text: '(selon ELDiB)', italics: true, size: 18})]}) : new Paragraph('')
+                        isEldib ? new Paragraph({children: [new TextRun({text: isFR_C ? '(selon ELDiB)' : '(laut ELDiB)', italics: true, size: 18})]}) : new Paragraph('')
                     ],
                     borders: cellBorders,
                     width: {size: 35, type: WidthType.PERCENTAGE}
@@ -26880,7 +26880,7 @@ async function generateComplement() {
 
     // Section: Compétences transversales
     children.push(new Paragraph({
-        children: [new TextRun({ text: '☑ Compétences transversales', bold: true, size: 24 })],
+        children: [new TextRun({ text: isFR_C ? '☑ Compétences transversales' : '☑ Fachübergreifende Kompetenzen', bold: true, size: 24 })],
         spacing: { after: 100 }
     }));
 
@@ -26889,14 +26889,14 @@ async function generateComplement() {
         rows: [
             new TableRow({
                 children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Domaines de compétences à évaluer', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Evaluation commentée des performances et des progrès', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Domaines de compétences à évaluer' : 'Zu bewertende Kompetenzbereiche', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Evaluation commentée des performances et des progrès' : 'Kommentierte Bewertung der Leistungen und Fortschritte', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
                 ]
             }),
-            createDomainRow('Comportement', erreichte.verhalten, true),
-            createDomainRow('Communication', erreichte.kommunikation, true),
-            createDomainRow('Socialisation', erreichte.sozialisation, true),
-            createDomainRow('Cognition', erreichte.kognition, true)
+            createDomainRow(isFR_C ? 'Comportement' : 'Verhalten', erreichte.verhalten, true),
+            createDomainRow(isFR_C ? 'Communication' : 'Kommunikation', erreichte.kommunikation, true),
+            createDomainRow(isFR_C ? 'Socialisation' : 'Sozialisation', erreichte.sozialisation, true),
+            createDomainRow(isFR_C ? 'Cognition' : 'Kognition', erreichte.kognition, true)
         ],
         width: { size: 100, type: WidthType.PERCENTAGE }
     }));
@@ -27027,7 +27027,7 @@ async function generateComplement() {
 
     // Section: Autres domaines
     children.push(new Paragraph({
-        children: [new TextRun({ text: '☐ Autres domaines de compétences:', bold: true, size: 24 })],
+        children: [new TextRun({ text: isFR_C ? '☐ Autres domaines de compétences:' : '☐ Weitere Kompetenzbereiche:', bold: true, size: 24 })],
         spacing: { after: 100 }
     }));
 
@@ -27035,14 +27035,14 @@ async function generateComplement() {
         rows: [
             new TableRow({
                 children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Domaines de compétences à évaluer', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Evaluation commentée des performances et des progrès', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Domaines de compétences à évaluer' : 'Zu bewertende Kompetenzbereiche', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Evaluation commentée des performances et des progrès' : 'Kommentierte Bewertung der Leistungen und Fortschritte', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
                 ]
             }),
-            createZusatzRowComplement('Démarches mentales', 'demarches_mentales'),
-            createZusatzRowComplement('Manières d\'apprendre', 'manieres_apprendre'),
-            createZusatzRowComplement('Attitudes relationnelles', 'attitudes_relationnelles'),
-            createZusatzRowComplement('Attitudes affectives', 'attitudes_affectives')
+            createZusatzRowComplement(isFR_C ? 'Démarches mentales' : 'Denkweisen', 'demarches_mentales'),
+            createZusatzRowComplement(isFR_C ? 'Manières d\'apprendre' : 'Lernweisen', 'manieres_apprendre'),
+            createZusatzRowComplement(isFR_C ? 'Attitudes relationnelles' : 'Beziehungshaltungen', 'attitudes_relationnelles'),
+            createZusatzRowComplement(isFR_C ? 'Attitudes affectives' : 'Emotionale Haltungen', 'attitudes_affectives')
         ],
         width: { size: 100, type: WidthType.PERCENTAGE }
     }));
@@ -27051,7 +27051,7 @@ async function generateComplement() {
 
     // Section: Compétences essentielles
     children.push(new Paragraph({
-        children: [new TextRun({ text: '☐ Compétences essentielles à la vie autonome et la participation maximale', bold: true, size: 24 })],
+        children: [new TextRun({ text: isFR_C ? '☐ Compétences essentielles à la vie autonome et la participation maximale' : '☐ Wesentliche Kompetenzen für ein selbstständiges Leben und maximale Teilhabe', bold: true, size: 24 })],
         spacing: { after: 100 }
     }));
 
@@ -27059,12 +27059,12 @@ async function generateComplement() {
         rows: [
             new TableRow({
                 children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Domaines de compétences à évaluer', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Evaluation commentée des performances et des progrès', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Domaines de compétences à évaluer' : 'Zu bewertende Kompetenzbereiche', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Evaluation commentée des performances et des progrès' : 'Kommentierte Bewertung der Leistungen und Fortschritte', bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
                 ]
             }),
-            createZusatzRowComplement('Culture et loisirs', 'culture_loisirs'),
-            createZusatzRowComplement('Compétences essentielles', 'competences_essentielles')
+            createZusatzRowComplement(isFR_C ? 'Culture et loisirs' : 'Kultur und Freizeit', 'culture_loisirs'),
+            createZusatzRowComplement(isFR_C ? 'Compétences essentielles' : 'Wesentliche Kompetenzen', 'competences_essentielles')
         ],
         width: { size: 100, type: WidthType.PERCENTAGE }
     }));
