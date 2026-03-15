@@ -2915,9 +2915,6 @@
         </div>
         <div class="sm-actions">
             <button class="sm-btn sm-btn-primary" onclick="smNeuerSchueler()">+ Neuen Sch&uuml;ler anlegen</button>
-            <button class="sm-btn sm-btn-secondary" onclick="smImportJSON()">JSON importieren</button>
-            <button class="sm-btn sm-btn-secondary" onclick="smExportAlleJSON()">Alle exportieren</button>
-            <input type="file" id="smImportFile" style="display:none;" accept=".json" onchange="smHandleImport(event)">
         </div>
         <div class="sm-grid" id="sm-schueler-grid">
             <!-- Dynamisch gefüllt -->
@@ -5250,16 +5247,6 @@
                     Generiert den DS mit Platzhaltern. Das ELDiB-Raster und der Altersvergleich werden automatisch ausgefüllt. Der Fließtext muss manuell im Word-Dokument ergänzt werden.
                 </p>
                 <button class="btn" style="background: linear-gradient(135deg, #0097A7 0%, #00838F 100%); color: white;" onclick="exportDS()">DS herunterladen (Word)</button>
-            </div>
-
-            <div class="form-section">
-                <h3>Daten speichern/laden (Backup)</h3>
-                <p style="margin-bottom: 15px; color: #666;">
-                    Exportieren Sie diese Einschätzung als JSON-Datei (Backup) oder importieren Sie eine bestehende Datei.
-                </p>
-                <button class="btn btn-primary" onclick="saveData()">Diese Einschätzung exportieren</button>
-                <button class="btn btn-primary" onclick="document.getElementById('loadFile').click()">JSON-Datei laden</button>
-                <input type="file" id="loadFile" style="display: none;" accept=".json" onchange="loadData(event)">
             </div>
 
             <div class="form-section" style="border-color: #0097A7;">
@@ -13323,6 +13310,28 @@ function smOeffneEinschaetzung(id, nr) {
     if (daten) {
         // Bestehende Einschätzung laden
         localStorage.setItem('eldib-data', JSON.stringify(daten));
+    } else if (nr === 2 && schueler.einschaetzung1) {
+        // 2. Einschätzung: ELDiB-Daten aus 1. Einschätzung übernehmen
+        const basis = schueler.einschaetzung1;
+        const neueDaten = {
+            language: basis.language || 'de',
+            selections: JSON.parse(JSON.stringify(basis.selections || {})),
+            zusaetzlicheZiele: JSON.parse(JSON.stringify(basis.zusaetzlicheZiele || {
+                demarches_mentales: {},
+                manieres_apprendre: {},
+                attitudes_relationnelles: {},
+                attitudes_affectives: {},
+                competences_essentielles: {},
+                culture_loisirs: {}
+            })),
+            stammdaten: {
+                schueler_name: schueler.name,
+                geburtsdatum: schueler.geburtsdatum || '',
+                klasse: schueler.klasse
+            },
+            dsData: {}
+        };
+        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
     } else {
         // Neue Einschätzung: Stammdaten vorausfüllen
         const neueDaten = {
@@ -13602,6 +13611,28 @@ smOeffneEinschaetzung = function(id, nr) {
 
     if (daten) {
         localStorage.setItem('eldib-data', JSON.stringify(daten));
+    } else if (nr === 2 && schueler.einschaetzung1) {
+        // 2. Einschätzung: ELDiB-Daten aus 1. Einschätzung übernehmen
+        const basis = schueler.einschaetzung1;
+        const neueDaten = {
+            language: basis.language || 'de',
+            selections: JSON.parse(JSON.stringify(basis.selections || {})),
+            zusaetzlicheZiele: JSON.parse(JSON.stringify(basis.zusaetzlicheZiele || {
+                demarches_mentales: {},
+                manieres_apprendre: {},
+                attitudes_relationnelles: {},
+                attitudes_affectives: {},
+                competences_essentielles: {},
+                culture_loisirs: {}
+            })),
+            stammdaten: {
+                schueler_name: schueler.name,
+                geburtsdatum: schueler.geburtsdatum || '',
+                klasse: schueler.klasse
+            },
+            dsData: {}
+        };
+        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
     } else {
         const neueDaten = {
             language: 'de',
@@ -13616,6 +13647,7 @@ smOeffneEinschaetzung = function(id, nr) {
             },
             stammdaten: {
                 schueler_name: schueler.name,
+                geburtsdatum: schueler.geburtsdatum || '',
                 klasse: schueler.klasse
             },
             dsData: {}
