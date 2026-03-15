@@ -13076,6 +13076,7 @@ function dsGetDomainPrefix(domain) {
 // ==========================================
 
 const SM_KEY = 'eldib-schueler-liste';
+const SM_AKTIV_KEY = 'eldib-sm-aktiv';
 let smAktuellerSchueler = null; // { id, einschaetzungNr }
 
 function smGetListe() {
@@ -13085,7 +13086,12 @@ function smGetListe() {
 }
 
 function smSaveListe(liste) {
-    localStorage.setItem(SM_KEY, JSON.stringify(liste));
+    try {
+        localStorage.setItem(SM_KEY, JSON.stringify(liste));
+    } catch (e) {
+        console.error('Fehler beim Speichern der Schülerliste:', e);
+        alert('Fehler beim Speichern! Möglicherweise ist der Speicher voll. Bitte exportieren Sie Ihre Daten als JSON-Backup.');
+    }
 }
 
 function smGenerateId() {
@@ -13369,34 +13375,42 @@ function smExportAlleJSON() {
 // INIT: Beim Laden entscheiden ob Manager oder Editor anzeigen
 (function smInit() {
     // Prüfe ob wir gerade einen Schüler bearbeiten
-    const sessionData = sessionStorage.getItem('sm-aktiv');
-    if (sessionData) {
-        try {
-            smAktuellerSchueler = JSON.parse(sessionData);
-            // Editor anzeigen
-            document.getElementById('schueler-manager').style.display = 'none';
-            document.getElementById('main-container').style.display = '';
-            document.getElementById('backToManagerBtn').style.display = 'block';
+    const aktivData = localStorage.getItem(SM_AKTIV_KEY);
+    let showEditor = false;
 
-            // Info-Badge
+    if (aktivData) {
+        try {
+            const parsed = JSON.parse(aktivData);
             const liste = smGetListe();
-            const schueler = liste.find(s => s.id === smAktuellerSchueler.id);
+            const schueler = liste.find(s => s.id === parsed.id);
+
             if (schueler) {
+                // Schüler existiert - Editor anzeigen
+                smAktuellerSchueler = parsed;
+                showEditor = true;
+
+                document.getElementById('schueler-manager').style.display = 'none';
+                document.getElementById('main-container').style.display = '';
+                document.getElementById('backToManagerBtn').style.display = 'block';
+
                 const info = document.getElementById('smCurrentInfo');
                 info.textContent = `${schueler.name} — ${smAktuellerSchueler.einschaetzungNr}. Einschätzung`;
                 info.style.display = 'block';
+            } else {
+                // Schüler existiert nicht mehr - aufräumen
+                localStorage.removeItem(SM_AKTIV_KEY);
+                localStorage.removeItem('eldib-data');
             }
         } catch {
-            sessionStorage.removeItem('sm-aktiv');
-            smRenderListe();
+            localStorage.removeItem(SM_AKTIV_KEY);
         }
-    } else {
-        // Manager anzeigen
-        smRenderListe();
     }
 
-    // Migriere alte Daten: Wenn eldib-data existiert aber kein sm-aktiv, erstelle Schüler
-    if (!sessionData) {
+    if (!showEditor) {
+        // Manager anzeigen
+        smRenderListe();
+
+        // Migriere alte Daten: Wenn eldib-data existiert aber kein aktiver Schüler
         const alteDaten = localStorage.getItem('eldib-data');
         if (alteDaten) {
             try {
@@ -13417,18 +13431,20 @@ function smExportAlleJSON() {
                     }
                 }
             } catch {}
+            // Alte eldib-data aufräumen wenn wir im Manager-Modus sind
+            localStorage.removeItem('eldib-data');
         }
     }
 })();
 
-// Überschreibe smOeffneEinschaetzung, um sessionStorage zu nutzen (statt reload-Trick)
+// Überschreibe smOeffneEinschaetzung mit localStorage-Persistenz
 smOeffneEinschaetzung = function(id, nr) {
     const liste = smGetListe();
     const schueler = liste.find(s => s.id === id);
     if (!schueler) return;
 
     smAktuellerSchueler = { id, einschaetzungNr: nr };
-    sessionStorage.setItem('sm-aktiv', JSON.stringify(smAktuellerSchueler));
+    localStorage.setItem(SM_AKTIV_KEY, JSON.stringify(smAktuellerSchueler));
 
     // Daten der gewählten Einschätzung laden
     const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
@@ -13460,18 +13476,32 @@ smOeffneEinschaetzung = function(id, nr) {
     location.reload();
 };
 
-// Überschreibe smZurueckZurListe mit sessionStorage
+// Überschreibe smZurueckZurListe mit localStorage-Persistenz
 smZurueckZurListe = function() {
     smSaveAktuelleEinschaetzung();
     smAktuellerSchueler = null;
-    sessionStorage.removeItem('sm-aktiv');
+    localStorage.removeItem(SM_AKTIV_KEY);
     localStorage.removeItem('eldib-data');
     location.reload();
 };
 
-// Auch beim Seitenverlassen speichern
+// Beim Seitenverlassen speichern
 window.addEventListener('beforeunload', function() {
     if (smAktuellerSchueler) {
+        smSaveAktuelleEinschaetzung();
+    }
+});
+
+// Periodisches Auto-Save alle 30 Sekunden (Sicherheitsnetz)
+setInterval(function() {
+    if (smAktuellerSchueler) {
+        smSaveAktuelleEinschaetzung();
+    }
+}, 30000);
+
+// Zusätzlich: Speichern wenn Tab/Fenster den Fokus verliert
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden' && smAktuellerSchueler) {
         smSaveAktuelleEinschaetzung();
     }
 });
