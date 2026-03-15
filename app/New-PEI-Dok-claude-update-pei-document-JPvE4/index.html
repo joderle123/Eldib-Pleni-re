@@ -10733,9 +10733,46 @@ async function generatePEI() {
     // --- 2. Gather all data ---
     const stammdaten = getStammdaten();
     const eldibData = getCurrentEldibData();
+
+    // --- 2a. Check for dual assessment (Schüler-Manager) ---
+    let einschaetzung1 = null;
+    let einschaetzung2 = null;
+    let hatZweiEinschaetzungen = false;
+
+    if (smAktuellerSchueler) {
+        const liste = smGetListe();
+        const schueler = liste.find(s => s.id === smAktuellerSchueler.id);
+        if (schueler && schueler.einschaetzung1 && schueler.einschaetzung2) {
+            hatZweiEinschaetzungen = true;
+            einschaetzung1 = schueler.einschaetzung1;
+            einschaetzung2 = schueler.einschaetzung2;
+        }
+    }
+
+    // Helper: get item color from a saved selections object
+    function getItemColorFromSelections(selections, prefix, nr) {
+        const code = `${prefix}-${nr}`;
+        const sel = selections?.[code];
+        if (sel?.status === 'erreicht') return '90EE90';
+        if (sel?.status === 'ziel') return 'FFFF00';
+        return 'FFFFFF';
+    }
+
+    // Helper: extract Zusatz data from saved assessment
+    function getZusatzFromSaved(zusaetzlicheZiele, category, stufe) {
+        const goals = zusaetzlicheZiele?.[category] || {};
+        const data = getCurrentZusaetzlicheZiele();
+        return Object.entries(goals)
+            .filter(([id, status]) => status === stufe)
+            .map(([id]) => data[category]?.find(g => g.id === id))
+            .filter(Boolean);
+    }
+
+    // Use 2nd assessment goals for Zielerfassung (or current if no dual)
+    const zieleSelections = hatZweiEinschaetzungen ? einschaetzung2.selections : state.selections;
     const ziele = { verhalten: [], kommunikation: [], sozialisation: [], kognition: [] };
 
-    for (const [code, selection] of Object.entries(state.selections)) {
+    for (const [code, selection] of Object.entries(zieleSelections)) {
         const bereich = findBereichByCode(code);
         const item = findItemByCode(code);
         if (bereich && item && selection.status === 'ziel') {
@@ -11045,6 +11082,10 @@ async function generatePEI() {
                 let tableXml = docXml.substring(tblStart, tblEnd);
                 const domains = ['V', 'K', 'SOZ', 'KOG'];
 
+                // Determine which selections to use for left (1st) and right (2nd) grids
+                const leftSelections = hatZweiEinschaetzungen ? einschaetzung1.selections : state.selections;
+                const rightSelections = hatZweiEinschaetzungen ? einschaetzung2.selections : null;
+
                 // Remove cell spacing from table to eliminate white gaps between colored cells
                 if (tableXml.includes('<w:tblCellSpacing')) {
                     tableXml = tableXml.replace(/<w:tblCellSpacing[^/]*\/>/g, '<w:tblCellSpacing w:w="0" w:type="dxa"/>');
@@ -11053,7 +11094,7 @@ async function generatePEI() {
                 }
 
                 // Two-pass approach: first collect all rows and cells, then color with gap filling
-                // Parse all rows and their 595-width cells
+                // Parse all rows
                 const allRows = [];
                 let tPos = 0;
                 while (tPos < tableXml.length) {
@@ -11066,12 +11107,14 @@ async function generatePEI() {
                     tPos = trEndFull;
                 }
 
-                // First pass: build a color map per column per row
-                // Grid rows go top-to-bottom in XML, but items go from high numbers (top) to 1 (bottom)
-                const colorMap = []; // colorMap[rowIdx][colIdx] = { color, hasNumber }
+                // First pass: build color maps for BOTH left (595) and right (638) grids
+                const colorMapLeft = [];  // colorMapLeft[rowIdx][colIdx] = { color, hasNumber }
+                const colorMapRight = []; // colorMapRight[rowIdx][colIdx] = { color, hasNumber }
                 allRows.forEach((row, rowIdx) => {
-                    const rowColors = [{}, {}, {}, {}];
+                    const rowColorsLeft = [{}, {}, {}, {}];
+                    const rowColorsRight = [{}, {}, {}, {}];
                     let col595 = 0;
+                    let col638 = 0;
                     let rPos = 0;
                     while (rPos < row.xml.length) {
                         const tcIdx = row.xml.indexOf('<w:tc>', rPos);
@@ -11081,35 +11124,57 @@ async function generatePEI() {
                         const cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
                         const widthMatch = cellXml.match(/w:tcW w:w="(\d+)"/);
                         const width = widthMatch ? parseInt(widthMatch[1]) : 0;
+
+                        // Left grid: width 595
                         if (width === 595) {
                             if (col595 < 4) {
                                 const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
                                 const cellText = textMatches.map(m => m[1]).join('').trim();
-                                // Extract number - also handles header cells like "KOMM35" or "KOG62"
                                 const numMatch = cellText.match(/(\d+)$/);
                                 const num = numMatch ? parseInt(numMatch[1]) : NaN;
                                 if (!isNaN(num) && num >= 1 && num <= 62) {
-                                    rowColors[col595] = { color: getItemColor(domains[col595], num), hasNumber: true };
+                                    rowColorsLeft[col595] = { color: getItemColorFromSelections(leftSelections, domains[col595], num), hasNumber: true };
                                 } else {
-                                    rowColors[col595] = { color: null, hasNumber: false };
+                                    rowColorsLeft[col595] = { color: null, hasNumber: false };
                                 }
                             }
                             col595++;
                         }
+                        // Right grid: width 638
+                        if (width === 638 && rightSelections) {
+                            if (col638 < 4) {
+                                const textMatches = [...cellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
+                                const cellText = textMatches.map(m => m[1]).join('').trim();
+                                const numMatch = cellText.match(/(\d+)$/);
+                                const num = numMatch ? parseInt(numMatch[1]) : NaN;
+                                if (!isNaN(num) && num >= 1 && num <= 62) {
+                                    rowColorsRight[col638] = { color: getItemColorFromSelections(rightSelections, domains[col638], num), hasNumber: true };
+                                } else {
+                                    rowColorsRight[col638] = { color: null, hasNumber: false };
+                                }
+                            }
+                            col638++;
+                        }
                         rPos = tcEndIdx + 7;
                     }
-                    colorMap.push(rowColors);
+                    colorMapLeft.push(rowColorsLeft);
+                    colorMapRight.push(rowColorsRight);
                 });
 
-                // Second pass: fill gaps - for empty cells, use color of nearest numbered cell below (higher row index)
+                // Second pass: fill gaps for both grids
                 for (let col = 0; col < 4; col++) {
-                    let currentColor = 'FFFFFF';
-                    // Go bottom-to-top (from last row to first) to propagate color upward
-                    for (let r = colorMap.length - 1; r >= 0; r--) {
-                        if (colorMap[r][col]?.hasNumber) {
-                            currentColor = colorMap[r][col].color;
-                        } else if (colorMap[r][col] && !colorMap[r][col].hasNumber) {
-                            colorMap[r][col].color = currentColor;
+                    let currentColorLeft = 'FFFFFF';
+                    let currentColorRight = 'FFFFFF';
+                    for (let r = colorMapLeft.length - 1; r >= 0; r--) {
+                        if (colorMapLeft[r][col]?.hasNumber) {
+                            currentColorLeft = colorMapLeft[r][col].color;
+                        } else if (colorMapLeft[r][col] && !colorMapLeft[r][col].hasNumber) {
+                            colorMapLeft[r][col].color = currentColorLeft;
+                        }
+                        if (colorMapRight[r][col]?.hasNumber) {
+                            currentColorRight = colorMapRight[r][col].color;
+                        } else if (colorMapRight[r][col] && !colorMapRight[r][col].hasNumber) {
+                            colorMapRight[r][col].color = currentColorRight;
                         }
                     }
                 }
@@ -11134,6 +11199,7 @@ async function generatePEI() {
                 let newTable = tableXml.substring(0, allRows.length > 0 ? allRows[0].start : tableXml.length);
                 allRows.forEach((row, rowIdx) => {
                     let col595 = 0;
+                    let col638 = 0;
                     let newRow = '';
                     let rPos = 0;
                     while (rPos < row.xml.length) {
@@ -11145,12 +11211,21 @@ async function generatePEI() {
                         let cellXml = row.xml.substring(tcIdx, tcEndIdx + 7);
                         const widthMatch = cellXml.match(/w:tcW w:w="(\d+)"/);
                         const width = widthMatch ? parseInt(widthMatch[1]) : 0;
+                        // Left grid coloring (width 595)
                         if (width === 595 && col595 < 4) {
-                            const color = colorMap[rowIdx][col595]?.color || 'FFFFFF';
+                            const color = colorMapLeft[rowIdx][col595]?.color || 'FFFFFF';
                             cellXml = applyCellColor(cellXml, color);
                             col595++;
                         } else if (width === 595) {
                             col595++;
+                        }
+                        // Right grid coloring (width 638)
+                        if (width === 638 && rightSelections && col638 < 4) {
+                            const color = colorMapRight[rowIdx][col638]?.color || 'FFFFFF';
+                            cellXml = applyCellColor(cellXml, color);
+                            col638++;
+                        } else if (width === 638) {
+                            col638++;
                         }
                         newRow += cellXml;
                         rPos = tcEndIdx + 7;
@@ -11170,15 +11245,38 @@ async function generatePEI() {
     }
 
     // --- 8. Fill Datum fields in ELDiB grid ---
-    if (stammdaten.einschaetzungsdatum) {
-        // First "Datum:" in the grid (first grid)
+    {
         const datumMarker = '>Datum:<';
-        const datumPos = docXml.indexOf(datumMarker);
-        if (datumPos >= 0) {
-            const pEnd = docXml.indexOf('</w:p>', datumPos);
-            if (pEnd >= 0) {
-                const dateRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/><w:sz w:val="14"/><w:szCs w:val="14"/></w:rPr><w:t xml:space="preserve"> ' + escapeXml(stammdaten.einschaetzungsdatum) + '</w:t></w:r>';
-                docXml = docXml.substring(0, pEnd) + dateRun + docXml.substring(pEnd);
+        // Left grid Datum (1st assessment or current)
+        const leftDatum = hatZweiEinschaetzungen
+            ? einschaetzung1.stammdaten?.einschaetzungsdatum
+            : stammdaten.einschaetzungsdatum;
+        if (leftDatum) {
+            const datumPos = docXml.indexOf(datumMarker);
+            if (datumPos >= 0) {
+                const pEnd = docXml.indexOf('</w:p>', datumPos);
+                if (pEnd >= 0) {
+                    const dateRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/><w:sz w:val="14"/><w:szCs w:val="14"/></w:rPr><w:t xml:space="preserve"> ' + escapeXml(leftDatum) + '</w:t></w:r>';
+                    docXml = docXml.substring(0, pEnd) + dateRun + docXml.substring(pEnd);
+                }
+            }
+        }
+        // Right grid Datum (2nd assessment)
+        if (hatZweiEinschaetzungen) {
+            const rightDatum = einschaetzung2.stammdaten?.einschaetzungsdatum;
+            if (rightDatum) {
+                // Find the second "Datum:" occurrence (right grid) - search after the first
+                const firstPos = docXml.indexOf(datumMarker);
+                if (firstPos >= 0) {
+                    const secondPos = docXml.indexOf(datumMarker, firstPos + datumMarker.length);
+                    if (secondPos >= 0) {
+                        const pEnd = docXml.indexOf('</w:p>', secondPos);
+                        if (pEnd >= 0) {
+                            const dateRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/><w:sz w:val="14"/><w:szCs w:val="14"/></w:rPr><w:t xml:space="preserve"> ' + escapeXml(rightDatum) + '</w:t></w:r>';
+                            docXml = docXml.substring(0, pEnd) + dateRun + docXml.substring(pEnd);
+                        }
+                    }
+                }
             }
         }
     }
@@ -11187,14 +11285,17 @@ async function generatePEI() {
     // Fill "Datum:" in the Zielerfassung section
     {
         const zielDatumMarker = '>Datum:<';
-        // Find the Datum in the Zielerfassung section (after "Zielerfassung")
+        // Use 2nd assessment date when available, otherwise current
+        const zielDatum = hatZweiEinschaetzungen
+            ? einschaetzung2.stammdaten?.einschaetzungsdatum
+            : stammdaten.einschaetzungsdatum;
         const zielerfassungPos = docXml.indexOf('Zielerfassung');
-        if (zielerfassungPos >= 0 && stammdaten.einschaetzungsdatum) {
+        if (zielerfassungPos >= 0 && zielDatum) {
             const datumPos = docXml.indexOf(zielDatumMarker, zielerfassungPos);
             if (datumPos >= 0) {
                 const pEnd = docXml.indexOf('</w:p>', datumPos);
                 if (pEnd >= 0) {
-                    const dateRun = '<w:r><w:t xml:space="preserve"> ' + escapeXml(stammdaten.einschaetzungsdatum) + '</w:t></w:r>';
+                    const dateRun = '<w:r><w:t xml:space="preserve"> ' + escapeXml(zielDatum) + '</w:t></w:r>';
                     docXml = docXml.substring(0, pEnd) + dateRun + docXml.substring(pEnd);
                 }
             }
@@ -11279,23 +11380,17 @@ async function generatePEI() {
     docXml = replaceDomainCell(docXml, andereLabel, makePara(''));
 
     // --- 10. Fill Bericht section ---
-    // Fortschritte = zusätzliche Ziele erreicht (stufe3) + teilweise (stufe2) - bullet points, no titles
-    // Anzugehende Themen = zusätzliche Ziele mit Ziel-Status (stufe1) - bullet points, no titles
+    // When dual assessments exist:
+    //   Fortschritte table = 1st assessment data (zusätzliche Ziele stufe3 + stufe2)
+    //   Anzugehende Themen table = 2nd assessment data (zusätzliche Ziele stufe1)
+    // When single assessment:
+    //   Fortschritte = current stufe3 + stufe2
+    //   Anzugehende Themen = current stufe1
     {
         const categories = [
             'demarches_mentales', 'manieres_apprendre', 'attitudes_relationnelles',
             'attitudes_affectives', 'competences_essentielles', 'culture_loisirs'
         ];
-        let fortschritte = [];
-        let themen = [];
-        for (const cat of categories) {
-            const erreicht = getZusatzErreicht(cat);
-            const teilweise = getZusatzTeilweise(cat);
-            const ziel = getZusatzZiele(cat);
-            for (const g of erreicht) fortschritte.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
-            for (const g of teilweise) fortschritte.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
-            for (const g of ziel) themen.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
-        }
 
         // Fill CDSE row in Bericht table
         function fillBerichtRow(xml, tableLabel, rowLabel, items) {
@@ -11314,7 +11409,6 @@ async function generatePEI() {
             const secondTcEnd = rowContent.indexOf('</w:tc>', secondTcStart);
             if (secondTcEnd < 0) return xml;
             const contentCell = rowContent.substring(secondTcStart, secondTcEnd + 7);
-            // Build bullet point content
             let paras = '';
             for (const item of items) {
                 paras += makeBulletPara(makeRun(item));
@@ -11329,6 +11423,36 @@ async function generatePEI() {
             }
             const newRow = rowContent.substring(0, secondTcStart) + newCell + rowContent.substring(secondTcEnd + 7);
             return xml.substring(0, trStart) + newRow + xml.substring(trEnd + 7);
+        }
+
+        let fortschritte = [];
+        let themen = [];
+
+        if (hatZweiEinschaetzungen) {
+            // Fortschritte = 1st assessment (stufe3 + stufe2)
+            const zusatz1 = einschaetzung1.zusaetzlicheZiele || {};
+            for (const cat of categories) {
+                const erreicht1 = getZusatzFromSaved(zusatz1, cat, 'stufe3');
+                const teilweise1 = getZusatzFromSaved(zusatz1, cat, 'stufe2');
+                for (const g of erreicht1) fortschritte.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
+                for (const g of teilweise1) fortschritte.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
+            }
+            // Anzugehende Themen = 2nd assessment (stufe1)
+            const zusatz2 = einschaetzung2.zusaetzlicheZiele || {};
+            for (const cat of categories) {
+                const ziel2 = getZusatzFromSaved(zusatz2, cat, 'stufe1');
+                for (const g of ziel2) themen.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
+            }
+        } else {
+            // Single assessment: use current state
+            for (const cat of categories) {
+                const erreicht = getZusatzErreicht(cat);
+                const teilweise = getZusatzTeilweise(cat);
+                const ziel = getZusatzZiele(cat);
+                for (const g of erreicht) fortschritte.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
+                for (const g of teilweise) fortschritte.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
+                for (const g of ziel) themen.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
+            }
         }
 
         if (fortschritte.length > 0) {
