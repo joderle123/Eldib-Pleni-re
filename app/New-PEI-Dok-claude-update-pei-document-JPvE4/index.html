@@ -2841,6 +2841,32 @@
             justify-content: flex-end;
         }
         /* Back to manager button in main app */
+        .save-btn-fixed {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 9999;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        .save-btn-fixed:hover {
+            background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
+            box-shadow: 0 6px 25px rgba(76, 175, 80, 0.6);
+            transform: translateY(-1px);
+        }
+        .save-btn-fixed.saved {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+        }
         .back-to-manager-btn {
             position: fixed;
             top: 16px;
@@ -2900,6 +2926,7 @@
 
     <!-- Zurück-Button im Editor -->
     <button class="back-to-manager-btn" id="backToManagerBtn" onclick="smZurueckZurListe()">&larr; Zur&uuml;ck zur &Uuml;bersicht</button>
+    <button class="save-btn-fixed" id="saveBtn" onclick="smManualSave()">&#128190; Speichern</button>
     <div class="sm-current-info" id="smCurrentInfo"></div>
 
     <div class="container" id="main-container" style="display:none;">
@@ -3008,33 +3035,11 @@
                 </div>
             </div>
 
-            <div class="form-section">
-                <h3>Einschätzende Person(en)</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="einschaetzende">Name und Funktion</label>
-                        <textarea id="einschaetzende" rows="3" placeholder="Namen und Funktionen der einschätzenden Personen"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>Kontaktdaten Erziehungsberechtigte</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="eltern1_name">Erziehungsberechtigte/r 1 - Name</label>
-                        <input type="text" id="eltern1_name" placeholder="Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="eltern1_tel">Telefon</label>
-                        <input type="tel" id="eltern1_tel" placeholder="Telefonnummer">
-                    </div>
-                    <div class="form-group">
-                        <label for="eltern1_email">E-Mail</label>
-                        <input type="email" id="eltern1_email" placeholder="E-Mail">
-                    </div>
-                </div>
-            </div>
+            <!-- Einschätzende Person und Erziehungsberechtigte entfernt -->
+            <input type="hidden" id="einschaetzende" value="">
+            <input type="hidden" id="eltern1_name" value="">
+            <input type="hidden" id="eltern1_tel" value="">
+            <input type="hidden" id="eltern1_email" value="">
 
             <div class="button-group">
                 <button class="btn btn-primary" onclick="showMainSection('eldib')">Weiter zu ELDiB Bewertung &rarr;</button>
@@ -13192,7 +13197,7 @@ function smRenderListe() {
             <div class="sm-card-header">
                 <div>
                     <div class="sm-card-name">${smEscapeHtml(s.name)}</div>
-                    <div class="sm-card-klasse">${s.klasse ? 'Klasse ' + smEscapeHtml(s.klasse) : ''}</div>
+                    <div class="sm-card-klasse">${s.klasse ? 'Klasse ' + smEscapeHtml(s.klasse) : ''}${s.geburtsdatum ? (s.klasse ? ' · ' : '') + smBerechneAlter(s.geburtsdatum) + ' Jahre' : ''}</div>
                 </div>
                 <button class="sm-card-delete" onclick="smLoescheSchueler('${s.id}')" title="Sch&uuml;ler l&ouml;schen">&times;</button>
             </div>
@@ -13216,6 +13221,16 @@ function smEscapeHtml(str) {
     return div.innerHTML;
 }
 
+function smBerechneAlter(geburtsdatumStr) {
+    if (!geburtsdatumStr) return '';
+    const geb = new Date(geburtsdatumStr);
+    const heute = new Date();
+    let alter = heute.getFullYear() - geb.getFullYear();
+    const monatsDiff = heute.getMonth() - geb.getMonth();
+    if (monatsDiff < 0 || (monatsDiff === 0 && heute.getDate() < geb.getDate())) alter--;
+    return alter;
+}
+
 function smNeuerSchueler() {
     const overlay = document.createElement('div');
     overlay.className = 'sm-dialog-overlay';
@@ -13224,31 +13239,60 @@ function smNeuerSchueler() {
     overlay.innerHTML = `
         <div class="sm-dialog">
             <h3>Neuen Sch&uuml;ler anlegen</h3>
-            <label>Name (Nachname, Vorname)</label>
-            <input type="text" id="sm-new-name" placeholder="Nachname, Vorname" autofocus>
+            <label>Nachname <span style="color:#ff6b6b;">*</span></label>
+            <input type="text" id="sm-new-nachname" placeholder="Nachname" autofocus>
+            <label>Vorname <span style="color:#ff6b6b;">*</span></label>
+            <input type="text" id="sm-new-vorname" placeholder="Vorname">
+            <label>Geburtsdatum <span style="color:#ff6b6b;">*</span></label>
+            <input type="date" id="sm-new-geburtsdatum">
+            <div id="sm-new-alter" style="margin: -8px 0 8px 0; font-size: 0.85rem; color: rgba(255,255,255,0.6);"></div>
             <label>Klasse/Cycle</label>
             <input type="text" id="sm-new-klasse" placeholder="z.B. C2.1">
+            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin: 4px 0 0 0;"><span style="color:#ff6b6b;">*</span> Pflichtfelder</p>
             <div class="sm-dialog-actions">
                 <button class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">Abbrechen</button>
                 <button class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">Anlegen</button>
             </div>
         </div>`;
     document.body.appendChild(overlay);
-    setTimeout(() => document.getElementById('sm-new-name')?.focus(), 100);
+    setTimeout(() => document.getElementById('sm-new-nachname')?.focus(), 100);
+
+    // Alter berechnen bei Geburtsdatum-Eingabe
+    document.getElementById('sm-new-geburtsdatum')?.addEventListener('change', function() {
+        const alterDiv = document.getElementById('sm-new-alter');
+        if (!this.value || !alterDiv) return;
+        const geb = new Date(this.value);
+        const heute = new Date();
+        let alter = heute.getFullYear() - geb.getFullYear();
+        const monatsDiff = heute.getMonth() - geb.getMonth();
+        if (monatsDiff < 0 || (monatsDiff === 0 && heute.getDate() < geb.getDate())) alter--;
+        alterDiv.textContent = alter >= 0 ? `Alter: ${alter} Jahre` : '';
+    });
 }
 
 function smSchuelerAnlegen() {
-    const name = document.getElementById('sm-new-name')?.value?.trim();
+    const nachname = document.getElementById('sm-new-nachname')?.value?.trim();
+    const vorname = document.getElementById('sm-new-vorname')?.value?.trim();
+    const geburtsdatum = document.getElementById('sm-new-geburtsdatum')?.value;
     const klasse = document.getElementById('sm-new-klasse')?.value?.trim();
-    if (!name) {
-        alert('Bitte einen Namen eingeben.');
+
+    const fehlende = [];
+    if (!nachname) fehlende.push('Nachname');
+    if (!vorname) fehlende.push('Vorname');
+    if (!geburtsdatum) fehlende.push('Geburtsdatum');
+
+    if (fehlende.length > 0) {
+        alert('Bitte folgende Pflichtfelder ausfüllen:\n- ' + fehlende.join('\n- '));
         return;
     }
+
+    const name = nachname + ', ' + vorname;
     const liste = smGetListe();
     liste.push({
         id: smGenerateId(),
         name: name,
         klasse: klasse || '',
+        geburtsdatum: geburtsdatum,
         einschaetzung1: null,
         einschaetzung2: null
     });
@@ -13294,6 +13338,7 @@ function smOeffneEinschaetzung(id, nr) {
             },
             stammdaten: {
                 schueler_name: schueler.name,
+                geburtsdatum: schueler.geburtsdatum || '',
                 klasse: schueler.klasse
             },
             dsData: {}
@@ -13305,6 +13350,7 @@ function smOeffneEinschaetzung(id, nr) {
     document.getElementById('schueler-manager').style.display = 'none';
     document.getElementById('main-container').style.display = '';
     document.getElementById('backToManagerBtn').style.display = 'block';
+    document.getElementById('saveBtn').style.display = 'block';
 
     // Info-Badge anzeigen
     const info = document.getElementById('smCurrentInfo');
@@ -13354,15 +13400,32 @@ function smSaveAktuelleEinschaetzung() {
         liste[idx].einschaetzung2 = data;
     }
 
-    // Name und Klasse synchronisieren
+    // Name, Klasse und Geburtsdatum synchronisieren
     if (data.stammdaten.schueler_name) {
         liste[idx].name = data.stammdaten.schueler_name;
     }
     if (data.stammdaten.klasse) {
         liste[idx].klasse = data.stammdaten.klasse;
     }
+    if (data.stammdaten.geburtsdatum) {
+        liste[idx].geburtsdatum = data.stammdaten.geburtsdatum;
+    }
 
     smSaveListe(liste);
+}
+
+function smManualSave() {
+    saveToLocalStorage();
+    const btn = document.getElementById('saveBtn');
+    if (btn) {
+        const origText = btn.innerHTML;
+        btn.innerHTML = '&#10003; Gespeichert!';
+        btn.classList.add('saved');
+        setTimeout(() => {
+            btn.innerHTML = origText;
+            btn.classList.remove('saved');
+        }, 2000);
+    }
 }
 
 // Auto-Save in Schüler-Liste (überschreibt bestehende saveToLocalStorage)
@@ -13459,6 +13522,7 @@ function smExportAlleJSON() {
                 document.getElementById('schueler-manager').style.display = 'none';
                 document.getElementById('main-container').style.display = '';
                 document.getElementById('backToManagerBtn').style.display = 'block';
+                document.getElementById('saveBtn').style.display = 'block';
 
                 const info = document.getElementById('smCurrentInfo');
                 info.textContent = `${schueler.name} — ${smAktuellerSchueler.einschaetzungNr}. Einschätzung`;
