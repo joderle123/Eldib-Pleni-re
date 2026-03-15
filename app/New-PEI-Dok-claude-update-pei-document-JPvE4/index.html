@@ -11392,8 +11392,8 @@ async function generatePEI() {
             'attitudes_affectives', 'competences_essentielles', 'culture_loisirs'
         ];
 
-        // Fill CDSE row in Bericht table
-        function fillBerichtRow(xml, tableLabel, rowLabel, items) {
+        // Fill a specific cell (cellIndex: 1=left/2nd cell, 2=right/3rd cell) in a Bericht row
+        function fillBerichtCell(xml, tableLabel, rowLabel, items, cellIndex) {
             const tableLabelPos = xml.indexOf(tableLabel);
             if (tableLabelPos < 0) return xml;
             const rowPos = xml.indexOf('>' + rowLabel + '<', tableLabelPos);
@@ -11402,49 +11402,111 @@ async function generatePEI() {
             const trEnd = xml.indexOf('</w:tr>', rowPos);
             if (trStart < 0 || trEnd < 0) return xml;
             const rowContent = xml.substring(trStart, trEnd + 7);
-            const firstTcEnd = rowContent.indexOf('</w:tc>');
-            if (firstTcEnd < 0) return xml;
-            const secondTcStart = rowContent.indexOf('<w:tc>', firstTcEnd);
-            if (secondTcStart < 0) return xml;
-            const secondTcEnd = rowContent.indexOf('</w:tc>', secondTcStart);
-            if (secondTcEnd < 0) return xml;
-            const contentCell = rowContent.substring(secondTcStart, secondTcEnd + 7);
+
+            // Find all cells in this row
+            const cellPositions = [];
+            let searchPos = 0;
+            while (true) {
+                const tcStart = rowContent.indexOf('<w:tc>', searchPos);
+                if (tcStart < 0) break;
+                const tcEnd = rowContent.indexOf('</w:tc>', tcStart);
+                if (tcEnd < 0) break;
+                cellPositions.push({ start: tcStart, end: tcEnd + 7 });
+                searchPos = tcEnd + 7;
+            }
+
+            // cellIndex 1 = 2nd cell (left), cellIndex 2 = 3rd cell (right)
+            const targetIdx = cellIndex; // 0-based: cell 0=label, 1=left, 2=right
+            if (targetIdx >= cellPositions.length) return xml;
+
+            const targetCell = rowContent.substring(cellPositions[targetIdx].start, cellPositions[targetIdx].end);
             let paras = '';
             for (const item of items) {
                 paras += makeBulletPara(makeRun(item));
             }
             if (!paras) paras = makePara('');
-            const tcPrEnd = contentCell.indexOf('</w:tcPr>');
+            const tcPrEnd = targetCell.indexOf('</w:tcPr>');
             let newCell;
             if (tcPrEnd >= 0) {
-                newCell = contentCell.substring(0, tcPrEnd + 9) + paras + '</w:tc>';
+                newCell = targetCell.substring(0, tcPrEnd + 9) + paras + '</w:tc>';
             } else {
                 newCell = '<w:tc>' + paras + '</w:tc>';
             }
-            const newRow = rowContent.substring(0, secondTcStart) + newCell + rowContent.substring(secondTcEnd + 7);
+            const newRow = rowContent.substring(0, cellPositions[targetIdx].start) + newCell + rowContent.substring(cellPositions[targetIdx].end);
             return xml.substring(0, trStart) + newRow + xml.substring(trEnd + 7);
         }
 
-        let fortschritte = [];
-        let themen = [];
+        // Legacy wrapper: fill left cell (2nd cell, index 1)
+        function fillBerichtRow(xml, tableLabel, rowLabel, items) {
+            return fillBerichtCell(xml, tableLabel, rowLabel, items, 1);
+        }
 
         if (hatZweiEinschaetzungen) {
-            // Fortschritte = 1st assessment (stufe3 + stufe2)
+            // === DUAL ASSESSMENT: Fill both left and right columns ===
             const zusatz1 = einschaetzung1.zusaetzlicheZiele || {};
+            const zusatz2 = einschaetzung2.zusaetzlicheZiele || {};
+
+            // --- Fortschritte-Tabelle (within the big ELDiB grid table) ---
+            let fortschritte1 = []; // 1st assessment → left column
+            let fortschritte2 = []; // 2nd assessment → right column
+            let themen1 = [];       // 1st assessment → left column
+            let themen2 = [];       // 2nd assessment → right column
+
             for (const cat of categories) {
+                // 1st assessment data
                 const erreicht1 = getZusatzFromSaved(zusatz1, cat, 'stufe3');
                 const teilweise1 = getZusatzFromSaved(zusatz1, cat, 'stufe2');
-                for (const g of erreicht1) fortschritte.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
-                for (const g of teilweise1) fortschritte.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
-            }
-            // Anzugehende Themen = 2nd assessment (stufe1)
-            const zusatz2 = einschaetzung2.zusaetzlicheZiele || {};
-            for (const cat of categories) {
+                const ziel1 = getZusatzFromSaved(zusatz1, cat, 'stufe1');
+                for (const g of erreicht1) fortschritte1.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
+                for (const g of teilweise1) fortschritte1.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
+                for (const g of ziel1) themen1.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
+
+                // 2nd assessment data
+                const erreicht2 = getZusatzFromSaved(zusatz2, cat, 'stufe3');
+                const teilweise2 = getZusatzFromSaved(zusatz2, cat, 'stufe2');
                 const ziel2 = getZusatzFromSaved(zusatz2, cat, 'stufe1');
-                for (const g of ziel2) themen.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
+                for (const g of erreicht2) fortschritte2.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
+                for (const g of teilweise2) fortschritte2.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
+                for (const g of ziel2) themen2.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
+            }
+
+            // Fortschritte table: left = 1st, right = 2nd
+            const fortLabel = isFR ? 'Progr' : 'Fortschritte des Sch';
+            if (fortschritte1.length > 0) {
+                docXml = fillBerichtCell(docXml, fortLabel, 'CDSE', fortschritte1, 1);
+            }
+            if (fortschritte2.length > 0) {
+                docXml = fillBerichtCell(docXml, fortLabel, 'CDSE', fortschritte2, 2);
+            }
+            // Fortschritte Datum: left = 1st date, right = 2nd date
+            const datum1 = einschaetzung1.stammdaten?.einschaetzungsdatum || '';
+            const datum2 = einschaetzung2.stammdaten?.einschaetzungsdatum || '';
+            if (datum1) {
+                docXml = fillBerichtCell(docXml, fortLabel, 'Datum', [datum1], 1);
+            }
+            if (datum2) {
+                docXml = fillBerichtCell(docXml, fortLabel, 'Datum', [datum2], 2);
+            }
+
+            // Anzugehende Themen table: left = 1st, right = 2nd
+            const themenLabel = isFR ? 'Th' : 'Anzugehende Themen';
+            if (themen1.length > 0) {
+                docXml = fillBerichtCell(docXml, themenLabel, 'CDSE', themen1, 1);
+            }
+            if (themen2.length > 0) {
+                docXml = fillBerichtCell(docXml, themenLabel, 'CDSE', themen2, 2);
+            }
+            // Anzugehende Themen Datum
+            if (datum1) {
+                docXml = fillBerichtCell(docXml, themenLabel, 'Datum', [datum1], 1);
+            }
+            if (datum2) {
+                docXml = fillBerichtCell(docXml, themenLabel, 'Datum', [datum2], 2);
             }
         } else {
-            // Single assessment: use current state
+            // === SINGLE ASSESSMENT: Fill left column only ===
+            let fortschritte = [];
+            let themen = [];
             for (const cat of categories) {
                 const erreicht = getZusatzErreicht(cat);
                 const teilweise = getZusatzTeilweise(cat);
@@ -11453,15 +11515,15 @@ async function generatePEI() {
                 for (const g of teilweise) fortschritte.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
                 for (const g of ziel) themen.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
             }
-        }
 
-        if (fortschritte.length > 0) {
-            const fortLabel = isFR ? 'Progr' : 'Fortschritte des Sch';
-            docXml = fillBerichtRow(docXml, fortLabel, 'CDSE', fortschritte);
-        }
-        if (themen.length > 0) {
-            const themenLabel = isFR ? 'Th' : 'Anzugehende Themen';
-            docXml = fillBerichtRow(docXml, themenLabel, 'CDSE', themen);
+            if (fortschritte.length > 0) {
+                const fortLabel = isFR ? 'Progr' : 'Fortschritte des Sch';
+                docXml = fillBerichtRow(docXml, fortLabel, 'CDSE', fortschritte);
+            }
+            if (themen.length > 0) {
+                const themenLabel = isFR ? 'Th' : 'Anzugehende Themen';
+                docXml = fillBerichtRow(docXml, themenLabel, 'CDSE', themen);
+            }
         }
     }
 
