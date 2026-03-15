@@ -6838,7 +6838,12 @@ function saveToLocalStorage() {
         },
         dsData: getDSData()
     };
-    localStorage.setItem('eldib-data', JSON.stringify(data));
+    try {
+        localStorage.setItem('eldib-data', JSON.stringify(data));
+    } catch (e) {
+        console.error('Fehler beim Speichern:', e);
+        alert('Fehler beim Speichern! Möglicherweise ist der Speicher voll. Bitte exportieren Sie Ihre Daten als JSON-Backup.');
+    }
 }
 
 function loadFromLocalStorage() {
@@ -13459,8 +13464,27 @@ function smExportAlleJSON() {
                 info.textContent = `${schueler.name} — ${smAktuellerSchueler.einschaetzungNr}. Einschätzung`;
                 info.style.display = 'block';
             } else {
-                // Schüler existiert nicht mehr - aufräumen
+                // Schüler existiert nicht mehr in der Liste
+                // eldib-data behalten für Wiederherstellung, nur SM_AKTIV_KEY entfernen
                 localStorage.removeItem(SM_AKTIV_KEY);
+                // Versuche eldib-data als neuen Schüler zu migrieren
+                const orphanedData = localStorage.getItem('eldib-data');
+                if (orphanedData) {
+                    try {
+                        const oData = JSON.parse(orphanedData);
+                        if (oData.stammdaten && oData.stammdaten.schueler_name) {
+                            const liste2 = smGetListe();
+                            liste2.push({
+                                id: smGenerateId(),
+                                name: oData.stammdaten.schueler_name,
+                                klasse: oData.stammdaten.klasse || '',
+                                einschaetzung1: oData,
+                                einschaetzung2: null
+                            });
+                            smSaveListe(liste2);
+                        }
+                    } catch {}
+                }
                 localStorage.removeItem('eldib-data');
             }
         } catch {
@@ -13472,15 +13496,16 @@ function smExportAlleJSON() {
         // Manager anzeigen
         smRenderListe();
 
-        // Migriere alte Daten: Wenn eldib-data existiert aber kein aktiver Schüler
+        // Migriere verwaiste eldib-data: Wenn eldib-data existiert aber kein aktiver Schüler
         const alteDaten = localStorage.getItem('eldib-data');
         if (alteDaten) {
             try {
                 const data = JSON.parse(alteDaten);
                 if (data.stammdaten && data.stammdaten.schueler_name) {
                     const liste = smGetListe();
-                    // Nur migrieren wenn Liste leer ist (erstmaliges Upgrade)
-                    if (liste.length === 0) {
+                    // Prüfe ob dieser Schüler bereits in der Liste existiert (anhand Name)
+                    const bereitsVorhanden = liste.some(s => s.name === data.stammdaten.schueler_name);
+                    if (!bereitsVorhanden) {
                         liste.push({
                             id: smGenerateId(),
                             name: data.stammdaten.schueler_name,
@@ -13547,24 +13572,47 @@ smZurueckZurListe = function() {
     location.reload();
 };
 
+// Zentrale Speicher-Funktion für alle Event-Handler
+function smSaveAll() {
+    try {
+        saveToLocalStorage(); // speichert eldib-data UND Schülerliste (via Override)
+    } catch (e) {
+        console.error('Fehler beim Speichern:', e);
+    }
+}
+
 // Beim Seitenverlassen speichern
 window.addEventListener('beforeunload', function() {
     if (smAktuellerSchueler) {
-        smSaveAktuelleEinschaetzung();
+        smSaveAll();
     }
 });
 
-// Periodisches Auto-Save alle 30 Sekunden (Sicherheitsnetz)
+// pagehide ist zuverlässiger als beforeunload auf Mobilgeräten
+window.addEventListener('pagehide', function() {
+    if (smAktuellerSchueler) {
+        smSaveAll();
+    }
+});
+
+// Periodisches Auto-Save alle 10 Sekunden (Sicherheitsnetz)
 setInterval(function() {
     if (smAktuellerSchueler) {
-        smSaveAktuelleEinschaetzung();
+        smSaveAll();
     }
-}, 30000);
+}, 10000);
 
-// Zusätzlich: Speichern wenn Tab/Fenster den Fokus verliert
+// Speichern wenn Tab/Fenster den Fokus verliert
 document.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden' && smAktuellerSchueler) {
-        smSaveAktuelleEinschaetzung();
+        smSaveAll();
+    }
+});
+
+// Speichern wenn Fenster den Fokus verliert (zusätzlicher Schutz)
+window.addEventListener('blur', function() {
+    if (smAktuellerSchueler) {
+        smSaveAll();
     }
 });
 
