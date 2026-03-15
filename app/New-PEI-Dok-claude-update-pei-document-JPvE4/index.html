@@ -6899,6 +6899,11 @@ function loadFromLocalStorage() {
                 if (selection.status === 'ziel') {
                     const zielBox = document.getElementById(`ziel-box-${code}`);
                     if (zielBox) zielBox.classList.add('visible');
+                    // Restore Ziel-Select dropdown index
+                    const zielSelect = document.getElementById(`ziel-select-${code}`);
+                    if (zielSelect && typeof selection.zielIndex === 'number' && selection.zielIndex >= 0) {
+                        zielSelect.value = selection.zielIndex;
+                    }
                     const customTextarea = document.getElementById(`ziel-custom-${code}`);
                     if (customTextarea && selection.zieltext) customTextarea.value = selection.zieltext;
                 }
@@ -12601,6 +12606,7 @@ async function generateDSFromTemplate(isComplete) {
     }
 
     // --- 2. Gather all data ---
+    const dsLang = isFR_DS ? 'fr-LU' : 'de-DE';
     const stammdaten = getStammdaten();
     const dsData = isComplete ? getDSData() : {};
     const today = new Date().toLocaleDateString(isFR_DS ? 'fr-FR' : 'de-DE');
@@ -12660,7 +12666,7 @@ async function generateDSFromTemplate(isComplete) {
                 // Create a single clean run with the replaced text
                 // Preserve formatting from the first run
                 const firstRunMatch = paraXml.match(/<w:r[ >].*?<w:rPr>(.*?)<\/w:rPr>/s);
-                let rPr = firstRunMatch ? '<w:rPr>' + firstRunMatch[1] + '</w:rPr>' : '<w:rPr><w:lang w:val="de-DE"/></w:rPr>';
+                let rPr = firstRunMatch ? '<w:rPr>' + firstRunMatch[1] + '</w:rPr>' : '<w:rPr><w:lang w:val="' + dsLang + '"/></w:rPr>';
                 // Remove color specs that might make it look like instructions
                 rPr = rPr.replace(/<w:color[^/]*\/>/g, '');
                 // Get paragraph properties
@@ -12715,11 +12721,16 @@ async function generateDSFromTemplate(isComplete) {
     // --- 3. Fill cover page - Student info table (Table 0) ---
     // Replace placeholder texts in the student info cells
     if (studentName) {
-        docXml = docXml.replace(/>NAME Vorname</g, '>' + escapeXml(studentName) + '<');
+        if (isFR_DS) {
+            // French template: "NOM " and "Prénom " are separate runs - use replaceTextInParagraph
+            docXml = replaceTextInParagraph(docXml, 'NOM Prénom', escapeXml(studentName));
+        } else {
+            docXml = docXml.replace(/>NAME Vorname</g, '>' + escapeXml(studentName) + '<');
+        }
     }
     // SVN - split across runs, replace the cell content
     {
-        const svnLabel = 'Sozialversicherungsnummer';
+        const svnLabel = isFR_DS ? 'Matricule' : 'Sozialversicherungsnummer';
         const svnPos = docXml.indexOf(svnLabel);
         if (svnPos >= 0) {
             // Find the next table cell (the value cell)
@@ -12733,15 +12744,15 @@ async function generateDSFromTemplate(isComplete) {
                     const tcPrMatch = cellXml.match(/<w:tcPr>.*?<\/w:tcPr>/s);
                     const tcPr = tcPrMatch ? tcPrMatch[0] : '';
                     const svnValue = stammdaten.matricule || '';
-                    const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="de-DE"/></w:rPr><w:t xml:space="preserve">' + escapeXml(svnValue) + '</w:t></w:r></w:p></w:tc>';
+                    const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="' + dsLang + '"/></w:rPr><w:t xml:space="preserve">' + escapeXml(svnValue) + '</w:t></w:r></w:p></w:tc>';
                     docXml = docXml.substring(0, nextTc) + newCell + docXml.substring(tcEnd + 7);
                 }
             }
         }
     }
-    // Alter
+    // Alter / Âge
     {
-        const alterLabel = '>Alter<';
+        const alterLabel = isFR_DS ? '>Âge<' : '>Alter<';
         const alterPos = docXml.indexOf(alterLabel);
         if (alterPos >= 0) {
             const nextTc = docXml.indexOf('<w:tc>', alterPos);
@@ -12752,19 +12763,20 @@ async function generateDSFromTemplate(isComplete) {
                     const tcPrMatch = cellXml.match(/<w:tcPr>.*?<\/w:tcPr>/s);
                     const tcPr = tcPrMatch ? tcPrMatch[0] : '';
                     const alterValue = biologicalAge ? biologicalAge.years + (isFR_DS ? ' ans, ' : ' Jahre, ') + biologicalAge.months + (isFR_DS ? ' mois' : ' Monate') : '';
-                    const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="de-DE"/></w:rPr><w:t xml:space="preserve">' + escapeXml(alterValue) + '</w:t></w:r></w:p></w:tc>';
+                    const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="' + dsLang + '"/></w:rPr><w:t xml:space="preserve">' + escapeXml(alterValue) + '</w:t></w:r></w:p></w:tc>';
                     docXml = docXml.substring(0, nextTc) + newCell + docXml.substring(tcEnd + 7);
                 }
             }
         }
     }
-    // Schule
+    // Schule / École
     if (stammdaten.foerderort) {
-        docXml = docXml.replace('>Name der Schule und Ort<', '>' + escapeXml(stammdaten.foerderort) + '<');
+        const schoolPlaceholder = isFR_DS ? 'Nom de l\u2019école et lieu' : 'Name der Schule und Ort';
+        docXml = replaceTextInParagraph(docXml, schoolPlaceholder, escapeXml(stammdaten.foerderort));
     }
-    // Klasse
+    // Klasse / Classe
     {
-        const klasseLabel = '>Klasse<';
+        const klasseLabel = isFR_DS ? '>Classe<' : '>Klasse<';
         const klassePos = docXml.indexOf(klasseLabel);
         if (klassePos >= 0) {
             const nextTc = docXml.indexOf('<w:tc>', klassePos);
@@ -12775,15 +12787,15 @@ async function generateDSFromTemplate(isComplete) {
                     const tcPrMatch = cellXml.match(/<w:tcPr>.*?<\/w:tcPr>/s);
                     const tcPr = tcPrMatch ? tcPrMatch[0] : '';
                     const klasseValue = (isComplete && dsData.ds_aktuelle_klasse) ? dsData.ds_aktuelle_klasse : (stammdaten.klasse || '');
-                    const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="de-DE"/></w:rPr><w:t xml:space="preserve">' + escapeXml(klasseValue) + '</w:t></w:r></w:p></w:tc>';
+                    const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="' + dsLang + '"/></w:rPr><w:t xml:space="preserve">' + escapeXml(klasseValue) + '</w:t></w:r></w:p></w:tc>';
                     docXml = docXml.substring(0, nextTc) + newCell + docXml.substring(tcEnd + 7);
                 }
             }
         }
     }
-    // Sprachen
+    // Sprachen / Langues
     {
-        const sprachenLabel = '>Sprachen<';
+        const sprachenLabel = isFR_DS ? '>Langues<' : '>Sprachen<';
         const sprachenPos = docXml.indexOf(sprachenLabel);
         if (sprachenPos >= 0) {
             const sprachenSearch = 'Luxemburgisch';
@@ -12795,7 +12807,7 @@ async function generateDSFromTemplate(isComplete) {
                     const tcPrMatch = cellXml.match(/<w:tcPr>.*?<\/w:tcPr>/s);
                     const tcPr = tcPrMatch ? tcPrMatch[0] : '';
                     const sprachenValue = (isComplete && dsData.ds_sprachen) ? dsData.ds_sprachen : '';
-                    const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="de-DE"/></w:rPr><w:t xml:space="preserve">' + escapeXml(sprachenValue) + '</w:t></w:r></w:p></w:tc>';
+                    const newCell = '<w:tc>' + tcPr + '<w:p><w:pPr><w:spacing w:line="360" w:lineRule="auto"/></w:pPr><w:r><w:rPr><w:lang w:val="' + dsLang + '"/></w:rPr><w:t xml:space="preserve">' + escapeXml(sprachenValue) + '</w:t></w:r></w:p></w:tc>';
                     docXml = docXml.substring(0, nextTc) + newCell + docXml.substring(tcEnd + 7);
                 }
             }
@@ -12868,29 +12880,40 @@ async function generateDSFromTemplate(isComplete) {
     // --- 5. Fill Header ---
     // Header 1 (pages 2+): Replace student name and SVN
     if (studentName) {
-        // "NAME" and "Vorname" are separate runs - replace "NAME" first, then "Vorname" with empty
-        // Replace paragraph containing "NAME" - rebuild the text area
-        const nameRunRegex = />NAME<\/w:t>/;
-        if (nameRunRegex.test(header1Xml)) {
-            header1Xml = header1Xml.replace('>NAME</w:t>', '>' + escapeXml(studentName) + '</w:t>');
-            // Remove the separate "Vorname" run and the static label runs
-            header1Xml = header1Xml.replace('>Vorname</w:t>', '></w:t>');
-            header1Xml = header1Xml.replace('>des </w:t>', '></w:t>');
-            header1Xml = header1Xml.replace('>Schülers</w:t>', '></w:t>');
-            header1Xml = header1Xml.replace('>/der </w:t>', '></w:t>');
-            header1Xml = header1Xml.replace('>Schüler</w:t>', '></w:t>');
-            header1Xml = header1Xml.replace('>:</w:t>', '></w:t>');
-            header1Xml = header1Xml.replace('>in</w:t>', '></w:t>');
-        }
-        // Replace SVN in header
-        if (stammdaten.matricule) {
-            header1Xml = header1Xml.replace('>Sozialversicherungsnummer</w:t>', '>' + escapeXml(stammdaten.matricule) + '</w:t>');
+        if (isFR_DS) {
+            // French header1: "Prénom" + " et NOM de " + "l'élève" + "Matricule"
+            header1Xml = header1Xml.replace('>Prénom</w:t>', '>' + escapeXml(studentName) + '</w:t>');
+            header1Xml = header1Xml.replace('> et NOM de </w:t>', '></w:t>');
+            header1Xml = header1Xml.replace('>l\u2019élève</w:t>', '></w:t>');
+            if (stammdaten.matricule) {
+                header1Xml = header1Xml.replace('>Matricule</w:t>', '>' + escapeXml(stammdaten.matricule) + '</w:t>');
+            } else {
+                header1Xml = header1Xml.replace('>Matricule</w:t>', '></w:t>');
+            }
         } else {
-            header1Xml = header1Xml.replace('>Sozialversicherungsnummer</w:t>', '></w:t>');
+            // German header1: "NAME" + "Vorname" + "des " + "Schülers" etc.
+            const nameRunRegex = />NAME<\/w:t>/;
+            if (nameRunRegex.test(header1Xml)) {
+                header1Xml = header1Xml.replace('>NAME</w:t>', '>' + escapeXml(studentName) + '</w:t>');
+                header1Xml = header1Xml.replace('>Vorname</w:t>', '></w:t>');
+                header1Xml = header1Xml.replace('>des </w:t>', '></w:t>');
+                header1Xml = header1Xml.replace('>Schülers</w:t>', '></w:t>');
+                header1Xml = header1Xml.replace('>/der </w:t>', '></w:t>');
+                header1Xml = header1Xml.replace('>Schüler</w:t>', '></w:t>');
+                header1Xml = header1Xml.replace('>:</w:t>', '></w:t>');
+                header1Xml = header1Xml.replace('>in</w:t>', '></w:t>');
+            }
+            if (stammdaten.matricule) {
+                header1Xml = header1Xml.replace('>Sozialversicherungsnummer</w:t>', '>' + escapeXml(stammdaten.matricule) + '</w:t>');
+            } else {
+                header1Xml = header1Xml.replace('>Sozialversicherungsnummer</w:t>', '></w:t>');
+            }
         }
     }
-    // Header 2 (first page): Replace "Munsbach, den XX.XX.20XX"
-    header2Xml = header2Xml.replace(/XX\.XX\.20XX/g, today);
+    // Header 2 (first page): Replace date
+    if (!isFR_DS) {
+        header2Xml = header2Xml.replace(/XX\.XX\.20XX/g, today);
+    }
 
     // --- 6. Fill section content (for complete export) ---
     if (isComplete) {
@@ -12913,14 +12936,14 @@ async function generateDSFromTemplate(isComplete) {
             return lines.map(line => makePara(makeRun(line))).join('');
         }
 
-        // Replace section 1: Auftragsklärung / Clarification du mandat
-        docXml = replaceSectionContent(docXml, isFR_DS ? 'Clarification du mandat' : 'Auftragsklärung', textToParas(auftragsklarungText));
+        // Replace section 1: Auftragsklärung / Demande
+        docXml = replaceSectionContent(docXml, isFR_DS ? 'Demande' : 'Auftragsklärung', textToParas(auftragsklarungText));
 
-        // Replace section 2.1: Vorgeschichte / Historique
-        docXml = replaceSectionContent(docXml, isFR_DS ? '2.1 Historique' : '2.1 Vorgeschichte', textToParas(vorgeschichteText));
+        // Replace section 2.1: Vorgeschichte / Antécédents
+        docXml = replaceSectionContent(docXml, isFR_DS ? '2.1 Ant' : '2.1 Vorgeschichte', textToParas(vorgeschichteText));
 
-        // Replace section 2.2: Sozialbericht / Rapport social
-        docXml = replaceSectionContent(docXml, isFR_DS ? '2.2 Rapport social' : '2.2 Sozialbericht', textToParas(sozialberichtText));
+        // Replace section 2.2: Sozialbericht / Bilan social
+        docXml = replaceSectionContent(docXml, isFR_DS ? '2.2 Bilan social' : '2.2 Sozialbericht', textToParas(sozialberichtText));
 
         // Replace section 3: Aktuelle Situation / Situation actuelle
         docXml = replaceSectionContent(docXml, isFR_DS ? 'Situation actuelle' : 'Aktuelle Situation', textToParas(aktuelleSituationText));
@@ -12948,7 +12971,7 @@ async function generateDSFromTemplate(isComplete) {
             const diagIntro = isFR_DS
                 ? 'L\'évaluation présente est basée sur ' + (dsData.ds_testmethoden || 'l\'ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen)') + ' ainsi que sur des observations comportementales systématiques' + (dsData.ds_test_ort ? ', réalisées à ' + dsData.ds_test_ort : '') + '.'
                 : 'Die vorliegende Einschätzung basiert auf ' + (dsData.ds_testmethoden || 'dem ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen)') + ' sowie auf systematischen Verhaltensbeobachtungen' + (dsData.ds_test_ort ? ', die in ' + dsData.ds_test_ort + ' durchgeführt wurden' : '') + '.';
-            docXml = replaceSectionContent(docXml, isFR_DS ? 'Proc\u00e9dures diagnostiques' : 'Diagnostische Verfahren', makePara(makeRun(diagIntro)));
+            docXml = replaceSectionContent(docXml, isFR_DS ? 'Proc\u00e9dure diagnostique' : 'Diagnostische Verfahren', makePara(makeRun(diagIntro)));
         }
 
         // Replace section 4.1: Verhaltensbeobachtungen / Observations comportementales
@@ -13167,35 +13190,49 @@ async function generateDSFromTemplate(isComplete) {
 
     // --- 10. Fill ELDiB header info (6.2 section) ---
     {
-        // Replace "NAME Vorname" in the ELDiB section header
-        // This is the second occurrence (first is cover page)
+        // Replace student name in the ELDiB section
         if (studentName) {
-            const firstOcc = docXml.indexOf('>NAME Vorname<');
-            if (firstOcc >= 0) {
-                docXml = docXml.substring(0, firstOcc) + '>' + escapeXml(studentName) + '<' + docXml.substring(firstOcc + '>NAME Vorname<'.length);
-            }
-            // Check for any remaining
-            const secondOcc = docXml.indexOf('>NAME Vorname<');
-            if (secondOcc >= 0) {
-                docXml = docXml.substring(0, secondOcc) + '>' + escapeXml(studentName) + '<' + docXml.substring(secondOcc + '>NAME Vorname<'.length);
+            if (isFR_DS) {
+                // French: "NOM Prénom" may be split across runs - use replaceTextInParagraph
+                // (cover page already handled above, this catches remaining occurrences)
+                docXml = replaceTextInParagraph(docXml, 'NOM Prénom', escapeXml(studentName));
+            } else {
+                const firstOcc = docXml.indexOf('>NAME Vorname<');
+                if (firstOcc >= 0) {
+                    docXml = docXml.substring(0, firstOcc) + '>' + escapeXml(studentName) + '<' + docXml.substring(firstOcc + '>NAME Vorname<'.length);
+                }
+                const secondOcc = docXml.indexOf('>NAME Vorname<');
+                if (secondOcc >= 0) {
+                    docXml = docXml.substring(0, secondOcc) + '>' + escapeXml(studentName) + '<' + docXml.substring(secondOcc + '>NAME Vorname<'.length);
+                }
             }
         }
 
         // Replace "XX/XX/20XX" with actual dates
-        const birthDateFormatted = birthDate ? new Date(birthDate).toLocaleDateString('de-DE') : '';
-        const ageText = biologicalAge ? biologicalAge.years + ' Jahre ' + biologicalAge.months + ' Monate' : '';
+        const birthDateFormatted = birthDate ? new Date(birthDate).toLocaleDateString(isFR_DS ? 'fr-FR' : 'de-DE') : '';
+        const ageText = biologicalAge
+            ? (isFR_DS
+                ? biologicalAge.years + ' ans ' + biologicalAge.months + ' mois'
+                : biologicalAge.years + ' Jahre ' + biologicalAge.months + ' Monate')
+            : '';
         if (birthDateFormatted || ageText) {
             const gebDatumPattern = 'XX/XX/20XX';
-            // First occurrence is birthdate
+            // First occurrence is birthdate (+ age in French template)
             let idx1 = docXml.indexOf(gebDatumPattern);
             if (idx1 >= 0) {
                 docXml = docXml.substring(0, idx1) + birthDateFormatted + docXml.substring(idx1 + gebDatumPattern.length);
             }
-            // Replace age part "(XX Jahre XX Monate)"
-            const agePattern = 'XX Jahre XX Monate';
-            let ageIdx = docXml.indexOf(agePattern);
-            if (ageIdx >= 0) {
-                docXml = docXml.substring(0, ageIdx) + (ageText || '') + docXml.substring(ageIdx + agePattern.length);
+            // Replace age part
+            if (isFR_DS) {
+                // French template: "(X ans XX mois)"
+                const frAgePattern = /X ans XX mois/;
+                docXml = docXml.replace(frAgePattern, ageText || '');
+            } else {
+                const agePattern = 'XX Jahre XX Monate';
+                let ageIdx = docXml.indexOf(agePattern);
+                if (ageIdx >= 0) {
+                    docXml = docXml.substring(0, ageIdx) + (ageText || '') + docXml.substring(ageIdx + agePattern.length);
+                }
             }
             // Second XX/XX/20XX is assessment date (today)
             let idx2 = docXml.indexOf(gebDatumPattern);
@@ -13639,6 +13676,65 @@ function smExportAlleJSON() {
                 // Schüler existiert - Editor anzeigen
                 smAktuellerSchueler = parsed;
                 showEditor = true;
+
+                // Sicherstellen dass eldib-data aus der Schülerliste geladen wird
+                // (kann verloren gehen wenn Browser/Tab geschlossen wurde)
+                const existingData = localStorage.getItem('eldib-data');
+                if (!existingData) {
+                    const nr = parsed.einschaetzungNr;
+                    const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
+                    if (daten) {
+                        localStorage.setItem('eldib-data', JSON.stringify(daten));
+                    } else if (nr === 2 && schueler.einschaetzung1) {
+                        // 2. Einschätzung aus 1. ableiten
+                        const basis = schueler.einschaetzung1;
+                        const basisStammdaten = basis.stammdaten || {};
+                        const neueDaten = {
+                            language: basis.language || 'de',
+                            selections: JSON.parse(JSON.stringify(basis.selections || {})),
+                            zusaetzlicheZiele: JSON.parse(JSON.stringify(basis.zusaetzlicheZiele || {
+                                demarches_mentales: {}, manieres_apprendre: {},
+                                attitudes_relationnelles: {}, attitudes_affectives: {},
+                                competences_essentielles: {}, culture_loisirs: {}
+                            })),
+                            stammdaten: {
+                                schueler_name: schueler.name,
+                                geburtsdatum: schueler.geburtsdatum || basisStammdaten.geburtsdatum || '',
+                                matricule: basisStammdaten.matricule || '',
+                                foerderort: basisStammdaten.foerderort || '',
+                                klasse: schueler.klasse || basisStammdaten.klasse || '',
+                                schuljahr: basisStammdaten.schuljahr || '',
+                                periodenTyp: basisStammdaten.periodenTyp || 'trimester',
+                                periode: basisStammdaten.periode || '1',
+                                einschaetzungsdatum: '',
+                                einschaetzende: basisStammdaten.einschaetzende || '',
+                                eltern1_name: basisStammdaten.eltern1_name || '',
+                                eltern1_tel: basisStammdaten.eltern1_tel || '',
+                                eltern1_email: basisStammdaten.eltern1_email || ''
+                            },
+                            dsData: {}
+                        };
+                        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+                    } else {
+                        // Leere Einschätzung mit Grunddaten
+                        const neueDaten = {
+                            language: 'de',
+                            selections: {},
+                            zusaetzlicheZiele: {
+                                demarches_mentales: {}, manieres_apprendre: {},
+                                attitudes_relationnelles: {}, attitudes_affectives: {},
+                                competences_essentielles: {}, culture_loisirs: {}
+                            },
+                            stammdaten: {
+                                schueler_name: schueler.name,
+                                geburtsdatum: schueler.geburtsdatum || '',
+                                klasse: schueler.klasse || ''
+                            },
+                            dsData: {}
+                        };
+                        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+                    }
+                }
 
                 document.getElementById('schueler-manager').style.display = 'none';
                 document.getElementById('main-container').style.display = '';
