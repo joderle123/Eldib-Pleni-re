@@ -2599,10 +2599,310 @@
             color: var(--gray-500);
             font-style: italic;
         }
+        /* ==========================================
+           SCHÜLER-MANAGER STYLES
+           ========================================== */
+        #schueler-manager {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 10000;
+            background: #0a1a1e;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        #schueler-manager::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(0, 151, 167, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 131, 143, 0.25) 0%, transparent 50%),
+                linear-gradient(180deg, #0a1a1e 0%, #122a2e 50%, #0a1a1e 100%);
+            z-index: -1;
+        }
+        .sm-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .sm-header h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #fff 0%, #b2ebf2 30%, #80deea 70%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .sm-header p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.05rem;
+        }
+        .sm-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .sm-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sm-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 151, 167, 0.4);
+        }
+        .sm-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 151, 167, 0.6);
+        }
+        .sm-btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .sm-btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        .sm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+        }
+        .sm-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius);
+            padding: 28px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s;
+        }
+        .sm-card:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(0, 151, 167, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 151, 167, 0.2);
+        }
+        .sm-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .sm-card-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 4px;
+        }
+        .sm-card-klasse {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            font-weight: 600;
+        }
+        .sm-card-delete {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.3);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .sm-card-delete:hover {
+            color: var(--danger);
+            background: rgba(244, 63, 94, 0.1);
+        }
+        .sm-card-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .sm-einschaetzung-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: var(--radius-sm);
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.7);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .sm-einschaetzung-btn:hover {
+            border-color: var(--primary);
+            color: white;
+            background: rgba(0, 151, 167, 0.15);
+        }
+        .sm-einschaetzung-btn.has-data {
+            border-color: var(--success);
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-light);
+        }
+        .sm-einschaetzung-btn.has-data:hover {
+            background: rgba(34, 197, 94, 0.2);
+        }
+        .sm-einschaetzung-btn .btn-label {
+            display: block;
+            margin-bottom: 2px;
+        }
+        .sm-einschaetzung-btn .btn-status {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+        .sm-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.4);
+            grid-column: 1 / -1;
+        }
+        .sm-empty p {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .sm-empty small {
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+        /* Neuer Schüler Dialog */
+        .sm-dialog-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .sm-dialog {
+            background: #1a2e32;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: var(--radius);
+            padding: 36px;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .sm-dialog h3 {
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        .sm-dialog label {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            margin-top: 14px;
+        }
+        .sm-dialog label:first-of-type { margin-top: 0; }
+        .sm-dialog input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-size: 0.95rem;
+        }
+        .sm-dialog input::placeholder { color: rgba(255,255,255,0.3); }
+        .sm-dialog input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 151, 167, 0.2);
+        }
+        .sm-dialog-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            justify-content: flex-end;
+        }
+        /* Back to manager button in main app */
+        .back-to-manager-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 9999;
+            padding: 10px 18px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            display: none;
+        }
+        .back-to-manager-btn:hover {
+            background: rgba(0, 151, 167, 0.8);
+            border-color: var(--primary);
+        }
+        .sm-current-info {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 8px 20px;
+            background: rgba(0, 151, 167, 0.9);
+            color: white;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: none;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- SCHÜLER-MANAGER STARTSEITE -->
+    <div id="schueler-manager">
+        <div class="sm-header">
+            <h1>ELDiB Generator</h1>
+            <p>Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen</p>
+        </div>
+        <div class="sm-actions">
+            <button class="sm-btn sm-btn-primary" onclick="smNeuerSchueler()">+ Neuen Sch&uuml;ler anlegen</button>
+            <button class="sm-btn sm-btn-secondary" onclick="smImportJSON()">JSON importieren</button>
+            <button class="sm-btn sm-btn-secondary" onclick="smExportAlleJSON()">Alle exportieren</button>
+            <input type="file" id="smImportFile" style="display:none;" accept=".json" onchange="smHandleImport(event)">
+        </div>
+        <div class="sm-grid" id="sm-schueler-grid">
+            <!-- Dynamisch gefüllt -->
+        </div>
+    </div>
+
+    <!-- Zurück-Button im Editor -->
+    <button class="back-to-manager-btn" id="backToManagerBtn" onclick="smZurueckZurListe()">&larr; Zur&uuml;ck zur &Uuml;bersicht</button>
+    <div class="sm-current-info" id="smCurrentInfo"></div>
+
+    <div class="container" id="main-container" style="display:none;">
         <div class="header">
             <div class="language-toggle" style="position: absolute; top: 15px; right: 20px; display: flex; gap: 4px; z-index: 100;">
                 <button onclick="switchLanguage('de')" id="lang-btn-de" class="lang-btn active" style="padding: 6px 14px; border: 2px solid rgba(255,255,255,0.5); border-radius: 6px; background: rgba(255,255,255,0.3); color: white; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;">DE</button>
@@ -4948,21 +5248,21 @@
             </div>
 
             <div class="form-section">
-                <h3>Daten speichern/laden</h3>
+                <h3>Daten speichern/laden (Backup)</h3>
                 <p style="margin-bottom: 15px; color: #666;">
-                    Speichern Sie Ihre Eingaben als JSON-Datei, um sie später fortzusetzen.
+                    Exportieren Sie diese Einschätzung als JSON-Datei (Backup) oder importieren Sie eine bestehende Datei.
                 </p>
-                <button class="btn btn-primary" onclick="saveData()">Daten speichern</button>
-                <button class="btn btn-primary" onclick="document.getElementById('loadFile').click()">Daten laden</button>
+                <button class="btn btn-primary" onclick="saveData()">Diese Einschätzung exportieren</button>
+                <button class="btn btn-primary" onclick="document.getElementById('loadFile').click()">JSON-Datei laden</button>
                 <input type="file" id="loadFile" style="display: none;" accept=".json" onchange="loadData(event)">
             </div>
 
-            <div class="form-section" style="border-color: #dc3545;">
-                <h3 style="color: #dc3545;">Neuen Schüler anlegen</h3>
+            <div class="form-section" style="border-color: #0097A7;">
+                <h3 style="color: #0097A7;">Schüler-Übersicht</h3>
                 <p style="margin-bottom: 15px; color: #666;">
-                    Alle Eingaben löschen und mit einem neuen Schüler beginnen. Diese Aktion kann nicht rückgängig gemacht werden!
+                    Zurück zur Übersicht aller Schüler, um eine andere Einschätzung zu öffnen oder einen neuen Schüler anzulegen.
                 </p>
-                <button class="btn btn-secondary" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);" onclick="resetAllData()">Alle Daten zurücksetzen</button>
+                <button class="btn" style="background: linear-gradient(135deg, #0097A7 0%, #00838F 100%); color: white;" onclick="smZurueckZurListe()">Zur Schüler-Übersicht</button>
             </div>
         </div>
     </div>
@@ -12646,6 +12946,411 @@ function dsGetDomainPrefix(domain) {
     const map = { verhalten: 'V', kommunikation: 'K', sozialisation: 'SOZ', kognition: 'KOG' };
     return map[domain] || domain;
 }
+
+// ==========================================
+// SCHÜLER-MANAGER
+// ==========================================
+
+const SM_KEY = 'eldib-schueler-liste';
+let smAktuellerSchueler = null; // { id, einschaetzungNr }
+
+function smGetListe() {
+    try {
+        return JSON.parse(localStorage.getItem(SM_KEY)) || [];
+    } catch { return []; }
+}
+
+function smSaveListe(liste) {
+    localStorage.setItem(SM_KEY, JSON.stringify(liste));
+}
+
+function smGenerateId() {
+    return 'sch-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+}
+
+function smRenderListe() {
+    const grid = document.getElementById('sm-schueler-grid');
+    const liste = smGetListe();
+
+    if (liste.length === 0) {
+        grid.innerHTML = `
+            <div class="sm-empty">
+                <p>Noch keine Sch&uuml;ler angelegt</p>
+                <small>Klicken Sie auf &quot;+ Neuen Sch&uuml;ler anlegen&quot;, um zu beginnen.</small>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = liste.map(s => {
+        const hat1 = s.einschaetzung1 && Object.keys(s.einschaetzung1).length > 0;
+        const hat2 = s.einschaetzung2 && Object.keys(s.einschaetzung2).length > 0;
+        const datum1 = hat1 && s.einschaetzung1.stammdaten?.einschaetzungsdatum
+            ? new Date(s.einschaetzung1.stammdaten.einschaetzungsdatum).toLocaleDateString('de-DE')
+            : '';
+        const datum2 = hat2 && s.einschaetzung2.stammdaten?.einschaetzungsdatum
+            ? new Date(s.einschaetzung2.stammdaten.einschaetzungsdatum).toLocaleDateString('de-DE')
+            : '';
+        return `
+        <div class="sm-card">
+            <div class="sm-card-header">
+                <div>
+                    <div class="sm-card-name">${smEscapeHtml(s.name)}</div>
+                    <div class="sm-card-klasse">${s.klasse ? 'Klasse ' + smEscapeHtml(s.klasse) : ''}</div>
+                </div>
+                <button class="sm-card-delete" onclick="smLoescheSchueler('${s.id}')" title="Sch&uuml;ler l&ouml;schen">&times;</button>
+            </div>
+            <div class="sm-card-buttons">
+                <button class="sm-einschaetzung-btn ${hat1 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 1)">
+                    <span class="btn-label">1. Einsch&auml;tzung</span>
+                    <span class="btn-status">${hat1 ? datum1 || 'Daten vorhanden' : 'Noch leer'}</span>
+                </button>
+                <button class="sm-einschaetzung-btn ${hat2 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 2)">
+                    <span class="btn-label">2. Einsch&auml;tzung</span>
+                    <span class="btn-status">${hat2 ? datum2 || 'Daten vorhanden' : 'Noch leer'}</span>
+                </button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function smEscapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+}
+
+function smNeuerSchueler() {
+    const overlay = document.createElement('div');
+    overlay.className = 'sm-dialog-overlay';
+    overlay.id = 'sm-dialog-overlay';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = `
+        <div class="sm-dialog">
+            <h3>Neuen Sch&uuml;ler anlegen</h3>
+            <label>Name (Nachname, Vorname)</label>
+            <input type="text" id="sm-new-name" placeholder="Nachname, Vorname" autofocus>
+            <label>Klasse/Cycle</label>
+            <input type="text" id="sm-new-klasse" placeholder="z.B. C2.1">
+            <div class="sm-dialog-actions">
+                <button class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">Abbrechen</button>
+                <button class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">Anlegen</button>
+            </div>
+        </div>`;
+    document.body.appendChild(overlay);
+    setTimeout(() => document.getElementById('sm-new-name')?.focus(), 100);
+}
+
+function smSchuelerAnlegen() {
+    const name = document.getElementById('sm-new-name')?.value?.trim();
+    const klasse = document.getElementById('sm-new-klasse')?.value?.trim();
+    if (!name) {
+        alert('Bitte einen Namen eingeben.');
+        return;
+    }
+    const liste = smGetListe();
+    liste.push({
+        id: smGenerateId(),
+        name: name,
+        klasse: klasse || '',
+        einschaetzung1: null,
+        einschaetzung2: null
+    });
+    smSaveListe(liste);
+    document.getElementById('sm-dialog-overlay')?.remove();
+    smRenderListe();
+}
+
+function smLoescheSchueler(id) {
+    const liste = smGetListe();
+    const schueler = liste.find(s => s.id === id);
+    if (!schueler) return;
+    if (!confirm(`"${schueler.name}" wirklich löschen?\n\nAlle Einschätzungen dieses Schülers werden unwiderruflich gelöscht!`)) return;
+    smSaveListe(liste.filter(s => s.id !== id));
+    smRenderListe();
+}
+
+function smOeffneEinschaetzung(id, nr) {
+    const liste = smGetListe();
+    const schueler = liste.find(s => s.id === id);
+    if (!schueler) return;
+
+    smAktuellerSchueler = { id, einschaetzungNr: nr };
+
+    // Daten der gewählten Einschätzung laden
+    const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
+
+    if (daten) {
+        // Bestehende Einschätzung laden
+        localStorage.setItem('eldib-data', JSON.stringify(daten));
+    } else {
+        // Neue Einschätzung: Stammdaten vorausfüllen
+        const neueDaten = {
+            language: 'de',
+            selections: {},
+            zusaetzlicheZiele: {
+                demarches_mentales: {},
+                manieres_apprendre: {},
+                attitudes_relationnelles: {},
+                attitudes_affectives: {},
+                competences_essentielles: {},
+                culture_loisirs: {}
+            },
+            stammdaten: {
+                schueler_name: schueler.name,
+                klasse: schueler.klasse
+            },
+            dsData: {}
+        };
+        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+    }
+
+    // Manager ausblenden, Editor einblenden
+    document.getElementById('schueler-manager').style.display = 'none';
+    document.getElementById('main-container').style.display = '';
+    document.getElementById('backToManagerBtn').style.display = 'block';
+
+    // Info-Badge anzeigen
+    const info = document.getElementById('smCurrentInfo');
+    info.textContent = `${schueler.name} — ${nr}. Einschätzung`;
+    info.style.display = 'block';
+
+    // Seite neu laden, damit loadFromLocalStorage() die Daten einliest
+    location.reload();
+}
+
+function smZurueckZurListe() {
+    // Aktuelle Daten in den Schüler zurückspeichern
+    smSaveAktuelleEinschaetzung();
+
+    // Manager-Modus wiederherstellen
+    smAktuellerSchueler = null;
+    localStorage.removeItem('eldib-data');
+
+    // UI zurücksetzen
+    document.getElementById('schueler-manager').style.display = '';
+    document.getElementById('main-container').style.display = 'none';
+    document.getElementById('backToManagerBtn').style.display = 'none';
+    document.getElementById('smCurrentInfo').style.display = 'none';
+
+    smRenderListe();
+}
+
+function smSaveAktuelleEinschaetzung() {
+    if (!smAktuellerSchueler) return;
+
+    const data = {
+        language: state.language,
+        selections: state.selections,
+        zusaetzlicheZiele: state.zusaetzlicheZiele,
+        stammdaten: getStammdaten(),
+        dsData: getDSData(),
+        savedAt: new Date().toISOString()
+    };
+
+    const liste = smGetListe();
+    const idx = liste.findIndex(s => s.id === smAktuellerSchueler.id);
+    if (idx === -1) return;
+
+    if (smAktuellerSchueler.einschaetzungNr === 1) {
+        liste[idx].einschaetzung1 = data;
+    } else {
+        liste[idx].einschaetzung2 = data;
+    }
+
+    // Name und Klasse synchronisieren
+    if (data.stammdaten.schueler_name) {
+        liste[idx].name = data.stammdaten.schueler_name;
+    }
+    if (data.stammdaten.klasse) {
+        liste[idx].klasse = data.stammdaten.klasse;
+    }
+
+    smSaveListe(liste);
+}
+
+// Auto-Save in Schüler-Liste (überschreibt bestehende saveToLocalStorage)
+const _originalSaveToLocalStorage = saveToLocalStorage;
+saveToLocalStorage = function() {
+    _originalSaveToLocalStorage();
+    smSaveAktuelleEinschaetzung();
+};
+
+// JSON Import
+function smImportJSON() {
+    document.getElementById('smImportFile').click();
+}
+
+function smHandleImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+
+            // Prüfe ob es eine Schüler-Liste ist (Array) oder einzelne Daten
+            if (Array.isArray(data)) {
+                // Import einer kompletten Schüler-Liste
+                const liste = smGetListe();
+                data.forEach(s => {
+                    if (s.name && s.id) {
+                        // Prüfe auf doppelte IDs
+                        if (!liste.find(x => x.id === s.id)) {
+                            liste.push(s);
+                        }
+                    }
+                });
+                smSaveListe(liste);
+                smRenderListe();
+                showToast(`${data.length} Schüler importiert`);
+            } else if (data.stammdaten) {
+                // Import einzelner Einschätzungs-Daten (altes Format)
+                const name = data.stammdaten.schueler_name || file.name.replace('.json', '');
+                const klasse = data.stammdaten.klasse || '';
+                const liste = smGetListe();
+                liste.push({
+                    id: smGenerateId(),
+                    name: name,
+                    klasse: klasse,
+                    einschaetzung1: data,
+                    einschaetzung2: null
+                });
+                smSaveListe(liste);
+                smRenderListe();
+                showToast(`"${name}" importiert`);
+            } else {
+                alert('Unbekanntes Dateiformat.');
+            }
+        } catch (err) {
+            alert('Fehler beim Import: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = ''; // Reset für erneuten Import
+}
+
+function smExportAlleJSON() {
+    const liste = smGetListe();
+    if (liste.length === 0) {
+        alert('Keine Schüler zum Exportieren vorhanden.');
+        return;
+    }
+    const blob = new Blob([JSON.stringify(liste, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `eldib_alle_schueler_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+}
+
+// INIT: Beim Laden entscheiden ob Manager oder Editor anzeigen
+(function smInit() {
+    // Prüfe ob wir gerade einen Schüler bearbeiten
+    const sessionData = sessionStorage.getItem('sm-aktiv');
+    if (sessionData) {
+        try {
+            smAktuellerSchueler = JSON.parse(sessionData);
+            // Editor anzeigen
+            document.getElementById('schueler-manager').style.display = 'none';
+            document.getElementById('main-container').style.display = '';
+            document.getElementById('backToManagerBtn').style.display = 'block';
+
+            // Info-Badge
+            const liste = smGetListe();
+            const schueler = liste.find(s => s.id === smAktuellerSchueler.id);
+            if (schueler) {
+                const info = document.getElementById('smCurrentInfo');
+                info.textContent = `${schueler.name} — ${smAktuellerSchueler.einschaetzungNr}. Einschätzung`;
+                info.style.display = 'block';
+            }
+        } catch {
+            sessionStorage.removeItem('sm-aktiv');
+            smRenderListe();
+        }
+    } else {
+        // Manager anzeigen
+        smRenderListe();
+    }
+
+    // Migriere alte Daten: Wenn eldib-data existiert aber kein sm-aktiv, erstelle Schüler
+    if (!sessionData) {
+        const alteDaten = localStorage.getItem('eldib-data');
+        if (alteDaten) {
+            try {
+                const data = JSON.parse(alteDaten);
+                if (data.stammdaten && data.stammdaten.schueler_name) {
+                    const liste = smGetListe();
+                    // Nur migrieren wenn Liste leer ist (erstmaliges Upgrade)
+                    if (liste.length === 0) {
+                        liste.push({
+                            id: smGenerateId(),
+                            name: data.stammdaten.schueler_name,
+                            klasse: data.stammdaten.klasse || '',
+                            einschaetzung1: data,
+                            einschaetzung2: null
+                        });
+                        smSaveListe(liste);
+                        smRenderListe();
+                    }
+                }
+            } catch {}
+        }
+    }
+})();
+
+// Überschreibe smOeffneEinschaetzung, um sessionStorage zu nutzen (statt reload-Trick)
+smOeffneEinschaetzung = function(id, nr) {
+    const liste = smGetListe();
+    const schueler = liste.find(s => s.id === id);
+    if (!schueler) return;
+
+    smAktuellerSchueler = { id, einschaetzungNr: nr };
+    sessionStorage.setItem('sm-aktiv', JSON.stringify(smAktuellerSchueler));
+
+    // Daten der gewählten Einschätzung laden
+    const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
+
+    if (daten) {
+        localStorage.setItem('eldib-data', JSON.stringify(daten));
+    } else {
+        const neueDaten = {
+            language: 'de',
+            selections: {},
+            zusaetzlicheZiele: {
+                demarches_mentales: {},
+                manieres_apprendre: {},
+                attitudes_relationnelles: {},
+                attitudes_affectives: {},
+                competences_essentielles: {},
+                culture_loisirs: {}
+            },
+            stammdaten: {
+                schueler_name: schueler.name,
+                klasse: schueler.klasse
+            },
+            dsData: {}
+        };
+        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+    }
+
+    // Seite neu laden, damit alles korrekt initialisiert wird
+    location.reload();
+};
+
+// Überschreibe smZurueckZurListe mit sessionStorage
+smZurueckZurListe = function() {
+    smSaveAktuelleEinschaetzung();
+    smAktuellerSchueler = null;
+    sessionStorage.removeItem('sm-aktiv');
+    localStorage.removeItem('eldib-data');
+    location.reload();
+};
+
+// Auch beim Seitenverlassen speichern
+window.addEventListener('beforeunload', function() {
+    if (smAktuellerSchueler) {
+        smSaveAktuelleEinschaetzung();
+    }
+});
 
     </script>
 </body>
