@@ -1086,11 +1086,26 @@
         .ziel-box {
             display: none;
             margin-top: 20px;
-            padding: 20px;
-            background: linear-gradient(160deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.04));
-            border: 2px solid var(--warning-light);
-            border-radius: var(--radius);
+            padding: 24px 28px;
+            background: linear-gradient(160deg, rgba(245, 158, 11, 0.08), rgba(255, 243, 224, 0.6));
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-left: 5px solid var(--warning);
+            border-radius: var(--radius-sm);
             grid-column: 1 / -1;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px -4px rgba(245, 158, 11, 0.12);
+        }
+
+        .ziel-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .ziel-box.visible {
@@ -1100,43 +1115,62 @@
 
         .ziel-box h4 {
             color: var(--warning-dark);
-            margin-bottom: 14px;
-            font-size: 1rem;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
             font-weight: 700;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ziel-box h4::before {
+            content: '\1F3AF';
+            font-size: 1.1rem;
         }
 
         .ziel-select {
             width: 100%;
             padding: 14px 20px;
             border: 2px solid var(--gray-200);
-            border-radius: var(--radius);
+            border-radius: var(--radius-sm);
             margin-bottom: 14px;
             font-size: 0.95rem;
             background: white;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .ziel-select:hover {
+            border-color: var(--warning-light);
         }
 
         .ziel-select:focus {
             outline: none;
             border-color: var(--warning);
-            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
         }
 
         .ziel-custom {
             width: 100%;
             padding: 14px 20px;
             border: 2px solid var(--gray-200);
-            border-radius: var(--radius);
-            min-height: 100px;
+            border-radius: var(--radius-sm);
+            min-height: 80px;
             font-size: 0.95rem;
             resize: vertical;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: inherit;
+        }
+
+        .ziel-custom:hover {
+            border-color: var(--warning-light);
         }
 
         .ziel-custom:focus {
             outline: none;
             border-color: var(--warning);
-            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
         }
 
         /* Buttons mit Neon-Effekt */
@@ -10721,6 +10755,9 @@ const ZUSAETZLICHE_ZIELE_FR = {
 
 // Generate PEI using the new German template (20250101_Template_DE_CDSE.docx)
 async function generatePEI() {
+    // Sicherstellen, dass alle aktuellen Daten gespeichert sind
+    saveToLocalStorage();
+
     // --- 1. Load the DOCX template (embedded as base64) ---
     const isFR = state.language === 'fr' && typeof TEMPLATE_FR_PEI_CDSE_BASE64 !== 'undefined';
     const templateBase64 = isFR ? TEMPLATE_FR_PEI_CDSE_BASE64 : TEMPLATE_DE_CDSE_BASE64;
@@ -11328,7 +11365,35 @@ async function generatePEI() {
     }
 
     function replaceDomainCell(xml, domainLabel, newContent) {
-        const labelPos = xml.indexOf('>' + domainLabel + '<');
+        // First try direct match
+        let labelPos = xml.indexOf('>' + domainLabel + '<');
+
+        // If not found, search by concatenating text across runs in each row
+        // (handles cases where label text is split across multiple w:r elements)
+        if (labelPos < 0) {
+            let searchPos = 0;
+            while (searchPos < xml.length) {
+                const trIdx = xml.indexOf('<w:tr', searchPos);
+                if (trIdx < 0) break;
+                const trEndIdx = xml.indexOf('</w:tr>', trIdx);
+                if (trEndIdx < 0) break;
+                const rowXml = xml.substring(trIdx, trEndIdx + 7);
+
+                // Find first cell and concatenate all text content
+                const firstTcEnd = rowXml.indexOf('</w:tc>');
+                if (firstTcEnd >= 0) {
+                    const firstCellXml = rowXml.substring(0, firstTcEnd);
+                    const textMatches = [...firstCellXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
+                    const cellText = textMatches.map(m => m[1]).join('');
+                    if (cellText.includes(domainLabel)) {
+                        labelPos = trIdx; // Use row start as reference position
+                        break;
+                    }
+                }
+                searchPos = trEndIdx + 7;
+            }
+        }
+
         if (labelPos < 0) return xml;
         // Find the row containing this label
         const trStart = xml.lastIndexOf('<w:tr', labelPos);
@@ -11391,10 +11456,45 @@ async function generatePEI() {
 
         // Fill a specific cell (cellIndex: 1=left/2nd cell, 2=right/3rd cell) in a Bericht row
         function fillBerichtCell(xml, tableLabel, rowLabel, items, cellIndex) {
-            const tableLabelPos = xml.indexOf(tableLabel);
+            // Find table label (direct or concatenated text search)
+            let tableLabelPos = xml.indexOf(tableLabel);
+            if (tableLabelPos < 0) {
+                // Search by concatenating text from paragraphs
+                const pRegex = /<w:p[ >][\s\S]*?<\/w:p>/g;
+                let pMatch;
+                while ((pMatch = pRegex.exec(xml)) !== null) {
+                    const texts = [...pMatch[0].matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
+                    const fullText = texts.map(m => m[1]).join('');
+                    if (fullText.includes(tableLabel)) {
+                        tableLabelPos = pMatch.index;
+                        break;
+                    }
+                }
+            }
             if (tableLabelPos < 0) return xml;
-            const rowPos = xml.indexOf('>' + rowLabel + '<', tableLabelPos);
+
+            // Find row with the rowLabel (direct or concatenated)
+            let rowPos = xml.indexOf('>' + rowLabel + '<', tableLabelPos);
+            if (rowPos < 0) {
+                // Search by concatenating text in rows after tableLabelPos
+                let searchPos = tableLabelPos;
+                while (searchPos < xml.length) {
+                    const trIdx = xml.indexOf('<w:tr', searchPos);
+                    if (trIdx < 0) break;
+                    const trEndIdx = xml.indexOf('</w:tr>', trIdx);
+                    if (trEndIdx < 0) break;
+                    const rowXml = xml.substring(trIdx, trEndIdx + 7);
+                    const texts = [...rowXml.matchAll(/<w:t[^>]*>([^<]*)<\/w:t>/g)];
+                    const fullText = texts.map(m => m[1]).join('');
+                    if (fullText.includes(rowLabel)) {
+                        rowPos = trIdx;
+                        break;
+                    }
+                    searchPos = trEndIdx + 7;
+                }
+            }
             if (rowPos < 0) return xml;
+
             const trStart = xml.lastIndexOf('<w:tr', rowPos);
             const trEnd = xml.indexOf('</w:tr>', rowPos);
             if (trStart < 0 || trEnd < 0) return xml;
@@ -11479,14 +11579,14 @@ async function generatePEI() {
             const datum1 = einschaetzung1.stammdaten?.einschaetzungsdatum || '';
             const datum2 = einschaetzung2.stammdaten?.einschaetzungsdatum || '';
             if (datum1) {
-                docXml = fillBerichtCell(docXml, fortLabel, 'Datum', [datum1], 1);
+                docXml = fillBerichtCell(docXml, fortLabel, isFR ? 'Date' : 'Datum', [datum1], 1);
             }
             if (datum2) {
-                docXml = fillBerichtCell(docXml, fortLabel, 'Datum', [datum2], 2);
+                docXml = fillBerichtCell(docXml, fortLabel, isFR ? 'Date' : 'Datum', [datum2], 2);
             }
 
             // Anzugehende Themen table: left = 1st, right = 2nd
-            const themenLabel = isFR ? 'Th' : 'Anzugehende Themen';
+            const themenLabel = isFR ? 'Points' : 'Anzugehende Themen';
             if (themen1.length > 0) {
                 docXml = fillBerichtCell(docXml, themenLabel, 'CDSE', themen1, 1);
             }
@@ -11495,10 +11595,10 @@ async function generatePEI() {
             }
             // Anzugehende Themen Datum
             if (datum1) {
-                docXml = fillBerichtCell(docXml, themenLabel, 'Datum', [datum1], 1);
+                docXml = fillBerichtCell(docXml, themenLabel, isFR ? 'Date' : 'Datum', [datum1], 1);
             }
             if (datum2) {
-                docXml = fillBerichtCell(docXml, themenLabel, 'Datum', [datum2], 2);
+                docXml = fillBerichtCell(docXml, themenLabel, isFR ? 'Date' : 'Datum', [datum2], 2);
             }
         } else {
             // === SINGLE ASSESSMENT: Fill left column only ===
@@ -11518,7 +11618,7 @@ async function generatePEI() {
                 docXml = fillBerichtRow(docXml, fortLabel, 'CDSE', fortschritte);
             }
             if (themen.length > 0) {
-                const themenLabel = isFR ? 'Th' : 'Anzugehende Themen';
+                const themenLabel = isFR ? 'Points' : 'Anzugehende Themen';
                 docXml = fillBerichtRow(docXml, themenLabel, 'CDSE', themen);
             }
         }
@@ -13313,6 +13413,8 @@ function smOeffneEinschaetzung(id, nr) {
     } else if (nr === 2 && schueler.einschaetzung1) {
         // 2. Einschätzung: ELDiB-Daten aus 1. Einschätzung übernehmen
         const basis = schueler.einschaetzung1;
+        // Alle Stammdaten aus der 1. Einschätzung übernehmen (inkl. Matricule, Förderort, etc.)
+        const basisStammdaten = basis.stammdaten || {};
         const neueDaten = {
             language: basis.language || 'de',
             selections: JSON.parse(JSON.stringify(basis.selections || {})),
@@ -13326,8 +13428,18 @@ function smOeffneEinschaetzung(id, nr) {
             })),
             stammdaten: {
                 schueler_name: schueler.name,
-                geburtsdatum: schueler.geburtsdatum || '',
-                klasse: schueler.klasse
+                geburtsdatum: schueler.geburtsdatum || basisStammdaten.geburtsdatum || '',
+                matricule: basisStammdaten.matricule || '',
+                foerderort: basisStammdaten.foerderort || '',
+                klasse: schueler.klasse || basisStammdaten.klasse || '',
+                schuljahr: basisStammdaten.schuljahr || '',
+                periodenTyp: basisStammdaten.periodenTyp || 'trimester',
+                periode: basisStammdaten.periode || '1',
+                einschaetzungsdatum: '',
+                einschaetzende: basisStammdaten.einschaetzende || '',
+                eltern1_name: basisStammdaten.eltern1_name || '',
+                eltern1_tel: basisStammdaten.eltern1_tel || '',
+                eltern1_email: basisStammdaten.eltern1_email || ''
             },
             dsData: {}
         };
@@ -13348,7 +13460,7 @@ function smOeffneEinschaetzung(id, nr) {
             stammdaten: {
                 schueler_name: schueler.name,
                 geburtsdatum: schueler.geburtsdatum || '',
-                klasse: schueler.klasse
+                klasse: schueler.klasse || ''
             },
             dsData: {}
         };
@@ -13614,6 +13726,8 @@ smOeffneEinschaetzung = function(id, nr) {
     } else if (nr === 2 && schueler.einschaetzung1) {
         // 2. Einschätzung: ELDiB-Daten aus 1. Einschätzung übernehmen
         const basis = schueler.einschaetzung1;
+        // Alle Stammdaten aus der 1. Einschätzung übernehmen (inkl. Matricule, Förderort, etc.)
+        const basisStammdaten = basis.stammdaten || {};
         const neueDaten = {
             language: basis.language || 'de',
             selections: JSON.parse(JSON.stringify(basis.selections || {})),
@@ -13627,8 +13741,18 @@ smOeffneEinschaetzung = function(id, nr) {
             })),
             stammdaten: {
                 schueler_name: schueler.name,
-                geburtsdatum: schueler.geburtsdatum || '',
-                klasse: schueler.klasse
+                geburtsdatum: schueler.geburtsdatum || basisStammdaten.geburtsdatum || '',
+                matricule: basisStammdaten.matricule || '',
+                foerderort: basisStammdaten.foerderort || '',
+                klasse: schueler.klasse || basisStammdaten.klasse || '',
+                schuljahr: basisStammdaten.schuljahr || '',
+                periodenTyp: basisStammdaten.periodenTyp || 'trimester',
+                periode: basisStammdaten.periode || '1',
+                einschaetzungsdatum: '',
+                einschaetzende: basisStammdaten.einschaetzende || '',
+                eltern1_name: basisStammdaten.eltern1_name || '',
+                eltern1_tel: basisStammdaten.eltern1_tel || '',
+                eltern1_email: basisStammdaten.eltern1_email || ''
             },
             dsData: {}
         };
@@ -13648,7 +13772,7 @@ smOeffneEinschaetzung = function(id, nr) {
             stammdaten: {
                 schueler_name: schueler.name,
                 geburtsdatum: schueler.geburtsdatum || '',
-                klasse: schueler.klasse
+                klasse: schueler.klasse || ''
             },
             dsData: {}
         };
