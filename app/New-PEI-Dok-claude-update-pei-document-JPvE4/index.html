@@ -6980,7 +6980,7 @@ function loadFromLocalStorage() {
                 // Skip periodenTyp and trimester (handled separately)
                 if (key === 'periodenTyp' || key === 'trimester') continue;
                 const element = document.getElementById(key);
-                if (element && value) element.value = value;
+                if (element) element.value = value || '';
             }
         }
 
@@ -13703,9 +13703,15 @@ function smExportAlleJSON() {
                     const nr = parsed.einschaetzungNr;
                     const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
                     if (daten) {
-                        localStorage.setItem('eldib-data', JSON.stringify(daten));
+                        // Bestehende Einschätzung — Profildaten synchronisieren
+                        const merged = JSON.parse(JSON.stringify(daten));
+                        merged.stammdaten = merged.stammdaten || {};
+                        merged.stammdaten.schueler_name = schueler.name;
+                        merged.stammdaten.geburtsdatum = schueler.geburtsdatum || merged.stammdaten.geburtsdatum || '';
+                        merged.stammdaten.klasse = schueler.klasse || merged.stammdaten.klasse || '';
+                        localStorage.setItem('eldib-data', JSON.stringify(merged));
                     } else if (nr === 2 && schueler.einschaetzung1) {
-                        // 2. Einschätzung aus 1. ableiten
+                        // 2. Einschätzung: ALLE Daten aus 1. übernehmen
                         const basis = schueler.einschaetzung1;
                         const basisStammdaten = basis.stammdaten || {};
                         const neueDaten = {
@@ -13731,11 +13737,11 @@ function smExportAlleJSON() {
                                 eltern1_tel: basisStammdaten.eltern1_tel || '',
                                 eltern1_email: basisStammdaten.eltern1_email || ''
                             },
-                            dsData: {}
+                            dsData: JSON.parse(JSON.stringify(basis.dsData || {}))
                         };
                         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
                     } else {
-                        // Leere Einschätzung mit Grunddaten
+                        // Leere Einschätzung: ALLE Profildaten als Stammdaten
                         const neueDaten = {
                             language: 'de',
                             selections: {},
@@ -13747,7 +13753,17 @@ function smExportAlleJSON() {
                             stammdaten: {
                                 schueler_name: schueler.name,
                                 geburtsdatum: schueler.geburtsdatum || '',
-                                klasse: schueler.klasse || ''
+                                matricule: '',
+                                foerderort: '',
+                                klasse: schueler.klasse || '',
+                                schuljahr: '',
+                                periodenTyp: 'trimester',
+                                periode: '1',
+                                einschaetzungsdatum: '',
+                                einschaetzende: '',
+                                eltern1_name: '',
+                                eltern1_tel: '',
+                                eltern1_email: ''
                             },
                             dsData: {}
                         };
@@ -13837,11 +13853,16 @@ smOeffneEinschaetzung = function(id, nr) {
     const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
 
     if (daten) {
-        localStorage.setItem('eldib-data', JSON.stringify(daten));
+        // Bestehende Einschätzung laden — Stammdaten aus Profil synchronisieren
+        const merged = JSON.parse(JSON.stringify(daten));
+        merged.stammdaten = merged.stammdaten || {};
+        merged.stammdaten.schueler_name = schueler.name;
+        merged.stammdaten.geburtsdatum = schueler.geburtsdatum || merged.stammdaten.geburtsdatum || '';
+        merged.stammdaten.klasse = schueler.klasse || merged.stammdaten.klasse || '';
+        localStorage.setItem('eldib-data', JSON.stringify(merged));
     } else if (nr === 2 && schueler.einschaetzung1) {
-        // 2. Einschätzung: ELDiB-Daten aus 1. Einschätzung übernehmen
+        // 2. Einschätzung: ALLE Daten aus 1. Einschätzung übernehmen
         const basis = schueler.einschaetzung1;
-        // Alle Stammdaten aus der 1. Einschätzung übernehmen (inkl. Matricule, Förderort, etc.)
         const basisStammdaten = basis.stammdaten || {};
         const neueDaten = {
             language: basis.language || 'de',
@@ -13869,10 +13890,11 @@ smOeffneEinschaetzung = function(id, nr) {
                 eltern1_tel: basisStammdaten.eltern1_tel || '',
                 eltern1_email: basisStammdaten.eltern1_email || ''
             },
-            dsData: {}
+            dsData: JSON.parse(JSON.stringify(basis.dsData || {}))
         };
         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
     } else {
+        // Neue Einschätzung: ALLE Profildaten als Stammdaten übernehmen
         const neueDaten = {
             language: 'de',
             selections: {},
@@ -13887,7 +13909,17 @@ smOeffneEinschaetzung = function(id, nr) {
             stammdaten: {
                 schueler_name: schueler.name,
                 geburtsdatum: schueler.geburtsdatum || '',
-                klasse: schueler.klasse || ''
+                matricule: '',
+                foerderort: '',
+                klasse: schueler.klasse || '',
+                schuljahr: '',
+                periodenTyp: 'trimester',
+                periode: '1',
+                einschaetzungsdatum: '',
+                einschaetzende: '',
+                eltern1_name: '',
+                eltern1_tel: '',
+                eltern1_email: ''
             },
             dsData: {}
         };
