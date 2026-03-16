@@ -9214,6 +9214,24 @@ function resetAllData() {
 let periodenTyp = 'trimester';
 let isLoadingData = false;
 
+// Hilfsfunktion für einheitliche Dateinamen: YYYYMMDD_NACHNAME_Vorname_CDSE_Typ.docx
+function buildFilename(docType) {
+    const stammdaten = getStammdaten();
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const datum = `${y}${m}${d}`;
+
+    const name = stammdaten.schueler_name || 'Export';
+    const parts = name.split(',').map(s => s.trim());
+    const nachname = (parts[0] || 'Export').toUpperCase().replace(/\s+/g, '-');
+    const vorname = (parts[1] || '').replace(/\s+/g, '-');
+    const namePart = vorname ? `${nachname}_${vorname}` : nachname;
+
+    return `${datum}_${namePart}_CDSE_${docType}.docx`;
+}
+
 function setPeriodType(type) {
     periodenTyp = type;
     const btnTrimester = document.getElementById('btn-trimester');
@@ -11641,7 +11659,7 @@ async function generatePEI() {
         type: 'blob',
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     });
-    saveAs(blob, 'PEI_' + (stammdaten.schueler_name || 'export') + '.docx');
+    saveAs(blob, buildFilename('PEI'));
 }
 
 
@@ -11999,7 +12017,7 @@ async function generateComplement() {
     });
 
     const blob = await Packer.toBlob(doc);
-    saveAs(blob, `Complement_${stammdaten.schueler_name || 'export'}_${periodeLabel}${stammdaten.periode || ''}.docx`);
+    saveAs(blob, buildFilename('Complement'));
 }
 
 function downloadAsWord(html, filename) {
@@ -13270,8 +13288,7 @@ async function generateDSFromTemplate(isComplete) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    const prefix = isComplete ? 'DS_komplett_' : 'DS_';
-    link.download = prefix + (studentName || 'Spezialisierte_Diagnostik').replace(/\s+/g, '_') + '_' + today.replace(/\./g, '-') + '.docx';
+    link.download = buildFilename('DS');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
