@@ -11075,10 +11075,8 @@ async function generatePEI() {
         const textRun = '<w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">' + escapeXml(text) + '</w:t></w:r>';
         return xml.substring(0, pEnd) + textRun + xml.substring(pEnd);
     }
-    // Name mit Geburtsdatum
-    const peiGebFormatted = stammdaten.geburtsdatum ? new Date(stammdaten.geburtsdatum).toLocaleDateString(isFR ? 'fr-LU' : 'de-LU') : '';
-    const nameWithGeb = stammdaten.schueler_name + (peiGebFormatted ? (isFR ? ' — né(e) le ' : ' — geb. ') + peiGebFormatted : '');
-    docXml = fillShadedBox(docXml, 0, nameWithGeb);
+    // Name (ohne Geburtsdatum)
+    docXml = fillShadedBox(docXml, 0, stammdaten.schueler_name);
     docXml = fillShadedBox(docXml, 1, stammdaten.matricule);
     docXml = fillShadedBox(docXml, 2, (stammdaten.foerderort && stammdaten.klasse) ? stammdaten.foerderort + ' / ' + stammdaten.klasse : stammdaten.foerderort || stammdaten.klasse);
     // Box 3 (In Zusammenarbeit mit) - leave empty
