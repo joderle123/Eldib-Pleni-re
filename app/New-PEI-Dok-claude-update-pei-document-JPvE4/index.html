@@ -5456,7 +5456,7 @@ function updateAlterAnzeige() {
         anzeige.classList.add('hidden');
     }
 
-    saveToLocalStorage();
+    if (!isLoadingData) saveToLocalStorage();
 }
 
 // Aktualisiert alle Ziel-Buttons basierend auf Altersblockade
@@ -5919,7 +5919,7 @@ function switchLanguage(lang) {
     restoreZusatzSelections();
 
     // Save language preference
-    saveToLocalStorage();
+    if (!isLoadingData) saveToLocalStorage();
 }
 
 function updateUILanguage() {
@@ -6873,6 +6873,7 @@ function saveToLocalStorage() {
 }
 
 function loadFromLocalStorage() {
+    isLoadingData = true;
     const saved = localStorage.getItem('eldib-data');
     if (saved) {
         const data = JSON.parse(saved);
@@ -6988,6 +6989,7 @@ function loadFromLocalStorage() {
             loadDSData(data.dsData);
         }
     }
+    isLoadingData = false;
 }
 
 // ==========================================
@@ -9210,6 +9212,7 @@ function resetAllData() {
 
 // Period type state (trimester or semester)
 let periodenTyp = 'trimester';
+let isLoadingData = false;
 
 function setPeriodType(type) {
     periodenTyp = type;
@@ -9236,7 +9239,7 @@ function setPeriodType(type) {
             <option value="2">Semester 2</option>
         `;
     }
-    saveToLocalStorage();
+    if (!isLoadingData) saveToLocalStorage();
 }
 
 function getStammdaten() {
@@ -11054,7 +11057,10 @@ async function generatePEI() {
         const textRun = '<w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">' + escapeXml(text) + '</w:t></w:r>';
         return xml.substring(0, pEnd) + textRun + xml.substring(pEnd);
     }
-    docXml = fillShadedBox(docXml, 0, stammdaten.schueler_name);
+    // Name mit Geburtsdatum
+    const peiGebFormatted = stammdaten.geburtsdatum ? new Date(stammdaten.geburtsdatum).toLocaleDateString(isFR ? 'fr-LU' : 'de-LU') : '';
+    const nameWithGeb = stammdaten.schueler_name + (peiGebFormatted ? (isFR ? ' — né(e) le ' : ' — geb. ') + peiGebFormatted : '');
+    docXml = fillShadedBox(docXml, 0, nameWithGeb);
     docXml = fillShadedBox(docXml, 1, stammdaten.matricule);
     docXml = fillShadedBox(docXml, 2, (stammdaten.foerderort && stammdaten.klasse) ? stammdaten.foerderort + ' / ' + stammdaten.klasse : stammdaten.foerderort || stammdaten.klasse);
     // Box 3 (In Zusammenarbeit mit) - leave empty
@@ -11750,19 +11756,47 @@ async function generateComplement() {
 
     children.push(new Paragraph({ spacing: { after: 100 } }));
 
-    // Matricule and Lycée/Classe
+    // Geburtsdatum and Matricule
+    const gebFormatted = stammdaten.geburtsdatum ? new Date(stammdaten.geburtsdatum).toLocaleDateString(isFR_C ? 'fr-LU' : 'de-LU') : '';
     children.push(new Table({
         rows: [
             new TableRow({
                 children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Matricule', bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Lycée / Classe', bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Date de naissance' : 'Geburtsdatum', bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Matricule', bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} })
                 ]
             }),
             new TableRow({
                 children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: stammdaten.matricule || '', size: 22})]})], borders: cellBorders }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: `${stammdaten.foerderort || ''} / ${stammdaten.klasse || ''}`, size: 22})]})], borders: cellBorders })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: gebFormatted, size: 22})]})], borders: cellBorders }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: stammdaten.matricule || '', size: 22})]})], borders: cellBorders })
+                ]
+            })
+        ],
+        width: { size: 100, type: WidthType.PERCENTAGE }
+    }));
+
+    children.push(new Paragraph({ spacing: { after: 100 } }));
+
+    // Lycée/Classe and Schuljahr/Periode
+    const periodeLabel = stammdaten.periodenTyp === 'semester'
+        ? (isFR_C ? 'Semestre' : 'Semester')
+        : (isFR_C ? 'Trimestre' : 'Trimester');
+    const periodeText = stammdaten.periode ? `${periodeLabel} ${stammdaten.periode}` : '';
+    const schuljahrPeriode = [stammdaten.schuljahr, periodeText].filter(Boolean).join(' — ');
+
+    children.push(new Table({
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Lycée / Classe' : 'Schule / Klasse', bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: isFR_C ? 'Année scolaire / Période' : 'Schuljahr / Periode', bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} })
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: `${stammdaten.foerderort || ''} / ${stammdaten.klasse || ''}`, size: 22})]})], borders: cellBorders }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: schuljahrPeriode, size: 22})]})], borders: cellBorders })
                 ]
             })
         ],
@@ -11848,55 +11882,40 @@ async function generateComplement() {
         return goal.ziel || goal.title;
     }
 
-    // Helper: Create row with selected goals for Complément - ERREICHT und TEILWEISE mit Vornamen
+    // Helper: Create row with selected goals for Complément - Items in order without grouping
     function createZusatzRowComplement(categoryName, categoryKey) {
-        // Erreichte (stufe3) und teilweise erreichte (stufe2) Ziele anzeigen
+        // Alle Ziele (stufe3 und stufe2) sammeln und in Originalreihenfolge anzeigen
         const erreichtGoals = getZusatzErreicht(categoryKey); // stufe3
         const teilweiseGoals = getZusatzTeilweise(categoryKey); // stufe2
 
-        const hasGoals = erreichtGoals.length > 0 || teilweiseGoals.length > 0;
+        // Alle Ziele zusammenführen und nach ID sortieren (Originalreihenfolge)
+        const allGoals = [
+            ...erreichtGoals.map(g => ({ ...g, stufe: 'stufe3' })),
+            ...teilweiseGoals.map(g => ({ ...g, stufe: 'stufe2' }))
+        ].sort((a, b) => {
+            // Sort by ID to maintain original catalogue order
+            const aNum = parseInt(a.id.replace(/[^0-9]/g, '')) || 0;
+            const bNum = parseInt(b.id.replace(/[^0-9]/g, '')) || 0;
+            return aNum - bNum;
+        });
+
+        const hasGoals = allGoals.length > 0;
         const checkbox = hasGoals ? '☑' : '☐';
 
-        // Build evaluation text
+        // Build evaluation text - items in order without grouping headings
         const evaluationParagraphs = [];
 
-        // Erreichte Ziele (stufe3)
-        if (erreichtGoals.length > 0) {
+        allGoals.forEach(g => {
             evaluationParagraphs.push(new Paragraph({
-                children: [new TextRun({text: isFR_C ? 'Atteint :' : 'Erreicht:', bold: true, size: 22, color: '10b981'})],
-                spacing: { before: 60, after: 40 }
+                children: [new TextRun({text: '• ' + g.title, bold: true, size: 22})],
+                spacing: { before: 40, after: 20 }
             }));
-            erreichtGoals.forEach(g => {
-                evaluationParagraphs.push(new Paragraph({
-                    children: [new TextRun({text: '• ' + g.title, bold: true, size: 22})],
-                    spacing: { before: 40, after: 20 }
-                }));
-                const zielMitVorname = replaceIchWithVorname(getGoalTextComplement(g, 'stufe3'));
-                evaluationParagraphs.push(new Paragraph({
-                    children: [new TextRun({text: '  ' + zielMitVorname, size: 22})],
-                    spacing: { after: 80 }
-                }));
-            });
-        }
-
-        // Teilweise erreichte Ziele (stufe2)
-        if (teilweiseGoals.length > 0) {
+            const zielMitVorname = replaceIchWithVorname(getGoalTextComplement(g, g.stufe));
             evaluationParagraphs.push(new Paragraph({
-                children: [new TextRun({text: isFR_C ? 'Avec soutien :' : 'Mit Unterstützung:', bold: true, size: 22, color: '3b82f6'})],
-                spacing: { before: 100, after: 40 }
+                children: [new TextRun({text: '  ' + zielMitVorname, size: 22})],
+                spacing: { after: 80 }
             }));
-            teilweiseGoals.forEach(g => {
-                evaluationParagraphs.push(new Paragraph({
-                    children: [new TextRun({text: '• ' + g.title, bold: true, size: 22})],
-                    spacing: { before: 40, after: 20 }
-                }));
-                const zielMitVorname = replaceIchWithVorname(getGoalTextComplement(g, 'stufe2'));
-                evaluationParagraphs.push(new Paragraph({
-                    children: [new TextRun({text: '  ' + zielMitVorname, size: 22})],
-                    spacing: { after: 80 }
-                }));
-            });
-        }
+        });
 
         if (evaluationParagraphs.length === 0) {
             evaluationParagraphs.push(new Paragraph(''));
@@ -11980,7 +11999,7 @@ async function generateComplement() {
     });
 
     const blob = await Packer.toBlob(doc);
-    saveAs(blob, `Complement_${stammdaten.schueler_name || 'export'}_Trim${stammdaten.trimester}.docx`);
+    saveAs(blob, `Complement_${stammdaten.schueler_name || 'export'}_${periodeLabel}${stammdaten.periode || ''}.docx`);
 }
 
 function downloadAsWord(html, filename) {
