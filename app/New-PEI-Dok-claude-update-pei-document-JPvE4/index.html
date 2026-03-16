@@ -6847,21 +6847,7 @@ function saveToLocalStorage() {
         language: state.language,
         selections: state.selections,
         zusaetzlicheZiele: state.zusaetzlicheZiele,
-        stammdaten: {
-            schueler_name: document.getElementById('schueler_name')?.value,
-            geburtsdatum: document.getElementById('geburtsdatum')?.value,
-            matricule: document.getElementById('matricule')?.value,
-            foerderort: document.getElementById('foerderort')?.value,
-            klasse: document.getElementById('klasse')?.value,
-            schuljahr: document.getElementById('schuljahr')?.value,
-            periodenTyp: periodenTyp,
-            periode: document.getElementById('periode')?.value,
-            einschaetzungsdatum: document.getElementById('einschaetzungsdatum')?.value,
-            einschaetzende: document.getElementById('einschaetzende')?.value,
-            eltern1_name: document.getElementById('eltern1_name')?.value,
-            eltern1_tel: document.getElementById('eltern1_tel')?.value,
-            eltern1_email: document.getElementById('eltern1_email')?.value
-        },
+        stammdaten: getStammdaten(),
         dsData: getDSData()
     };
     try {
@@ -6874,6 +6860,7 @@ function saveToLocalStorage() {
 
 function loadFromLocalStorage() {
     isLoadingData = true;
+    try {
     const saved = localStorage.getItem('eldib-data');
     if (saved) {
         const data = JSON.parse(saved);
@@ -6989,7 +6976,11 @@ function loadFromLocalStorage() {
             loadDSData(data.dsData);
         }
     }
-    isLoadingData = false;
+    } catch (e) {
+        console.error('Fehler beim Laden der Daten:', e);
+    } finally {
+        isLoadingData = false;
+    }
 }
 
 // ==========================================
@@ -7388,6 +7379,126 @@ function loadDSData(data) {
                 document.getElementById(`ds_geschwister_${idx}_bemerkung`).value = g.bemerkung || '';
             }
         });
+    }
+
+    // Maßnahmen (Vorgeschichte) wiederherstellen
+    if (data.massnahmen && data.massnahmen.length > 0) {
+        const massnahmenContainer = document.getElementById('ds_massnahmen_container');
+        if (massnahmenContainer) {
+            // Bestehende Zeilen entfernen (außer der ersten leeren)
+            while (massnahmenContainer.children.length > 1) {
+                massnahmenContainer.lastChild.remove();
+            }
+            data.massnahmen.forEach((m, i) => {
+                if (i > 0 || !massnahmenContainer.querySelector('.ds-massnahme-row')) {
+                    addMassnahmeRow();
+                }
+                const rows = massnahmenContainer.querySelectorAll('.ds-massnahme-row');
+                const row = rows[i];
+                if (row) {
+                    const zeitraum = row.querySelector('.ds_massnahme_zeitraum');
+                    const klasse = row.querySelector('.ds_massnahme_klasse');
+                    const art = row.querySelector('.ds_massnahme_art');
+                    const akteur = row.querySelector('.ds_massnahme_akteur');
+                    if (zeitraum) zeitraum.value = m.zeitraum || '';
+                    if (klasse) klasse.value = m.klasse || '';
+                    if (art) art.value = m.art || '';
+                    if (akteur) akteur.value = m.akteur || '';
+                }
+            });
+        }
+    }
+
+    // Aktuelle Maßnahmen wiederherstellen
+    if (data.aktuelleMassnahmen && data.aktuelleMassnahmen.length > 0) {
+        const aktContainer = document.getElementById('ds_aktuelle_massnahmen_container');
+        if (aktContainer) {
+            while (aktContainer.children.length > 1) {
+                aktContainer.lastChild.remove();
+            }
+            data.aktuelleMassnahmen.forEach((m, i) => {
+                if (i > 0 || !aktContainer.querySelector('.ds-massnahme-row')) {
+                    addAktuelleMassnahmeRow();
+                }
+                const rows = aktContainer.querySelectorAll('.ds-massnahme-row');
+                const row = rows[i];
+                if (row) {
+                    const zeitraum = row.querySelector('.ds_aktuelle_massnahme_zeitraum');
+                    const klasse = row.querySelector('.ds_aktuelle_massnahme_klasse');
+                    const art = row.querySelector('.ds_aktuelle_massnahme_art');
+                    const akteur = row.querySelector('.ds_aktuelle_massnahme_akteur');
+                    if (zeitraum) zeitraum.value = m.zeitraum || '';
+                    if (klasse) klasse.value = m.klasse || '';
+                    if (art) art.value = m.art || '';
+                    if (akteur) akteur.value = m.akteur || '';
+                }
+            });
+        }
+    }
+
+    // Beobachtungen wiederherstellen
+    if (data.beobachtungen && data.beobachtungen.length > 0) {
+        const beobContainer = document.getElementById('ds_beobachtungen_container');
+        if (beobContainer) {
+            beobContainer.innerHTML = '';
+            data.beobachtungen.forEach(b => {
+                addBeobachtungBlock();
+                const blocks = beobContainer.querySelectorAll('.ds-beobachtung-block');
+                const block = blocks[blocks.length - 1];
+                if (block) {
+                    const datum = block.querySelector('.ds_beobachtung_datum');
+                    const dauer = block.querySelector('.ds_beobachtung_dauer');
+                    const setting = block.querySelector('.ds_beobachtung_setting');
+                    const beobachter = block.querySelector('.ds_beobachtung_beobachter');
+                    const positiv = block.querySelector('.ds_beobachtung_positiv');
+                    const negativ = block.querySelector('.ds_beobachtung_negativ');
+                    const zusammenfassung = block.querySelector('.ds_beobachtung_zusammenfassung');
+                    if (datum) datum.value = b.datum || '';
+                    if (dauer) dauer.value = b.dauer || '';
+                    if (setting) setting.value = b.setting || '';
+                    if (beobachter) beobachter.value = b.beobachter || '';
+                    if (positiv) positiv.value = b.positiv || '';
+                    if (negativ) negativ.value = b.negativ || '';
+                    if (zusammenfassung) zusammenfassung.value = b.zusammenfassung || '';
+                    // Checkboxen wiederherstellen
+                    if (b.positivChecks) b.positivChecks.forEach(v => {
+                        const cb = block.querySelector(`.ds_beob_pos[value="${v}"]`);
+                        if (cb) cb.checked = true;
+                    });
+                    if (b.negativChecks) b.negativChecks.forEach(v => {
+                        const cb = block.querySelector(`.ds_beob_neg[value="${v}"]`);
+                        if (cb) cb.checked = true;
+                    });
+                    if (b.interaktionChecks) b.interaktionChecks.forEach(v => {
+                        const cb = block.querySelector(`.ds_beob_inter[value="${v}"]`);
+                        if (cb) cb.checked = true;
+                    });
+                }
+            });
+        }
+    }
+
+    // Interventionen wiederherstellen
+    if (data.interventionen && data.interventionen.length > 0) {
+        const intContainer = document.getElementById('ds_interventionen_container');
+        if (intContainer) {
+            while (intContainer.children.length > 1) {
+                intContainer.lastChild.remove();
+            }
+            data.interventionen.forEach((interv, i) => {
+                if (i > 0 || !intContainer.querySelector('.ds-intervention-row')) {
+                    addInterventionRow();
+                }
+                const rows = intContainer.querySelectorAll('.ds-intervention-row');
+                const row = rows[i];
+                if (row) {
+                    const datum = row.querySelector('.ds_intervention_datum');
+                    const art = row.querySelector('.ds_intervention_art');
+                    if (datum) datum.value = interv.datum || '';
+                    if (art) art.value = interv.art || '';
+                }
+            });
+        }
     }
 
     // Diagnosen Details anzeigen
@@ -13860,6 +13971,11 @@ function smExportAlleJSON() {
 
 // Überschreibe smOeffneEinschaetzung mit localStorage-Persistenz
 smOeffneEinschaetzung = function(id, nr) {
+    // Aktuelle Einschätzung sichern bevor gewechselt wird
+    if (smAktuellerSchueler) {
+        smSaveAktuelleEinschaetzung();
+    }
+
     const liste = smGetListe();
     const schueler = liste.find(s => s.id === id);
     if (!schueler) return;
@@ -13952,7 +14068,35 @@ smOeffneEinschaetzung = function(id, nr) {
 
 // Überschreibe smZurueckZurListe mit localStorage-Persistenz
 smZurueckZurListe = function() {
-    smSaveAktuelleEinschaetzung();
+    // Erst speichern und prüfen ob es geklappt hat
+    const prevSchueler = smAktuellerSchueler;
+    try {
+        smSaveAktuelleEinschaetzung();
+        // Verifizieren dass die Daten in der Schülerliste angekommen sind
+        if (prevSchueler) {
+            const liste = smGetListe();
+            const schueler = liste.find(s => s.id === prevSchueler.id);
+            const nr = prevSchueler.einschaetzungNr;
+            const gespeicherteDaten = nr === 1 ? schueler?.einschaetzung1 : schueler?.einschaetzung2;
+            if (!gespeicherteDaten || !gespeicherteDaten.savedAt) {
+                console.warn('Speicherung konnte nicht verifiziert werden - behalte eldib-data als Backup');
+                // eldib-data nicht löschen als Sicherheitsnetz
+                smAktuellerSchueler = null;
+                smIsReloading = true;
+                localStorage.removeItem(SM_AKTIV_KEY);
+                location.reload();
+                return;
+            }
+        }
+    } catch (e) {
+        console.error('Fehler beim Speichern vor Zurück:', e);
+        // Bei Fehler eldib-data behalten als Backup
+        smAktuellerSchueler = null;
+        smIsReloading = true;
+        localStorage.removeItem(SM_AKTIV_KEY);
+        location.reload();
+        return;
+    }
     smAktuellerSchueler = null;
     smIsReloading = true;
     localStorage.removeItem(SM_AKTIV_KEY);
