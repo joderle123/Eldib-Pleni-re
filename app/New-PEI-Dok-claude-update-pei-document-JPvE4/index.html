@@ -13310,6 +13310,7 @@ function dsGetDomainPrefix(domain) {
 const SM_KEY = 'eldib-schueler-liste';
 const SM_AKTIV_KEY = 'eldib-sm-aktiv';
 let smAktuellerSchueler = null; // { id, einschaetzungNr }
+let smIsReloading = false; // Flag to prevent beforeunload from overwriting data during location.reload()
 
 function smGetListe() {
     try {
@@ -13551,6 +13552,8 @@ function smOeffneEinschaetzung(id, nr) {
     info.textContent = `${schueler.name} — ${nr}. Einschätzung`;
     info.style.display = 'block';
 
+    // Flag setzen um zu verhindern, dass beforeunload die vorbereiteten Daten überschreibt
+    smIsReloading = true;
     // Seite neu laden, damit loadFromLocalStorage() die Daten einliest
     location.reload();
 }
@@ -13943,6 +13946,8 @@ smOeffneEinschaetzung = function(id, nr) {
         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
     }
 
+    // Flag setzen um zu verhindern, dass beforeunload/pagehide die vorbereiteten Daten überschreibt
+    smIsReloading = true;
     // Seite neu laden, damit alles korrekt initialisiert wird
     location.reload();
 };
@@ -13951,6 +13956,7 @@ smOeffneEinschaetzung = function(id, nr) {
 smZurueckZurListe = function() {
     smSaveAktuelleEinschaetzung();
     smAktuellerSchueler = null;
+    smIsReloading = true;
     localStorage.removeItem(SM_AKTIV_KEY);
     localStorage.removeItem('eldib-data');
     location.reload();
@@ -13965,37 +13971,37 @@ function smSaveAll() {
     }
 }
 
-// Beim Seitenverlassen speichern
+// Beim Seitenverlassen speichern (nur wenn kein geplanter Reload läuft)
 window.addEventListener('beforeunload', function() {
-    if (smAktuellerSchueler) {
+    if (smAktuellerSchueler && !smIsReloading) {
         smSaveAll();
     }
 });
 
 // pagehide ist zuverlässiger als beforeunload auf Mobilgeräten
 window.addEventListener('pagehide', function() {
-    if (smAktuellerSchueler) {
+    if (smAktuellerSchueler && !smIsReloading) {
         smSaveAll();
     }
 });
 
 // Periodisches Auto-Save alle 10 Sekunden (Sicherheitsnetz)
 setInterval(function() {
-    if (smAktuellerSchueler) {
+    if (smAktuellerSchueler && !smIsReloading) {
         smSaveAll();
     }
 }, 10000);
 
 // Speichern wenn Tab/Fenster den Fokus verliert
 document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden' && smAktuellerSchueler) {
+    if (document.visibilityState === 'hidden' && smAktuellerSchueler && !smIsReloading) {
         smSaveAll();
     }
 });
 
 // Speichern wenn Fenster den Fokus verliert (zusätzlicher Schutz)
 window.addEventListener('blur', function() {
-    if (smAktuellerSchueler) {
+    if (smAktuellerSchueler && !smIsReloading) {
         smSaveAll();
     }
 });
