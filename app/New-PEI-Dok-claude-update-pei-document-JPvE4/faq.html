@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ – ELDiB Generator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a1a1e;
+            min-height: 100vh;
+            padding: 32px;
+            line-height: 1.7;
+            color: #e0e0e0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(0,151,167,0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0,131,143,0.25) 0%, transparent 50%),
+                linear-gradient(180deg, #0a1a1e 0%, #122a2e 50%, #0a1a1e 100%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #26C6DA, #4DB6AC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #71717a;
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+        }
+
+        .faq-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #26C6DA;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0,151,167,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        .faq-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(0,151,167,0.3);
+        }
+
+        .faq-question {
+            padding: 20px 24px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.4rem;
+            color: #26C6DA;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+            margin-left: 16px;
+        }
+
+        .faq-item.open .faq-question::after {
+            content: '−';
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 24px 20px;
+            color: #a1a1aa;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        .highlight {
+            background: rgba(0,151,167,0.15);
+            color: #4DB6AC;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .steps {
+            margin: 12px 0;
+            padding-left: 0;
+            list-style: none;
+            counter-reset: step;
+        }
+
+        .steps li {
+            counter-increment: step;
+            padding: 8px 0 8px 36px;
+            position: relative;
+        }
+
+        .steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #0097A7, #00838F);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            top: 10px;
+        }
+
+        .safe-box {
+            background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.05));
+            border: 1px solid rgba(34,197,94,0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+
+        .safe-box strong {
+            color: #4ade80;
+        }
+
+        code {
+            background: rgba(0,151,167,0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88em;
+            color: #4DB6AC;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 24px;
+            color: #26C6DA;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .faq-question { padding: 16px; font-size: 0.95rem; }
+            .faq-answer { padding: 0 16px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">&larr; Zurück zur App</a>
+
+        <h1>FAQ – ELDiB Generator</h1>
+        <p class="subtitle">Häufig gestellte Fragen zur Nutzung der App</p>
+
+        <!-- ZUGANG & INSTALLATION -->
+        <div class="faq-section">
+            <div class="section-title">Zugang &amp; Installation</div>
+
+            <div class="faq-item open">
+                <div class="faq-question">Wo finde ich die App?</div>
+                <div class="faq-answer">
+                    Die HTML-Datei befindet sich auf dem <span class="highlight">O: / CDSEall</span> (gemeinsames Laufwerk). Navigieren Sie zum entsprechenden Ordner und suchen Sie die Datei <code>index.html</code> (ELDiB Generator).
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Wie installiere ich die App auf meinem Gerät?</div>
+                <div class="faq-answer">
+                    <p>Es gibt keine klassische Installation. Sie kopieren einfach die Datei:</p>
+                    <ol class="steps">
+                        <li>Öffnen Sie das Laufwerk <span class="highlight">O: / CDSEall</span> und suchen Sie die HTML-Datei.</li>
+                        <li>Kopieren Sie die Datei <code>index.html</code> auf Ihren Computer (z.B. auf den Desktop oder in einen beliebigen Ordner).</li>
+                        <li>Öffnen Sie die kopierte Datei per Doppelklick – sie öffnet sich in Ihrem Browser (Chrome, Edge, Firefox, etc.).</li>
+                    </ol>
+                    <p>Das war's. Keine weitere Installation nötig.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Warum muss ich die Datei lokal speichern?</div>
+                <div class="faq-answer">
+                    Die App speichert Ihre Daten im <span class="highlight">localStorage</span> Ihres Browsers – dieser ist an den Speicherort der Datei gebunden. Wenn Sie die Datei direkt vom Netzlaufwerk öffnen, können Daten verloren gehen oder zwischen Nutzern kollidieren. Durch das lokale Speichern bleiben Ihre Daten sicher bei Ihnen.
+                </div>
+            </div>
+        </div>
+
+        <!-- DATENSCHUTZ & SICHERHEIT -->
+        <div class="faq-section">
+            <div class="section-title">Datenschutz &amp; Sicherheit</div>
+
+            <div class="faq-item">
+                <div class="faq-question">Werden meine Daten irgendwohin gesendet?</div>
+                <div class="faq-answer">
+                    <div class="safe-box">
+                        <strong>Nein. Keine einzige Information verlässt Ihren Computer.</strong>
+                    </div>
+                    <p>Die App läuft <strong>vollständig lokal</strong> in Ihrem Browser. Es gibt keinen Server, keine Cloud, keine Datenbank im Hintergrund. Alle Eingaben (Schülerdaten, Einschätzungen, Ziele) werden ausschließlich im lokalen Speicher Ihres Browsers gespeichert und bleiben auf Ihrem Gerät.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Hat die App etwas mit KI / Künstlicher Intelligenz zu tun?</div>
+                <div class="faq-answer">
+                    <div class="safe-box">
+                        <strong>Nein. Die App hat keinerlei KI-Komponente.</strong>
+                    </div>
+                    <p>Es handelt sich um ein reines HTML-Formular mit fest hinterlegten ELDiB-Items und Zielformulierungen. Die App <strong>generiert keine Texte</strong>, sie <strong>setzt Ihre Eingaben</strong> in ein formatiertes Word-Dokument um. Kein Algorithmus entscheidet etwas – Sie wählen aus, die App formatiert.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Ist die App ein geschlossenes System?</div>
+                <div class="faq-answer">
+                    <p><strong>Ja.</strong> Die App ist eine einzelne HTML-Datei, die komplett offline funktioniert. Sie:</p>
+                    <ul style="padding-left: 20px; margin: 8px 0;">
+                        <li>stellt <strong>keine Internetverbindung</strong> her</li>
+                        <li>sendet <strong>keine Daten</strong> an externe Dienste</li>
+                        <li>hat <strong>keinen Login</strong> und kein Benutzerkonto</li>
+                        <li>speichert alles <strong>nur lokal</strong> auf Ihrem Gerät</li>
+                    </ul>
+                    <p>Es ist ein geschlossenes, selbstständiges Werkzeug.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FUNKTIONEN -->
+        <div class="faq-section">
+            <div class="section-title">Funktionen &amp; Bedienung</div>
+
+            <div class="faq-item">
+                <div class="faq-question">Wie ist die App aufgebaut?</div>
+                <div class="faq-answer">
+                    <p>Die App hat <strong>drei Hauptbereiche</strong>, durch die Sie Schritt für Schritt navigieren:</p>
+                    <ol class="steps">
+                        <li><strong>Stammdaten</strong> – Name, Geburtsdatum, Schule, Klasse, Schuljahr und Einschätzungszeitraum (Trimester/Semester) eingeben.</li>
+                        <li><strong>ELDiB Auswertung</strong> – Einschätzung in den vier Bereichen Verhalten, Kommunikation, Sozialisation und Kognition plus zusätzliche Ziele.</li>
+                        <li><strong>Export</strong> – Fertige Dokumente als Word-Dateien herunterladen.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Wie funktioniert die ELDiB-Einschätzung?</div>
+                <div class="faq-answer">
+                    <p>In jedem Bereich (Verhalten, Kommunikation, Sozialisation, Kognition) sind die <strong>ELDiB-Items nach Stufen (I–V)</strong> organisiert. Für jedes Item wählen Sie:</p>
+                    <ul style="padding-left: 20px; margin: 8px 0;">
+                        <li><span style="color: #4ade80; font-weight: 700;">Erreicht</span> – Das Kind zeigt dieses Verhalten regelmäßig.</li>
+                        <li><span style="color: #fb7185; font-weight: 700;">Nicht erreicht</span> – Das Verhalten wird noch nicht gezeigt.</li>
+                        <li><span style="color: #fbbf24; font-weight: 700;">Ziel</span> – Dieses Verhalten wird als Förderziel definiert (max. 4 Ziele pro Bereich).</li>
+                    </ul>
+                    <p>Wenn alle Items einer Stufe erreicht sind, können Sie die gesamte Stufe auf einmal als „Alle erreicht" markieren. Zu jedem Bereich können Sie außerdem <strong>Notizen</strong> hinterlegen.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Was sind die „Zusätzlichen Ziele"?</div>
+                <div class="faq-answer">
+                    Neben den vier ELDiB-Bereichen können Sie zusätzliche Förderziele aus sechs Kategorien auswählen: <em>Démarches mentales, Manières d'apprendre, Attitudes relationnelles, Attitudes affectives, Compétences essentielles</em> und <em>Culture et loisirs</em>. Diese werden ebenfalls ins PEI-Dokument übernommen.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Welche Dokumente kann ich exportieren?</div>
+                <div class="faq-answer">
+                    <p>Im Export-Bereich stehen Ihnen drei Word-Dokumente zur Verfügung:</p>
+                    <ul style="padding-left: 20px; margin: 8px 0;">
+                        <li><strong>Plan éducatif individualisé (PEI)</strong> – Enthält alle ausgewählten Ziele mit Ich-Zielformulierungen.</li>
+                        <li><strong>Complement</strong> – Enthält die letzten 4 erreichten Items pro Bereich.</li>
+                        <li><strong>Diagnostic Spécialisé (DS)</strong> – Wird mit Platzhaltern generiert. Das ELDiB-Raster und der Altersvergleich werden automatisch ausgefüllt, den Fließtext ergänzen Sie manuell im Word-Dokument.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Wie werden meine Daten gespeichert?</div>
+                <div class="faq-answer">
+                    <p>Die App speichert automatisch im Hintergrund. Zusätzlich:</p>
+                    <ul style="padding-left: 20px; margin: 8px 0;">
+                        <li>Der <strong>Speichern-Button</strong> (oben rechts) sichert manuell.</li>
+                        <li>Die <strong>Schüler-Übersicht</strong> verwaltet mehrere Schüler:innen – Sie können zwischen verschiedenen Einschätzungen wechseln.</li>
+                    </ul>
+                    <p><strong>Wichtig:</strong> Die Daten liegen im Browser-Speicher. Wenn Sie den Browser-Cache löschen, gehen die Daten verloren. Nutzen Sie bei Bedarf den JSON-Export als Backup.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Was passiert bei einem Browser- oder Cache-Wechsel?</div>
+                <div class="faq-answer">
+                    Die Daten sind an den jeweiligen Browser gebunden. Wenn Sie den Browser wechseln oder den Cache leeren, sind die Daten nicht mehr verfügbar. Daher empfiehlt es sich, regelmäßig die generierten Word-Dokumente herunterzuladen – diese sind Ihre dauerhafte Sicherung.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                q.parentElement.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>
