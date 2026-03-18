@@ -773,6 +773,59 @@
             padding: 32px;
         }
 
+        .bereich-notizen {
+            margin-top: 24px;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(250,252,255,0.95));
+            border-radius: var(--radius);
+            border: 1px solid rgba(0, 151, 167, 0.12);
+            box-shadow: 0 2px 12px -4px rgba(0, 0, 0, 0.06);
+        }
+
+        .bereich-notizen-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .bereich-notizen-label svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.6;
+        }
+
+        .bereich-notizen textarea {
+            width: 100%;
+            min-height: 60px;
+            max-height: 200px;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--gray-700);
+            background: white;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .bereich-notizen textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 151, 167, 0.1);
+        }
+
+        .bereich-notizen textarea::placeholder {
+            color: var(--gray-400);
+            font-style: italic;
+        }
+
         .stufe {
             margin-bottom: 32px;
             background: linear-gradient(160deg, rgba(255,255,255,0.95), rgba(250,250,255,0.9));
@@ -3028,7 +3081,7 @@
             <p id="header-subtitle">Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen</p>
             <div class="progress-indicator" id="progress-indicator">
                 <div class="progress-dot active" data-section="stammdaten" onclick="showMainSection('stammdaten')" title="Stammdaten"></div>
-                <div class="progress-dot" data-section="eldib" onclick="showMainSection('eldib')" title="ELDiB Bewertung"></div>
+                <div class="progress-dot" data-section="eldib" onclick="showMainSection('eldib')" title="ELDiB Auswertung"></div>
                 <div class="progress-dot" data-section="export" onclick="showMainSection('export')" title="Export"></div>
             </div>
         </div>
@@ -3041,7 +3094,7 @@
             </button>
             <button class="main-nav-item" onclick="showMainSection('eldib')" title="ELDiB-Bewertung durchführen">
                 <span class="nav-number">2</span>
-                <span>ELDiB Bewertung</span>
+                <span>ELDiB Auswertung</span>
             </button>
             <button class="main-nav-item" onclick="showMainSection('export')" title="Dokumente exportieren">
                 <span class="nav-number">3</span>
@@ -3140,7 +3193,7 @@
             <input type="hidden" id="eltern1_email" value="">
 
             <div class="button-group">
-                <button class="btn btn-primary" onclick="showMainSection('eldib')">Weiter zu ELDiB Bewertung &rarr;</button>
+                <button class="btn btn-primary" onclick="showMainSection('eldib')">Weiter zu ELDiB Auswertung &rarr;</button>
             </div>
         </div>
 
@@ -3238,6 +3291,14 @@
                             </div>
                         </div>
                         <div id="verhalten-stufe5-items"></div>
+                    </div>
+
+                    <div class="bereich-notizen">
+                        <div class="bereich-notizen-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span class="notizen-label-text">Notizen</span>
+                        </div>
+                        <textarea id="notizen-verhalten" placeholder="Notizen zum Bereich Verhalten..." onchange="saveToLocalStorage()"></textarea>
                     </div>
                 </div>
             </div>
@@ -3342,6 +3403,14 @@
                         </div>
                         <div id="kommunikation-stufe5-items"></div>
                     </div>
+
+                    <div class="bereich-notizen">
+                        <div class="bereich-notizen-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span class="notizen-label-text">Notizen</span>
+                        </div>
+                        <textarea id="notizen-kommunikation" placeholder="Notizen zum Bereich Kommunikation..." onchange="saveToLocalStorage()"></textarea>
+                    </div>
                 </div>
             </div>
 
@@ -3445,6 +3514,14 @@
                         </div>
                         <div id="sozialisation-stufe5-items"></div>
                     </div>
+
+                    <div class="bereich-notizen">
+                        <div class="bereich-notizen-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span class="notizen-label-text">Notizen</span>
+                        </div>
+                        <textarea id="notizen-sozialisation" placeholder="Notizen zum Bereich Sozialisation..." onchange="saveToLocalStorage()"></textarea>
+                    </div>
                 </div>
             </div>
 
@@ -3547,6 +3624,14 @@
                             </div>
                         </div>
                         <div id="kognition-stufe5-items"></div>
+                    </div>
+
+                    <div class="bereich-notizen">
+                        <div class="bereich-notizen-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span class="notizen-label-text">Notizen</span>
+                        </div>
+                        <textarea id="notizen-kognition" placeholder="Notizen zum Bereich Kognition..." onchange="saveToLocalStorage()"></textarea>
                     </div>
                 </div>
             </div>
@@ -5353,7 +5438,7 @@
             <div class="form-section" style="border-color: #0097A7;">
                 <h3 style="color: #0097A7;">Schüler-Übersicht</h3>
                 <p style="margin-bottom: 15px; color: #666;">
-                    Zurück zur Übersicht aller Schüler, um eine andere Einschätzung zu öffnen oder einen neuen Schüler anzulegen.
+                    Zurück zur Übersicht aller Schüler.innen, um eine andere Einschätzung zu öffnen oder eine.n neue.n Schüler.in anzulegen.
                 </p>
                 <button class="btn" style="background: linear-gradient(135deg, #0097A7 0%, #00838F 100%); color: white;" onclick="smZurueckZurListe()">Zur Schüler-Übersicht</button>
             </div>
@@ -5488,7 +5573,37 @@ function canSetZiel(code) {
         }
     }
 
+    // Regel 3: Maximal 4 Ziele pro Bereich
+    const zieleImBereich = countZieleInBereich(bereich);
+    if (zieleImBereich >= 4) {
+        const isFR = state.language === 'fr';
+        const bereichName = getCurrentEldibData()[bereich]?.name || bereich;
+        return {
+            allowed: false,
+            reason: 'max-ziele',
+            message: isFR
+                ? `Objectif impossible : Le domaine ${bereichName} a déjà 4 objectifs. Maximum 4 objectifs par domaine.`
+                : `Ziel nicht möglich: Der Bereich ${bereichName} hat bereits 4 Ziele. Maximal 4 Ziele pro Bereich erlaubt.`
+        };
+    }
+
     return { allowed: true };
+}
+
+// Zählt die Anzahl der als "Ziel" markierten Items in einem Bereich
+function countZieleInBereich(bereich) {
+    let count = 0;
+    const bereichData = ELDIB_DATA[bereich];
+    if (!bereichData) return 0;
+    for (const [stufeNr, stufeData] of Object.entries(bereichData.stufen)) {
+        for (const item of stufeData.items) {
+            const selection = state.selections[item.code];
+            if (selection && selection.status === 'ziel') {
+                count++;
+            }
+        }
+    }
+    return count;
 }
 
 // Zeigt Blockade-Nachricht als Toast
@@ -5560,13 +5675,13 @@ function updateAllBlockedButtonsByAge() {
                         zielBtn.classList.add('blocked');
                         zielBtn.title = `Ziel nicht möglich: Schüler ist ${alter} Jahre. ${stufeAlter.name} (${stufeAlter.beschreibung}) - Ziele nur für bereits durchschrittene Stufen möglich.`;
                     } else {
-                        // Prüfe ob durch "nicht erreicht" blockiert
+                        // Prüfe ob durch "nicht erreicht" oder max-ziele blockiert
                         const check = canSetZiel(item.code);
-                        if (check.allowed) {
+                        const isCurrentlyZiel = state.selections[item.code]?.status === 'ziel';
+                        if (check.allowed || isCurrentlyZiel) {
                             zielBtn.classList.remove('blocked');
                             zielBtn.title = '';
-                        } else if (check.reason === 'nicht-erreicht') {
-                            // Bleibt blockiert wegen "nicht erreicht"
+                        } else {
                             zielBtn.classList.add('blocked');
                             zielBtn.title = check.message;
                         }
@@ -5859,9 +5974,9 @@ const state = {
 const UI_STRINGS = {
     de: {
         subtitle: 'Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen',
-        stammdaten: 'Stammdaten', eldibBewertung: 'ELDiB Bewertung', export: 'Export',
+        stammdaten: 'Stammdaten', eldibBewertung: 'ELDiB Auswertung', export: 'Export',
         stammdatenTitle: 'Stammdaten', stammdatenTooltip: 'Schülerdaten eingeben',
-        eldibTooltip: 'ELDiB-Bewertung durchführen', exportTooltip: 'Dokumente exportieren',
+        eldibTooltip: 'ELDiB-Auswertung durchführen', exportTooltip: 'Dokumente exportieren',
         verhalten: 'Verhalten', kommunikation: 'Kommunikation', sozialisation: 'Sozialisation', kognition: 'Kognition',
         zusaetzlicheZiele: 'Zusätzliche Ziele',
         schuelerInfo: 'Schüler-Informationen', nameLabel: 'Name des Kindes/Jugendlichen', namePlaceholder: 'Nachname, Vorname',
@@ -5875,7 +5990,7 @@ const UI_STRINGS = {
         einschaetzendePlaceholder: 'Namen und Funktionen der einschätzenden Personen',
         kontaktdaten: 'Kontaktdaten Erziehungsberechtigte',
         elternName: 'Erziehungsberechtigte/r 1 - Name', telefon: 'Telefon', email: 'E-Mail',
-        weiter: 'Weiter zu ELDiB Bewertung',
+        weiter: 'Weiter zu ELDiB Auswertung',
         bereich: 'Bereich', bis: 'bis',
         exportTitle: 'Dokumente exportieren',
         peiTitle: 'Plan éducatif individualisé (PEI) generieren',
@@ -5890,8 +6005,8 @@ const UI_STRINGS = {
         saveTitle: 'Daten speichern/laden',
         saveDesc: 'Speichern Sie Ihre Eingaben als JSON-Datei, um sie später fortzusetzen.',
         saveBtn: 'Daten speichern', loadBtn: 'Daten laden',
-        resetTitle: 'Neuen Schüler anlegen',
-        resetDesc: 'Alle Eingaben löschen und mit einem neuen Schüler beginnen. Diese Aktion kann nicht rückgängig gemacht werden!',
+        resetTitle: 'Schüler.in anlegen',
+        resetDesc: 'Alle Eingaben löschen und mit einem neuen Schüler.in beginnen. Diese Aktion kann nicht rückgängig gemacht werden!',
         resetBtn: 'Alle Daten zurücksetzen',
         itemDetails: 'Item-Details', beobachtungsbeispiele: 'Beobachtungsbeispiele:',
         itemHint: 'Tipp: Diese Beispiele helfen bei der Einschätzung, ob das Verhalten erreicht, nicht erreicht oder als Ziel definiert werden sollte.',
@@ -6070,6 +6185,20 @@ function updateUILanguage() {
         // Weiter button
         const weiterBtn = stammdatenSection.querySelector('.btn-primary');
         if (weiterBtn) weiterBtn.innerHTML = t('weiter') + ' &rarr;';
+    }
+
+    // Bereich-Notizen Labels und Placeholders
+    const notizenLabel = state.language === 'fr' ? 'Notes' : 'Notizen';
+    const notizenBereiche = {
+        verhalten: state.language === 'fr' ? 'Notes sur le domaine Comportement...' : 'Notizen zum Bereich Verhalten...',
+        kommunikation: state.language === 'fr' ? 'Notes sur le domaine Communication...' : 'Notizen zum Bereich Kommunikation...',
+        sozialisation: state.language === 'fr' ? 'Notes sur le domaine Socialisation...' : 'Notizen zum Bereich Sozialisation...',
+        kognition: state.language === 'fr' ? 'Notes sur le domaine Cognition...' : 'Notizen zum Bereich Kognition...'
+    };
+    document.querySelectorAll('.notizen-label-text').forEach(el => el.textContent = notizenLabel);
+    for (const [bereich, placeholder] of Object.entries(notizenBereiche)) {
+        const textarea = document.getElementById(`notizen-${bereich}`);
+        if (textarea) textarea.placeholder = placeholder;
     }
 
     // Export section
@@ -6625,8 +6754,8 @@ function selectOption(code, status, button) {
         if (zielBox) zielBox.classList.remove('visible');
         saveToLocalStorage();
 
-        // Wenn "nicht erreicht" aufgehoben wurde, aktualisiere alle Blockaden im Bereich
-        if (previousStatus === 'nicht-erreicht') {
+        // Wenn "nicht erreicht" oder "ziel" aufgehoben wurde, aktualisiere alle Blockaden im Bereich
+        if (previousStatus === 'nicht-erreicht' || previousStatus === 'ziel') {
             refreshBlockedButtonsInBereich(code);
         }
         return;
@@ -6658,13 +6787,23 @@ function selectOption(code, status, button) {
         updateBlockedZielButtons(code);
     }
 
+    // Wenn "ziel" gewählt wurde, aktualisiere Blockaden (max 4 Ziele Regel)
+    if (status === 'ziel') {
+        refreshBlockedButtonsInBereich(code);
+    }
+
     // Wenn vorher "nicht erreicht" war und jetzt etwas anderes, Blockaden aktualisieren
     if (previousStatus === 'nicht-erreicht' && status !== 'nicht-erreicht') {
         refreshBlockedButtonsInBereich(code);
     }
+
+    // Wenn vorher "ziel" war und jetzt etwas anderes, Blockaden aktualisieren (max-ziele freigeben)
+    if (previousStatus === 'ziel' && status !== 'ziel') {
+        refreshBlockedButtonsInBereich(code);
+    }
 }
 
-// Aktualisiert alle Ziel-Buttons im Bereich (nach Aufheben/Ändern von "nicht erreicht")
+// Aktualisiert alle Ziel-Buttons im Bereich (nach Aufheben/Ändern von "nicht erreicht" oder Ziel-Limit)
 function refreshBlockedButtonsInBereich(changedCode) {
     const itemInfo = getItemInfoFromCode(changedCode);
     if (!itemInfo) return;
@@ -6677,7 +6816,9 @@ function refreshBlockedButtonsInBereich(changedCode) {
             const check = canSetZiel(item.code);
             const zielBtn = document.querySelector(`#item-${item.code} .option-btn.ziel`);
             if (zielBtn) {
-                if (!check.allowed) {
+                // Nicht blockieren wenn das Item selbst bereits als Ziel gesetzt ist
+                const isCurrentlyZiel = state.selections[item.code]?.status === 'ziel';
+                if (!check.allowed && !isCurrentlyZiel) {
                     zielBtn.classList.add('blocked');
                     zielBtn.title = check.message;
                 } else {
@@ -6689,7 +6830,7 @@ function refreshBlockedButtonsInBereich(changedCode) {
     }
 }
 
-// Aktualisiert die Ziel-Buttons nach einer "nicht erreicht" Auswahl
+// Aktualisiert die Ziel-Buttons nach einer "nicht erreicht" Auswahl oder Ziel-Änderung
 function updateBlockedZielButtons(blockedCode) {
     const itemInfo = getItemInfoFromCode(blockedCode);
     if (!itemInfo) return;
@@ -6702,7 +6843,9 @@ function updateBlockedZielButtons(blockedCode) {
             const check = canSetZiel(item.code);
             const zielBtn = document.querySelector(`#item-${item.code} .option-btn.ziel`);
             if (zielBtn) {
-                if (!check.allowed && check.reason === 'nicht-erreicht') {
+                // Nicht blockieren wenn das Item selbst bereits als Ziel gesetzt ist
+                const isCurrentlyZiel = state.selections[item.code]?.status === 'ziel';
+                if (!check.allowed && !isCurrentlyZiel) {
                     zielBtn.classList.add('blocked');
                     zielBtn.title = check.message;
                 } else {
@@ -6915,7 +7058,13 @@ function saveToLocalStorage() {
         selections: state.selections,
         zusaetzlicheZiele: state.zusaetzlicheZiele,
         stammdaten: getStammdaten(),
-        dsData: getDSData()
+        dsData: getDSData(),
+        bereichNotizen: {
+            verhalten: document.getElementById('notizen-verhalten')?.value || '',
+            kommunikation: document.getElementById('notizen-kommunikation')?.value || '',
+            sozialisation: document.getElementById('notizen-sozialisation')?.value || '',
+            kognition: document.getElementById('notizen-kognition')?.value || ''
+        }
     };
     try {
         localStorage.setItem('eldib-data', JSON.stringify(data));
@@ -7041,6 +7190,14 @@ function loadFromLocalStorage() {
         // Lade DS-Daten
         if (data.dsData) {
             loadDSData(data.dsData);
+        }
+
+        // Lade Bereich-Notizen
+        if (data.bereichNotizen) {
+            for (const [bereich, text] of Object.entries(data.bereichNotizen)) {
+                const textarea = document.getElementById(`notizen-${bereich}`);
+                if (textarea) textarea.value = text || '';
+            }
         }
     }
     } catch (e) {
@@ -9340,6 +9497,12 @@ function saveData() {
         stammdaten: getStammdaten(),
         dsData: getDSData(),
         zusaetzlicheZiele: state.zusaetzlicheZiele,
+        bereichNotizen: {
+            verhalten: document.getElementById('notizen-verhalten')?.value || '',
+            kommunikation: document.getElementById('notizen-kommunikation')?.value || '',
+            sozialisation: document.getElementById('notizen-sozialisation')?.value || '',
+            kognition: document.getElementById('notizen-kognition')?.value || ''
+        },
         savedAt: new Date().toISOString()
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -13760,6 +13923,12 @@ function smSaveAktuelleEinschaetzung() {
         zusaetzlicheZiele: state.zusaetzlicheZiele,
         stammdaten: getStammdaten(),
         dsData: getDSData(),
+        bereichNotizen: {
+            verhalten: document.getElementById('notizen-verhalten')?.value || '',
+            kommunikation: document.getElementById('notizen-kommunikation')?.value || '',
+            sozialisation: document.getElementById('notizen-sozialisation')?.value || '',
+            kognition: document.getElementById('notizen-kognition')?.value || ''
+        },
         savedAt: new Date().toISOString()
     };
 
