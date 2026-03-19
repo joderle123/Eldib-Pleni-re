@@ -12986,6 +12986,60 @@ async function generateDSFromTemplate(isComplete) {
                 }
                 tableXml = newDSTable;
 
+                // --- Shrink ELDiB grid table to fit on one page (DE & FR) ---
+                // Reduce font sizes: replace w:sz values in the grid (half-points)
+                // Typical template values are sz="16"-"20" (8-10pt), reduce to sz="13" (6.5pt)
+                tableXml = tableXml.replace(/<w:sz\s+w:val="(\d+)"\s*\/>/g, function(match, val) {
+                    const orig = parseInt(val);
+                    // Scale down font sizes: reduce by ~30%
+                    const newVal = Math.max(10, Math.round(orig * 0.7));
+                    return '<w:sz w:val="' + newVal + '"/>';
+                });
+                tableXml = tableXml.replace(/<w:szCs\s+w:val="(\d+)"\s*\/>/g, function(match, val) {
+                    const orig = parseInt(val);
+                    const newVal = Math.max(10, Math.round(orig * 0.7));
+                    return '<w:szCs w:val="' + newVal + '"/>';
+                });
+
+                // Reduce row heights
+                tableXml = tableXml.replace(/<w:trHeight\s+([^/]*)w:val="(\d+)"([^/]*)\/>/g, function(match, before, val, after) {
+                    const orig = parseInt(val);
+                    const newVal = Math.max(100, Math.round(orig * 0.7));
+                    return '<w:trHeight ' + before + 'w:val="' + newVal + '"' + after + '/>';
+                });
+
+                // Reduce cell margins/padding inside cells
+                tableXml = tableXml.replace(/<w:tblCellMar>([\s\S]*?)<\/w:tblCellMar>/g, function(match, inner) {
+                    return '<w:tblCellMar>' + inner
+                        .replace(/w:w="(\d+)"/g, function(m, v) {
+                            return 'w:w="' + Math.max(0, Math.round(parseInt(v) * 0.5)) + '"';
+                        }) + '</w:tblCellMar>';
+                });
+
+                // Reduce line spacing inside grid paragraphs
+                tableXml = tableXml.replace(/<w:spacing\s+([^/]*)w:line="(\d+)"([^/]*)\/>/g, function(match, before, val, after) {
+                    const orig = parseInt(val);
+                    if (orig > 200) {
+                        const newVal = Math.max(180, Math.round(orig * 0.7));
+                        return '<w:spacing ' + before + 'w:line="' + newVal + '"' + after + '/>';
+                    }
+                    return match;
+                });
+
+                // Reduce before/after paragraph spacing
+                tableXml = tableXml.replace(/<w:spacing\s+([^/]*)w:before="(\d+)"([^/]*)\/>/g, function(match, before, val, after) {
+                    const orig = parseInt(val);
+                    const newVal = Math.round(orig * 0.5);
+                    return '<w:spacing ' + before + 'w:before="' + newVal + '"' + after + '/>';
+                });
+                tableXml = tableXml.replace(/<w:spacing\s+([^/]*)w:after="(\d+)"([^/]*)\/>/g, function(match, before, val, after) {
+                    const orig = parseInt(val);
+                    const newVal = Math.round(orig * 0.5);
+                    return '<w:spacing ' + before + 'w:after="' + newVal + '"' + after + '/>';
+                });
+
+                console.log('[DS Grid] Grid table shrunk for single-page fit');
+
                 docXml = docXml.substring(0, tblStart) + tableXml + docXml.substring(tblEnd);
                 console.log('[DS Grid] Grid coloring applied successfully');
             }
