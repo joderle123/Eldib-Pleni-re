@@ -774,7 +774,7 @@
         }
 
         .bereich-notizen {
-            margin-top: 24px;
+            margin-bottom: 24px;
             padding: 20px 24px;
             background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(250,252,255,0.95));
             border-radius: var(--radius);
@@ -3208,6 +3208,13 @@
                     <span class="collapse-icon">&#9660;</span>
                 </div>
                 <div id="verhalten-content" class="bereich-content">
+                    <div class="bereich-notizen">
+                        <div class="bereich-notizen-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span class="notizen-label-text">Notizen</span>
+                        </div>
+                        <textarea id="notizen-verhalten" placeholder="Notizen zum Bereich Verhalten..." onchange="saveToLocalStorage()"></textarea>
+                    </div>
                     <!-- Stufe I -->
                     <div class="stufe">
                         <div class="stufe-header">
@@ -3293,13 +3300,6 @@
                         <div id="verhalten-stufe5-items"></div>
                     </div>
 
-                    <div class="bereich-notizen">
-                        <div class="bereich-notizen-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                            <span class="notizen-label-text">Notizen</span>
-                        </div>
-                        <textarea id="notizen-verhalten" placeholder="Notizen zum Bereich Verhalten..." onchange="saveToLocalStorage()"></textarea>
-                    </div>
                 </div>
             </div>
 
@@ -3319,6 +3319,13 @@
                     <span class="collapse-icon">&#9660;</span>
                 </div>
                 <div id="kommunikation-content" class="bereich-content">
+                    <div class="bereich-notizen">
+                        <div class="bereich-notizen-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span class="notizen-label-text">Notizen</span>
+                        </div>
+                        <textarea id="notizen-kommunikation" placeholder="Notizen zum Bereich Kommunikation..." onchange="saveToLocalStorage()"></textarea>
+                    </div>
                     <!-- Stufe I -->
                     <div class="stufe">
                         <div class="stufe-header">
@@ -3404,13 +3411,6 @@
                         <div id="kommunikation-stufe5-items"></div>
                     </div>
 
-                    <div class="bereich-notizen">
-                        <div class="bereich-notizen-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                            <span class="notizen-label-text">Notizen</span>
-                        </div>
-                        <textarea id="notizen-kommunikation" placeholder="Notizen zum Bereich Kommunikation..." onchange="saveToLocalStorage()"></textarea>
-                    </div>
                 </div>
             </div>
 
@@ -3430,6 +3430,13 @@
                     <span class="collapse-icon">&#9660;</span>
                 </div>
                 <div id="sozialisation-content" class="bereich-content">
+                    <div class="bereich-notizen">
+                        <div class="bereich-notizen-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span class="notizen-label-text">Notizen</span>
+                        </div>
+                        <textarea id="notizen-sozialisation" placeholder="Notizen zum Bereich Sozialisation..." onchange="saveToLocalStorage()"></textarea>
+                    </div>
                     <!-- Stufe I -->
                     <div class="stufe">
                         <div class="stufe-header">
@@ -3515,13 +3522,6 @@
                         <div id="sozialisation-stufe5-items"></div>
                     </div>
 
-                    <div class="bereich-notizen">
-                        <div class="bereich-notizen-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                            <span class="notizen-label-text">Notizen</span>
-                        </div>
-                        <textarea id="notizen-sozialisation" placeholder="Notizen zum Bereich Sozialisation..." onchange="saveToLocalStorage()"></textarea>
-                    </div>
                 </div>
             </div>
 
@@ -3541,6 +3541,13 @@
                     <span class="collapse-icon">&#9660;</span>
                 </div>
                 <div id="kognition-content" class="bereich-content">
+                    <div class="bereich-notizen">
+                        <div class="bereich-notizen-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <span class="notizen-label-text">Notizen</span>
+                        </div>
+                        <textarea id="notizen-kognition" placeholder="Notizen zum Bereich Kognition..." onchange="saveToLocalStorage()"></textarea>
+                    </div>
                     <!-- Stufe I -->
                     <div class="stufe">
                         <div class="stufe-header">
@@ -3626,13 +3633,6 @@
                         <div id="kognition-stufe5-items"></div>
                     </div>
 
-                    <div class="bereich-notizen">
-                        <div class="bereich-notizen-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                            <span class="notizen-label-text">Notizen</span>
-                        </div>
-                        <textarea id="notizen-kognition" placeholder="Notizen zum Bereich Kognition..." onchange="saveToLocalStorage()"></textarea>
-                    </div>
                 </div>
             </div>
 
@@ -3646,6 +3646,14 @@
             <div class="zusaetzlich-intro">
                 <h2>Zusätzliche Förderziele</h2>
                 <p>Wählen Sie zusätzliche Ziele aus den verschiedenen Kategorien. Diese werden automatisch in PEI und Complément eingefügt.</p>
+            </div>
+
+            <div class="bereich-notizen">
+                <div class="bereich-notizen-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span class="notizen-label-text">Notizen</span>
+                </div>
+                <textarea id="notizen-zusaetzlich" placeholder="Notizen zum Bereich Zusätzliche Ziele..." onchange="saveToLocalStorage()"></textarea>
             </div>
 
             <div class="category-grid">
@@ -6193,7 +6201,8 @@ function updateUILanguage() {
         verhalten: state.language === 'fr' ? 'Notes sur le domaine Comportement...' : 'Notizen zum Bereich Verhalten...',
         kommunikation: state.language === 'fr' ? 'Notes sur le domaine Communication...' : 'Notizen zum Bereich Kommunikation...',
         sozialisation: state.language === 'fr' ? 'Notes sur le domaine Socialisation...' : 'Notizen zum Bereich Sozialisation...',
-        kognition: state.language === 'fr' ? 'Notes sur le domaine Cognition...' : 'Notizen zum Bereich Kognition...'
+        kognition: state.language === 'fr' ? 'Notes sur le domaine Cognition...' : 'Notizen zum Bereich Kognition...',
+        zusaetzlich: state.language === 'fr' ? 'Notes sur le domaine Objectifs supplémentaires...' : 'Notizen zum Bereich Zusätzliche Ziele...'
     };
     document.querySelectorAll('.notizen-label-text').forEach(el => el.textContent = notizenLabel);
     for (const [bereich, placeholder] of Object.entries(notizenBereiche)) {
@@ -7063,7 +7072,8 @@ function saveToLocalStorage() {
             verhalten: document.getElementById('notizen-verhalten')?.value || '',
             kommunikation: document.getElementById('notizen-kommunikation')?.value || '',
             sozialisation: document.getElementById('notizen-sozialisation')?.value || '',
-            kognition: document.getElementById('notizen-kognition')?.value || ''
+            kognition: document.getElementById('notizen-kognition')?.value || '',
+            zusaetzlich: document.getElementById('notizen-zusaetzlich')?.value || ''
         }
     };
     try {
@@ -9501,7 +9511,8 @@ function saveData() {
             verhalten: document.getElementById('notizen-verhalten')?.value || '',
             kommunikation: document.getElementById('notizen-kommunikation')?.value || '',
             sozialisation: document.getElementById('notizen-sozialisation')?.value || '',
-            kognition: document.getElementById('notizen-kognition')?.value || ''
+            kognition: document.getElementById('notizen-kognition')?.value || '',
+            zusaetzlich: document.getElementById('notizen-zusaetzlich')?.value || ''
         },
         savedAt: new Date().toISOString()
     };
@@ -13927,7 +13938,8 @@ function smSaveAktuelleEinschaetzung() {
             verhalten: document.getElementById('notizen-verhalten')?.value || '',
             kommunikation: document.getElementById('notizen-kommunikation')?.value || '',
             sozialisation: document.getElementById('notizen-sozialisation')?.value || '',
-            kognition: document.getElementById('notizen-kognition')?.value || ''
+            kognition: document.getElementById('notizen-kognition')?.value || '',
+            zusaetzlich: document.getElementById('notizen-zusaetzlich')?.value || ''
         },
         savedAt: new Date().toISOString()
     };
