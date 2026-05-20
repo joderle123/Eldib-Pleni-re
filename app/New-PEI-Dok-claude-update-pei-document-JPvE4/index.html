@@ -1080,6 +1080,60 @@
             color: var(--gray-800);
         }
 
+        .duplicate-badge {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #6d28d9;
+            background: rgba(139, 92, 246, 0.12);
+            border-radius: 999px;
+            vertical-align: middle;
+            cursor: help;
+        }
+
+        .item-beispiele-details {
+            margin: 4px 0 6px 0;
+            font-size: 0.85rem;
+        }
+        .item-beispiele-details summary {
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            list-style: none;
+            padding: 4px 0;
+        }
+        .item-beispiele-details summary::-webkit-details-marker { display: none; }
+        .item-beispiele-details summary::before {
+            content: '▸ ';
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .item-beispiele-details[open] summary::before {
+            content: '▾ ';
+        }
+        .item-beispiele-list {
+            margin: 4px 0 0 18px;
+            padding: 0;
+            color: var(--gray-600);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        .item-beispiele-list li { margin: 2px 0; }
+
+        .option-btn.blocked {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: var(--gray-100) !important;
+            color: var(--gray-400) !important;
+            border-color: var(--gray-200) !important;
+        }
+        .item.bereich-max-erreicht .option-btn.ziel:not(.selected) {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
         .item-options {
             display: flex;
             gap: 10px;
@@ -1158,6 +1212,7 @@
             background: var(--gray-100) !important;
             border-color: var(--gray-300) !important;
             color: var(--gray-400) !important;
+            pointer-events: none;
         }
 
         .option-btn.ziel.blocked:hover {
@@ -5420,11 +5475,19 @@
             </div>
 
             <div class="form-section">
-                <h3>Plan éducatif individualisé (PEI) generieren</h3>
-                <p style="margin-bottom: 15px; color: #666;">
+                <h3 id="pei-section-title">Plan éducatif individualisé (PEI) generieren</h3>
+                <p style="margin-bottom: 15px; color: #666;" id="pei-section-desc">
                     Das PEI-Dokument enthält alle ausgewählten Ziele mit den entsprechenden Ich-Zielformulierungen.
                 </p>
                 <button class="btn btn-success" onclick="generatePEI()">Plan éducatif individualisé (PEI) herunterladen (Word)</button>
+            </div>
+
+            <div class="form-section" style="border-color: #10b981;">
+                <h3 style="color: #047857;" id="pei-schlank-section-title">PEI – Schlanke Version (nur ELDiB-Tabellen)</h3>
+                <p style="margin-bottom: 15px; color: #666;" id="pei-schlank-section-desc">
+                    Reduzierte Version mit ausschließlich den ELDiB-Tabellen (Ziele pro Bereich mit Zielformulierungen). Ohne Anamnese und Interventionen — diese ergänzen Sie selbst.
+                </p>
+                <button class="btn" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white;" onclick="generateSchlankPEI()" id="pei-schlank-btn">Schlanke ELDiB-Tabellen herunterladen (Word)</button>
             </div>
 
             <div class="form-section">
@@ -5512,17 +5575,21 @@ function getSchuelerAlter() {
 
 // Holt Item-Info aus dem Code (z.B. "V-5" -> { bereich: "verhalten", stufe: 1, nr: 5 })
 function getItemInfoFromCode(code) {
-    const bereichMap = { 'V': 'verhalten', 'K': 'kommunikation', 'S': 'sozialisation', 'KOG': 'kognition' };
+    const bereichMap = {
+        'V': 'verhalten',
+        'K': 'kommunikation',
+        'SOZ': 'sozialisation',
+        'KOG': 'kognition',
+        // Französische Code-Präfixe (display-only) auf die internen Schlüssel mappen
+        'COMP': 'verhalten',
+        'COM': 'kommunikation',
+        'SOC': 'sozialisation',
+        'COG': 'kognition'
+    };
 
-    let bereichCode, itemNr;
-    if (code.startsWith('KOG-')) {
-        bereichCode = 'KOG';
-        itemNr = parseInt(code.split('-')[1]);
-    } else {
-        const parts = code.split('-');
-        bereichCode = parts[0];
-        itemNr = parseInt(parts[1]);
-    }
+    const parts = code.split('-');
+    const bereichCode = parts[0];
+    const itemNr = parseInt(parts[1]);
 
     const bereich = bereichMap[bereichCode];
     if (!bereich || !ELDIB_DATA[bereich]) return null;
@@ -5567,16 +5634,21 @@ function canSetZiel(code) {
     }
 
     // Regel 2: Prüfe Altersgrenze
-    // Ziel nur möglich wenn biologisches Alter > Maximum der Stufe (Stufe bereits "überholt")
-    // Beispiel: 10-Jähriger kann Ziele für Stufe I-III setzen (max 2, 5, 9), aber nicht IV-V (max 12, 16)
+    // Ziel möglich, sobald das Kind die Stufe erreicht hat (Alter >= min der Stufe).
+    // Beispiel: 9-Jähriger ist altersgerecht in Stufe III (6-9) -> Ziele dort erlaubt.
+    // Blockiert werden nur Stufen, die das Kind altersmäßig noch gar nicht erreicht hat.
     const alter = getSchuelerAlter();
     if (alter !== null) {
-        const stufeAlter = STUFEN_ALTER_MAPPING[stufe];
-        if (stufeAlter && alter <= stufeAlter.max) {
+        const stufenMap = (state.language === 'fr') ? STUFEN_ALTER_MAPPING_FR : STUFEN_ALTER_MAPPING;
+        const stufeAlter = stufenMap[stufe];
+        if (stufeAlter && alter < stufeAlter.min) {
+            const isFR = state.language === 'fr';
             return {
                 allowed: false,
                 reason: 'alter',
-                message: `Ziel nicht möglich: Der Schüler ist ${alter} Jahre alt. ${stufeAlter.name} (${stufeAlter.beschreibung}) liegt im oder über dem biologischen Alter. Ziele können nur für bereits durchschrittene Entwicklungsstufen gesetzt werden.`
+                message: isFR
+                    ? `Objectif impossible : L'élève a ${alter} ans. ${stufeAlter.name} (${stufeAlter.beschreibung}) n'a pas encore été atteint biologiquement.`
+                    : `Ziel nicht möglich: Der Schüler ist ${alter} Jahre alt. ${stufeAlter.name} (${stufeAlter.beschreibung}) wurde biologisch noch nicht erreicht.`
             };
         }
     }
@@ -6004,6 +6076,9 @@ const UI_STRINGS = {
         peiTitle: 'Plan éducatif individualisé (PEI) generieren',
         peiDesc: 'Das PEI-Dokument enthält alle ausgewählten Ziele mit den entsprechenden Ich-Zielformulierungen.',
         peiBtn: 'Plan éducatif individualisé (PEI) herunterladen (Word)',
+        peiSchlankTitle: 'PEI – Schlanke Version (nur ELDiB-Tabellen)',
+        peiSchlankDesc: 'Reduzierte Version mit ausschließlich den ELDiB-Tabellen (Ziele pro Bereich mit Zielformulierungen). Ohne Anamnese und Interventionen — diese ergänzen Sie selbst.',
+        peiSchlankBtn: 'Schlanke ELDiB-Tabellen herunterladen (Word)',
         compTitle: 'Complement generieren',
         compDesc: 'Das Complement-Dokument enthält die letzten 4 erreichten Items pro Bereich.',
         compBtn: 'Complement herunterladen (Word)',
@@ -6051,6 +6126,9 @@ const UI_STRINGS = {
         peiTitle: 'Générer le Plan éducatif individualisé (PEI)',
         peiDesc: 'Le document PEI contient tous les objectifs sélectionnés avec les formulations d\'objectifs correspondantes.',
         peiBtn: 'Télécharger le Plan éducatif individualisé (PEI) (Word)',
+        peiSchlankTitle: 'PEI – Version allégée (uniquement les tableaux ELDiB)',
+        peiSchlankDesc: 'Version réduite contenant uniquement les tableaux ELDiB (objectifs par domaine avec formulations). Sans anamnèse ni interventions — à compléter vous-même.',
+        peiSchlankBtn: 'Télécharger les tableaux ELDiB allégés (Word)',
         compTitle: 'Générer le Complément',
         compDesc: 'Le document Complément contient les 4 derniers items atteints par domaine.',
         compBtn: 'Télécharger le Complément (Word)',
@@ -6077,6 +6155,20 @@ const UI_STRINGS = {
 };
 
 function t(key) { return UI_STRINGS[state.language][key] || UI_STRINGS.de[key] || key; }
+
+// Mapping der deutschen Bereich-Codes auf die französischen Anzeige-Codes
+const BEREICH_CODE_FR_MAP = { 'V': 'COMP', 'K': 'COM', 'SOZ': 'SOC', 'KOG': 'COG' };
+
+// Wandelt einen Item-Code je nach UI-Sprache in die Anzeigeform um.
+// Beispiel: getDisplayCode("V-10") -> "V-10" (de) / "COMP-10" (fr)
+function getDisplayCode(code, lang) {
+    const language = lang || state.language;
+    if (language !== 'fr' || !code) return code;
+    const parts = String(code).split('-');
+    const mapped = BEREICH_CODE_FR_MAP[parts[0]];
+    if (!mapped) return code;
+    return parts.length > 1 ? `${mapped}-${parts.slice(1).join('-')}` : mapped;
+}
 function getCurrentEldibData() { return state.language === 'fr' && typeof ELDIB_DATA_FR !== 'undefined' ? ELDIB_DATA_FR : ELDIB_DATA; }
 function getCurrentInterventionen() { return state.language === 'fr' && typeof INTERVENTIONEN_FR !== 'undefined' ? INTERVENTIONEN_FR : INTERVENTIONEN; }
 function getCurrentInterventionenFallback() { return state.language === 'fr' && typeof INTERVENTIONEN_FALLBACK_FR !== 'undefined' ? INTERVENTIONEN_FALLBACK_FR : INTERVENTIONEN_FALLBACK; }
@@ -6221,27 +6313,24 @@ function updateUILanguage() {
             sections[0].querySelector('p').textContent = t('peiDesc');
             sections[0].querySelector('button').textContent = t('peiBtn');
         }
+        // Section 1 = neue "schlanke" PEI-Version (zwischen PEI und Complement eingefügt)
         if (sections[1]) {
-            sections[1].querySelector('h3').textContent = t('compTitle');
-            sections[1].querySelector('p').textContent = t('compDesc');
-            sections[1].querySelector('button').textContent = t('compBtn');
+            const h3 = sections[1].querySelector('h3');
+            const p = sections[1].querySelector('p');
+            const btn = sections[1].querySelector('button');
+            if (h3) h3.textContent = t('peiSchlankTitle');
+            if (p) p.textContent = t('peiSchlankDesc');
+            if (btn) btn.textContent = t('peiSchlankBtn');
         }
         if (sections[2]) {
-            sections[2].querySelector('h3').textContent = t('dsTitle');
-            sections[2].querySelector('p').textContent = t('dsDesc');
-            sections[2].querySelector('button').textContent = t('dsBtn');
+            sections[2].querySelector('h3').textContent = t('compTitle');
+            sections[2].querySelector('p').textContent = t('compDesc');
+            sections[2].querySelector('button').textContent = t('compBtn');
         }
         if (sections[3]) {
-            sections[3].querySelector('h3').textContent = t('saveTitle');
-            sections[3].querySelector('p').textContent = t('saveDesc');
-            const btns = sections[3].querySelectorAll('button');
-            if (btns[0]) btns[0].textContent = t('saveBtn');
-            if (btns[1]) btns[1].textContent = t('loadBtn');
-        }
-        if (sections[4]) {
-            sections[4].querySelector('h3').textContent = t('resetTitle');
-            sections[4].querySelector('p').textContent = t('resetDesc');
-            sections[4].querySelector('button').textContent = t('resetBtn');
+            sections[3].querySelector('h3').textContent = t('dsTitle');
+            sections[3].querySelector('p').textContent = t('dsDesc');
+            sections[3].querySelector('button').textContent = t('dsBtn');
         }
     }
 
@@ -6274,7 +6363,8 @@ function rerenderItems() {
         const header = document.querySelector(`#${bereichKey} .bereich-header h2`);
         if (header) header.textContent = (isFR ? 'Domaine ' : 'Bereich ') + bereich.name;
         const headerP = document.querySelector(`#${bereichKey} .bereich-header p`);
-        if (headerP) headerP.textContent = bereich.code + '-1 ' + (isFR ? 'à' : 'bis') + ' ' + bereich.code + '-' + Object.values(bereich.stufen).reduce((sum, s) => sum + s.items.length, 0);
+        const displayBereichCode = isFR ? (BEREICH_CODE_FR_MAP[bereich.code] || bereich.code) : bereich.code;
+        if (headerP) headerP.textContent = displayBereichCode + '-1 ' + (isFR ? 'à' : 'bis') + ' ' + displayBereichCode + '-' + Object.values(bereich.stufen).reduce((sum, s) => sum + s.items.length, 0);
 
         for (const [stufeNr, stufe] of Object.entries(bereich.stufen)) {
             // Update Stufe headers (name + Bereichsziel)
@@ -6291,6 +6381,8 @@ function rerenderItems() {
             stufe.items.forEach(item => {
                 const itemEl = document.getElementById(`item-${item.code}`);
                 if (itemEl) {
+                    const codeEl = itemEl.querySelector('.item-code');
+                    if (codeEl) codeEl.textContent = getDisplayCode(item.code);
                     const keywordEl = itemEl.querySelector('.item-keyword');
                     if (keywordEl) keywordEl.textContent = item.keyword + ':';
                     const descEl = itemEl.querySelector('.item-description');
@@ -6367,6 +6459,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateBlockedZielButtons(code);
             }
         }
+        // Auch alle Bereiche refreshen, damit das 4-Ziele-Limit visuell direkt greift
+        ['verhalten', 'kommunikation', 'sozialisation', 'kognition'].forEach(b => {
+            const firstStufe = ELDIB_DATA[b]?.stufen?.[1];
+            if (firstStufe && firstStufe.items[0]) refreshBlockedButtonsInBereich(firstStufe.items[0].code);
+        });
     }, 100);
 
     // Auto-Save für DS-Felder (Diagnostic Tab)
@@ -6732,20 +6829,52 @@ function createItemElement(item, bereichKey) {
     itemDiv.className = 'item';
     itemDiv.id = `item-${item.code}`;
     const zielOptions = item.zielformulierungen.map((z, i) => `<option value="${i}">${z}</option>`).join('');
+    const beispieleArr = (typeof getCurrentBeispiele === 'function' ? getCurrentBeispiele() : (typeof BEISPIELE !== 'undefined' ? BEISPIELE : {}))[item.code] || [];
+    const beispieleHtml = beispieleArr.length > 0
+        ? `<ul class="item-beispiele-list">${beispieleArr.map(b => `<li>${b}</li>`).join('')}</ul>`
+        : '';
+    const beispieleLabel = state.language === 'fr' ? 'Exemples d\'observation' : 'Beobachtungsbeispiele';
+    const zielformulierungLabel = state.language === 'fr' ? 'Formulation de l\'objectif' : 'Zielformulierung';
+    const duplicateBadge = isDuplicateItem(item.code, bereichKey)
+        ? `<span class="duplicate-badge" title="${state.language === 'fr' ? 'Item identique présent dans une autre étape' : 'Identischer Item in einer anderen Stufe vorhanden'}">↔ ${state.language === 'fr' ? 'identique' : 'identisch'}</span>`
+        : '';
     itemDiv.innerHTML = `
-        <div class="item-code">${item.code}</div>
-        <div class="item-description" ondblclick="showItemModal('${item.code}')"><span class="item-keyword">${item.keyword}:</span> ${item.description}</div>
+        <div class="item-code">${getDisplayCode(item.code)}</div>
+        <div class="item-description" ondblclick="showItemModal('${item.code}')"><span class="item-keyword">${item.keyword}:</span> ${item.description} ${duplicateBadge}</div>
+        ${beispieleHtml ? `<details class="item-beispiele-details"><summary>${beispieleLabel} (${beispieleArr.length})</summary>${beispieleHtml}</details>` : ''}
         <div class="item-options">
-            <button class="option-btn erreicht" onclick="selectOption('${item.code}', 'erreicht', this)">Erreicht</button>
-            <button class="option-btn nicht-erreicht" onclick="selectOption('${item.code}', 'nicht-erreicht', this)">Nicht erreicht</button>
-            <button class="option-btn ziel" onclick="selectOption('${item.code}', 'ziel', this)">Ziel</button>
+            <button class="option-btn erreicht" onclick="selectOption('${item.code}', 'erreicht', this)">${state.language === 'fr' ? 'Atteint' : 'Erreicht'}</button>
+            <button class="option-btn nicht-erreicht" onclick="selectOption('${item.code}', 'nicht-erreicht', this)">${state.language === 'fr' ? 'Non atteint' : 'Nicht erreicht'}</button>
+            <button class="option-btn ziel" onclick="selectOption('${item.code}', 'ziel', this)">${state.language === 'fr' ? 'Objectif' : 'Ziel'}</button>
         </div>
         <div class="ziel-box" id="ziel-box-${item.code}">
-            <h4>Zielformulierung:</h4>
+            <h4>${zielformulierungLabel}:</h4>
             <select class="ziel-select" id="ziel-select-${item.code}" onchange="updateZieltext('${item.code}')">${zielOptions}</select>
-            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="Oder eigene Formulierung..." onchange="updateCustomZiel('${item.code}')"></textarea>
+            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="${state.language === 'fr' ? 'Ou formulation personnelle...' : 'Oder eigene Formulierung...'}" onchange="updateCustomZiel('${item.code}')"></textarea>
         </div>`;
     return itemDiv;
+}
+
+// Findet identische Items (gleiche Beschreibung oder gleiches Keyword) in anderen Stufen desselben Bereichs
+const _duplicateCache = {};
+function isDuplicateItem(itemCode, bereichKey) {
+    if (_duplicateCache[itemCode] !== undefined) return _duplicateCache[itemCode];
+    const data = (typeof ELDIB_DATA !== 'undefined') ? ELDIB_DATA : null;
+    if (!data || !bereichKey || !data[bereichKey]) { _duplicateCache[itemCode] = false; return false; }
+    let myItem = null;
+    let myStufe = null;
+    for (const [stufeNr, stufeData] of Object.entries(data[bereichKey].stufen)) {
+        const found = stufeData.items.find(i => i.code === itemCode);
+        if (found) { myItem = found; myStufe = stufeNr; break; }
+    }
+    if (!myItem) { _duplicateCache[itemCode] = false; return false; }
+    for (const [stufeNr, stufeData] of Object.entries(data[bereichKey].stufen)) {
+        if (stufeNr === myStufe) continue;
+        const dup = stufeData.items.find(i => i.code !== itemCode && i.description && i.description === myItem.description);
+        if (dup) { _duplicateCache[itemCode] = true; return true; }
+    }
+    _duplicateCache[itemCode] = false;
+    return false;
 }
 
 function selectOption(code, status, button) {
@@ -7031,7 +7160,7 @@ function updateZieleListe() {
         items.forEach(item => {
             const itemDiv = document.createElement('div');
             itemDiv.style.cssText = 'padding:10px;background:#f9f9f9;border-radius:5px;margin-bottom:5px;';
-            itemDiv.innerHTML = `<strong>${item.code}</strong> (${item.keyword}): ${item.zieltext || 'Keine Formulierung'}`;
+            itemDiv.innerHTML = `<strong>${getDisplayCode(item.code)}</strong> (${item.keyword}): ${item.zieltext || (state.language === 'fr' ? 'Aucune formulation' : 'Keine Formulierung')}`;
             bereichDiv.appendChild(itemDiv);
         });
         container.appendChild(bereichDiv);
@@ -8072,7 +8201,7 @@ function generateSozialberichtText(dsData) {
 
 function generateAktuelleSituationText(dsData, stammdaten) {
     let text = '';
-    const studentName = stammdaten.schueler_name?.split(',')[0]?.trim() || 'Der/Die Schüler:in';
+    const studentName = getVornameForText(stammdaten.schueler_name) || 'Der/Die Schüler:in';
 
     // Einleitung
     text += `${studentName} besucht derzeit die ${dsData.ds_aktuelle_klasse || stammdaten.klasse || '...'} Klasse der Schule in ${stammdaten.foerderort || '(Name und Ort der Schule)'}`;
@@ -8105,6 +8234,25 @@ function fixSentenceStart(text) {
     return text;
 }
 
+// Splittet "Nachname, Vorname" in seine Teile (mit Fallbacks)
+function splitSchuelerName(fullName) {
+    if (!fullName) return { nachname: '', vorname: '' };
+    if (fullName.includes(',')) {
+        const parts = fullName.split(',');
+        return { nachname: (parts[0] || '').trim(), vorname: parts.slice(1).join(',').trim() };
+    }
+    // Kein Komma -> ohne Komma eingegeben. Heuristik: erstes Wort = Nachname (Lux-Konvention)
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length === 1) return { nachname: parts[0], vorname: '' };
+    return { nachname: parts[0], vorname: parts.slice(1).join(' ') };
+}
+
+// Liefert den Vornamen für die Verwendung im Fließtext der Berichte
+function getVornameForText(rawName) {
+    const { vorname, nachname } = splitSchuelerName(rawName);
+    return vorname || nachname || '';
+}
+
 // Hilfsfunktion für grammatikalisch korrekte Namensformen
 // Wenn kein Name angegeben ist, wird "das Kind" mit korrekter Kasusform verwendet
 function getNameWithCase(rawName, casus = 'nom') {
@@ -8122,7 +8270,7 @@ function getNameWithCase(rawName, casus = 'nom') {
 }
 
 function generateSichtweiseSchuleText(dsData) {
-    const rawName = document.getElementById('schueler_name')?.value?.split(',')[0]?.trim();
+    const rawName = getVornameForText(document.getElementById('schueler_name')?.value);
     const name = rawName || 'das Kind';
     const nameGen = getNameWithCase(rawName, 'gen');
     const nameDat = getNameWithCase(rawName, 'dat');
@@ -8377,7 +8525,7 @@ function generateSichtweiseSchuleText(dsData) {
 }
 
 function generateSichtweiseSchuelerText(dsData, stammdaten) {
-    const rawName = stammdaten?.schueler_name?.split(',')[0]?.trim() || document.getElementById('schueler_name')?.value?.split(',')[0]?.trim();
+    const rawName = getVornameForText(stammdaten?.schueler_name) || getVornameForText(document.getElementById('schueler_name')?.value);
     const name = rawName || 'das Kind';
     const nameDat = getNameWithCase(rawName, 'dat');
     const nameAkk = getNameWithCase(rawName, 'akk');
@@ -8631,7 +8779,7 @@ function generateSichtweiseSchuelerText(dsData, stammdaten) {
 }
 
 function generateSichtweiseElternText(dsData) {
-    const rawName = document.getElementById('schueler_name')?.value?.split(',')[0]?.trim();
+    const rawName = getVornameForText(document.getElementById('schueler_name')?.value);
     const name = rawName || 'das Kind';
     const nameGen = getNameWithCase(rawName, 'gen');
     const nameDat = getNameWithCase(rawName, 'dat');
@@ -8852,7 +9000,7 @@ function generateVerhaltensbeobachtungenText(dsData) {
         return '(Verhaltensbeobachtungen werden hier eingefügt)';
     }
 
-    const rawName = document.getElementById('schueler_name')?.value?.split(',')[0]?.trim();
+    const rawName = getVornameForText(document.getElementById('schueler_name')?.value);
     const name = rawName || 'das Kind';
     const nameDat = getNameWithCase(rawName, 'dat');
 
@@ -9049,7 +9197,7 @@ function generateVerhaltensbeobachtungenText(dsData) {
 }
 
 function generateInterpretationText(dsData) {
-    const rawName = document.getElementById('schueler_name')?.value?.split(',')[0]?.trim();
+    const rawName = getVornameForText(document.getElementById('schueler_name')?.value);
     const name = rawName || 'das Kind';
     const nameGen = getNameWithCase(rawName, 'gen');
     const nameDat = getNameWithCase(rawName, 'dat');
@@ -9313,7 +9461,7 @@ function generateInterpretationText(dsData) {
 }
 
 function generateSpezifischeBeduerfnisseText(dsData) {
-    const rawName = document.getElementById('schueler_name')?.value?.split(',')[0]?.trim();
+    const rawName = getVornameForText(document.getElementById('schueler_name')?.value);
     const name = rawName || 'das Kind';
     const nameGen = getNameWithCase(rawName, 'gen');
     const nameDat = getNameWithCase(rawName, 'dat');
@@ -9394,7 +9542,7 @@ function generateSpezifischeBeduerfnisseText(dsData) {
 }
 
 function generateEmpfehlungenText(dsData) {
-    const rawName = document.getElementById('schueler_name')?.value?.split(',')[0]?.trim();
+    const rawName = getVornameForText(document.getElementById('schueler_name')?.value);
     const name = rawName || 'das Kind';
 
     // Text-Mappings für natürliche Sprache
@@ -10017,7 +10165,7 @@ function showItemModal(itemCode) {
     if (!item) return;
 
     // Modal befüllen
-    document.getElementById('modalItemCode').textContent = item.code;
+    document.getElementById('modalItemCode').textContent = getDisplayCode(item.code);
     document.getElementById('modalItemCode').style.background = bereichData.color;
     document.getElementById('modalItemTitle').textContent = item.keyword;
     document.getElementById('modalItemDescription').textContent = item.description;
@@ -12040,9 +12188,10 @@ async function generateComplement() {
         erreichte[bereich] = erreichte[bereich].sort((a, b) => a.nr - b.nr).slice(-4);
     }
 
-    const nameParts = (stammdaten.schueler_name || '').split(' ');
-    const nom = nameParts[0] || '';
-    const prenom = nameParts.slice(1).join(' ') || '';
+    // Lux-Konvention: Eingabe "Nachname, Vorname"
+    const splitNames = splitSchuelerName(stammdaten.schueler_name || '');
+    const nom = splitNames.nachname || '';
+    const prenom = splitNames.vorname || '';
     const vorname = prenom || nom || (isFR_C ? 'L\'élève' : 'Der Schüler'); // Vorname für die Formulierungen
 
     const cellBorders = { top: {style: BorderStyle.SINGLE, size: 1}, bottom: {style: BorderStyle.SINGLE, size: 1}, left: {style: BorderStyle.SINGLE, size: 1}, right: {style: BorderStyle.SINGLE, size: 1} };
@@ -12054,7 +12203,7 @@ async function generateComplement() {
         const itemParagraphs = items && items.length > 0
             ? items.flatMap(i => [
                 new Paragraph({
-                    children: [new TextRun({text: `${i.code} - ${i.keyword}`, bold: true, size: 22})],
+                    children: [new TextRun({text: `${getDisplayCode(i.code)} - ${i.keyword}`, bold: true, size: 22})],
                     spacing: { before: 120, after: 40 }
                 }),
                 new Paragraph({
@@ -12368,6 +12517,196 @@ async function generateComplement() {
 
     const blob = await Packer.toBlob(doc);
     saveAs(blob, buildFilename('Complement'));
+}
+
+// ==================== SCHLANKE PEI-VERSION ====================
+// Generiert ein schlankes Word-Dokument mit nur den ELDiB-Tabellen
+// (Förderziele pro Bereich mit Zielformulierungen). Ohne Anamnese
+// und Interventionen - diese ergänzen die Nutzer selbst.
+async function generateSchlankPEI() {
+    saveToLocalStorage();
+    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+            WidthType, BorderStyle, AlignmentType, HeadingLevel } = docx;
+
+    const isFR = state.language === 'fr';
+    const stammdaten = getStammdaten();
+    const eldibData = getCurrentEldibData();
+
+    // Namen aufteilen (Lux-Konvention "Nachname, Vorname")
+    const split = splitSchuelerName(stammdaten.schueler_name || '');
+    const fullName = stammdaten.schueler_name || (isFR ? 'L\'élève' : 'Der/Die Schüler:in');
+    const vorname = split.vorname || split.nachname || (isFR ? 'L\'élève' : 'Der/Die Schüler:in');
+
+    // Ziele pro Bereich einsammeln
+    const zielePerBereich = { verhalten: [], kommunikation: [], sozialisation: [], kognition: [] };
+    for (const [code, selection] of Object.entries(state.selections)) {
+        if (selection?.status !== 'ziel') continue;
+        const bereich = findBereichByCode(code);
+        const item = findItemByCode(code);
+        if (bereich && item && zielePerBereich[bereich]) {
+            zielePerBereich[bereich].push({
+                code,
+                keyword: item.keyword,
+                description: item.description,
+                zieltext: resolveZieltext(code, selection),
+                nr: parseInt(code.split('-').pop()) || 0
+            });
+        }
+    }
+    for (const b of Object.keys(zielePerBereich)) {
+        zielePerBereich[b].sort((a, b2) => a.nr - b2.nr);
+    }
+
+    const cellBorders = {
+        top: { style: BorderStyle.SINGLE, size: 4, color: '666666' },
+        bottom: { style: BorderStyle.SINGLE, size: 4, color: '666666' },
+        left: { style: BorderStyle.SINGLE, size: 4, color: '666666' },
+        right: { style: BorderStyle.SINGLE, size: 4, color: '666666' }
+    };
+
+    const children = [];
+
+    // Titel
+    children.push(new Paragraph({
+        children: [new TextRun({
+            text: isFR ? 'PEI – Tableaux ELDiB (version allégée)' : 'PEI – ELDiB-Tabellen (schlanke Version)',
+            bold: true, size: 32
+        })],
+        spacing: { after: 200 }
+    }));
+
+    // Header: Name + Datum
+    const heute = new Date().toLocaleDateString(isFR ? 'fr-FR' : 'de-DE');
+    children.push(new Paragraph({
+        children: [
+            new TextRun({ text: (isFR ? 'Élève : ' : 'Schüler:in: '), bold: true, size: 22 }),
+            new TextRun({ text: fullName, size: 22 }),
+            new TextRun({ text: '    ', size: 22 }),
+            new TextRun({ text: (isFR ? 'Date : ' : 'Datum: '), bold: true, size: 22 }),
+            new TextRun({ text: stammdaten.einschaetzungsdatum || heute, size: 22 })
+        ],
+        spacing: { after: 100 }
+    }));
+    if (stammdaten.klasse || stammdaten.foerderort) {
+        children.push(new Paragraph({
+            children: [
+                new TextRun({ text: (isFR ? 'Classe : ' : 'Klasse: '), bold: true, size: 22 }),
+                new TextRun({ text: stammdaten.klasse || '—', size: 22 }),
+                new TextRun({ text: '    ', size: 22 }),
+                new TextRun({ text: (isFR ? 'École : ' : 'Schule: '), bold: true, size: 22 }),
+                new TextRun({ text: stammdaten.foerderort || '—', size: 22 })
+            ],
+            spacing: { after: 300 }
+        }));
+    }
+
+    // Pro Bereich eine Tabelle
+    const bereichKeys = ['verhalten', 'kommunikation', 'sozialisation', 'kognition'];
+    let hatZiele = false;
+    for (const bereichKey of bereichKeys) {
+        const ziele = zielePerBereich[bereichKey];
+        const bereichInfo = eldibData[bereichKey];
+        if (!bereichInfo) continue;
+
+        // Bereich-Titel
+        children.push(new Paragraph({
+            children: [new TextRun({
+                text: (isFR ? 'Domaine : ' : 'Bereich: ') + (bereichInfo.name || bereichKey),
+                bold: true, size: 26, color: '4F46E5'
+            })],
+            spacing: { before: 300, after: 120 }
+        }));
+
+        if (ziele.length === 0) {
+            children.push(new Paragraph({
+                children: [new TextRun({
+                    text: isFR ? '— Aucun objectif sélectionné dans ce domaine —' : '— Keine Ziele in diesem Bereich ausgewählt —',
+                    italics: true, color: '888888', size: 20
+                })],
+                spacing: { after: 200 }
+            }));
+            continue;
+        }
+
+        hatZiele = true;
+
+        // Tabellen-Kopfzeile
+        const headerRow = new TableRow({
+            tableHeader: true,
+            children: [
+                new TableCell({
+                    children: [new Paragraph({ children: [new TextRun({ text: 'Item', bold: true, size: 20 })] })],
+                    borders: cellBorders, width: { size: 12, type: WidthType.PERCENTAGE },
+                    shading: { fill: 'E0E7FF' }
+                }),
+                new TableCell({
+                    children: [new Paragraph({ children: [new TextRun({ text: isFR ? 'Compétence' : 'Kompetenz', bold: true, size: 20 })] })],
+                    borders: cellBorders, width: { size: 22, type: WidthType.PERCENTAGE },
+                    shading: { fill: 'E0E7FF' }
+                }),
+                new TableCell({
+                    children: [new Paragraph({ children: [new TextRun({ text: isFR ? 'Description' : 'Beschreibung', bold: true, size: 20 })] })],
+                    borders: cellBorders, width: { size: 33, type: WidthType.PERCENTAGE },
+                    shading: { fill: 'E0E7FF' }
+                }),
+                new TableCell({
+                    children: [new Paragraph({ children: [new TextRun({ text: isFR ? 'Formulation de l\'objectif' : 'Zielformulierung', bold: true, size: 20 })] })],
+                    borders: cellBorders, width: { size: 33, type: WidthType.PERCENTAGE },
+                    shading: { fill: 'E0E7FF' }
+                })
+            ]
+        });
+
+        const dataRows = ziele.map(z => new TableRow({
+            children: [
+                new TableCell({
+                    children: [new Paragraph({ children: [new TextRun({ text: getDisplayCode(z.code), bold: true, size: 20 })] })],
+                    borders: cellBorders
+                }),
+                new TableCell({
+                    children: [new Paragraph({ children: [new TextRun({ text: z.keyword || '', size: 20 })] })],
+                    borders: cellBorders
+                }),
+                new TableCell({
+                    children: [new Paragraph({ children: [new TextRun({ text: z.description || '', size: 20 })] })],
+                    borders: cellBorders
+                }),
+                new TableCell({
+                    children: [new Paragraph({ children: [new TextRun({ text: z.zieltext || '—', size: 20 })] })],
+                    borders: cellBorders
+                })
+            ]
+        }));
+
+        children.push(new Table({
+            rows: [headerRow, ...dataRows],
+            width: { size: 100, type: WidthType.PERCENTAGE }
+        }));
+    }
+
+    if (!hatZiele) {
+        children.push(new Paragraph({
+            children: [new TextRun({
+                text: isFR
+                    ? 'Aucun objectif n\'a encore été sélectionné. Marquez les items souhaités comme « Objectif » dans l\'évaluation ELDiB.'
+                    : 'Es wurden noch keine Ziele ausgewählt. Markieren Sie die gewünschten Items in der ELDiB-Auswertung als "Ziel".',
+                italics: true, color: '888888', size: 22
+            })],
+            spacing: { before: 200 }
+        }));
+    }
+
+    const doc = new Document({
+        creator: 'ELDiB Generator',
+        title: 'PEI – ELDiB-Tabellen',
+        sections: [{
+            properties: { page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } } },
+            children
+        }]
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, buildFilename('PEI-schlank'));
 }
 
 function downloadAsWord(html, filename) {
@@ -13053,7 +13392,7 @@ async function generateDSFromTemplate(isComplete) {
     const birthDate = document.getElementById('geburtsdatum')?.value;
     const biologicalAge = dsCalculateBiologicalAge(birthDate);
     const devAges = dsCalculateAllDevelopmentalAges();
-    const studentName = stammdaten.schueler_name?.split(',')[0]?.trim() || (isFR_DS ? 'l\'élève' : 'der/die Schüler:in');
+    const studentName = getVornameForText(stammdaten.schueler_name) || (isFR_DS ? 'l\'élève' : 'der/die Schüler:in');
 
     // --- XML helper functions ---
     function escapeXml(str) {
