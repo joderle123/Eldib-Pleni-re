@@ -3,35 +3,39 @@
    Alles ist unter .dsa (Assistent) bzw. .dsb- (Berichtsvorschau) gekapselt.
    ===================================================================== */
 .dsa {
-  --d-bg: #F3F5F8; --d-surface: #FFFFFF; --d-surface-2: #F8FAFC; --d-line: #E2E6EC; --d-line-2: #CFD6E0;
-  --d-ink: #0E1628; --d-ink-2: #263149; --d-muted: #586277; --d-faint: #8C96A8;
-  --d-accent: #2E3A9C; --d-accent-strong: #232C7C; --d-accent-soft: #ECEEFA; --d-accent-line: #C8CDF0;
-  --d-gut: #1E7B4F; --d-gut-soft: #E3F4EA; --d-gut-2: #BFE5CD;
+  /* Tokens des CDSE Design-Systems (10-app.css, :root) – hier nur unter den Namen des Assistenten */
+  --d-bg: var(--bg); --d-surface: var(--surface); --d-surface-2: var(--surface-2); --d-line: var(--line); --d-line-2: var(--line-2);
+  --d-ink: var(--ink); --d-ink-2: var(--ink-2); --d-muted: var(--muted); --d-faint: var(--text-leise);
+  --d-accent: var(--accent); --d-accent-strong: var(--accent-strong); --d-accent-soft: var(--accent-soft); --d-accent-line: var(--accent-line);
+  --d-gut: #1E7B4F; --d-gut-soft: var(--ok-soft); --d-gut-2: var(--ok-line);
   --d-mitte: #6B7385; --d-mitte-soft: #EEF0F4;
   --d-warn: #B4531A; --d-warn-soft: #FCEBDD; --d-warn-2: #F6CFAE;
-  --d-radius: 10px; --d-radius-sm: 7px;
-  --d-shadow: 0 1px 2px rgba(14, 22, 40, .05);
-  font-family: 'Inter var', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --d-radius: var(--radius); --d-radius-sm: var(--radius-sm);
+  --d-shadow: var(--shadow-1);
+  /* Schritte und Vorschau bleiben unter der Kopfleiste des Editors stehen */
+  --d-oben: calc(var(--bar-h) + 14px);
+  font-family: var(--font-ui);
   color: var(--d-ink); font-size: 14.5px; line-height: 1.5;
 }
 .dsa *, .dsa *::before, .dsa *::after { box-sizing: border-box; }
 .dsa button { font: inherit; color: inherit; cursor: pointer; }
-.dsa :focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(46, 58, 156, .26); }
+.dsa :focus-visible { outline: none; box-shadow: var(--focus); }
 
 /* Kopf */
-.dsa-kopf { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin: 4px 0 18px; }
-.dsa-kopf h2 { margin: 0; font-size: 1.45rem; letter-spacing: -.02em; color: var(--d-ink); }
-.dsa-kopf p { margin: 2px 0 0; color: var(--d-muted); }
-.dsa-sprache { display: inline-flex; align-items: center; gap: 4px; background: var(--d-surface); border: 1px solid var(--d-line); border-radius: 999px; padding: 3px 4px 3px 12px; }
-.dsa-sprache span { color: var(--d-muted); font-size: .82rem; margin-right: 4px; }
-.dsa-sprache button { border: 0; background: transparent; border-radius: 999px; padding: 4px 11px; font-weight: 650; font-size: .82rem; color: var(--d-muted); }
-.dsa-sprache button.an { background: var(--d-accent); color: #fff; }
+.dsa-kopf { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin: 2px 0 18px; padding-bottom: 16px; border-bottom: 1px solid var(--d-line); }
+.dsa-kopf h2 { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-track); font-size: 26px; line-height: 1.15; color: var(--d-ink); }
+.dsa-kopf p { margin: 6px 0 0; color: var(--d-muted); }
+.dsa-sprache { display: inline-flex; align-items: center; gap: 2px; background: var(--bg-2); border-radius: var(--d-radius); padding: 3px; }
+.dsa-sprache span { color: var(--d-muted); font-size: 12.5px; font-weight: 600; padding: 0 8px 0 7px; }
+.dsa-sprache button { border: 0; background: transparent; border-radius: 8px; padding: 7px 11px; font-weight: 650; font-size: 12.5px; letter-spacing: .03em; line-height: 1; color: var(--d-muted); }
+.dsa-sprache button:hover:not(:disabled) { color: var(--d-ink); }
+.dsa-sprache button.an { background: var(--d-surface); color: var(--d-ink); box-shadow: var(--shadow-1), 0 0 0 1px var(--d-line); }
 .dsa-sprache button:disabled { opacity: .4; cursor: not-allowed; }
 
 /* Raster: Schritte | Inhalt | Vorschau */
 .dsa-raster { display: grid; grid-template-columns: 220px minmax(0, 1fr) minmax(0, .85fr); gap: 20px; align-items: start; }
 .dsa-raster.breit { grid-template-columns: 220px minmax(0, 1fr); }
-.dsa-schritte { position: sticky; top: 12px; }
+.dsa-schritte { position: sticky; top: var(--d-oben); }
 .dsa-schritte ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .dsa-schritt { width: 100%; display: flex; align-items: center; gap: 10px; border: 0; background: transparent; text-align: left; padding: 7px 10px; border-radius: var(--d-radius-sm); color: var(--d-ink-2); }
 .dsa-schritt:hover { background: var(--d-surface); }
@@ -45,12 +49,12 @@
 /* Inhalt */
 .dsa-haupt { min-width: 0; }
 .dsa-schrittkopf { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; }
-.dsa-schrittkopf h3 { margin: 0; font-size: 1.2rem; letter-spacing: -.01em; }
+.dsa-schrittkopf h3 { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: -.02em; font-size: 19px; line-height: 1.25; }
 .dsa-schrittnr { font-size: .78rem; color: var(--d-faint); font-variant-numeric: tabular-nums; }
 .dsa-tipp { margin: 0 0 12px; font-size: .84rem; color: var(--d-muted); background: var(--d-surface-2); border: 1px dashed var(--d-line-2); border-radius: var(--d-radius-sm); padding: 7px 11px; }
 .dsa-karte { background: var(--d-surface); border: 1px solid var(--d-line); border-radius: var(--d-radius); box-shadow: var(--d-shadow); padding: 14px 16px; margin-bottom: 12px; }
 .dsa-karte header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px; }
-.dsa-karte h4 { margin: 0; font-size: 1rem; }
+.dsa-karte h4 { margin: 0; font-size: 15px; font-weight: 650; }
 .dsa-zaehler { font-size: .78rem; color: var(--d-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .dsa-reihe { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
 .dsa-reihe > .dsa-feld { flex: 1 1 180px; margin-bottom: 0; }
@@ -59,10 +63,14 @@
 .dsa-feld.voll { width: 100%; }
 .dsa-feld > span, .dsa-feld legend { font-size: .82rem; font-weight: 600; color: var(--d-ink-2); }
 .dsa-feld small { font-weight: 400; color: var(--d-faint); }
-.dsa-eingabe { width: 100%; font: inherit; font-size: .92rem; color: var(--d-ink); background: var(--d-surface); border: 1px solid var(--d-line-2); border-radius: var(--d-radius-sm); padding: 7px 10px; }
-.dsa-eingabe:focus { outline: none; border-color: var(--d-accent); box-shadow: 0 0 0 3px rgba(46, 58, 156, .18); }
+.dsa-eingabe { width: 100%; font: inherit; font-size: 14.5px; line-height: 1.4; color: var(--d-ink); background: var(--d-surface); border: 1px solid var(--d-line-2); border-radius: 9px; padding: 8px 11px; transition: border-color .15s, box-shadow .15s; }
+.dsa-eingabe:hover { border-color: #B8C1CE; }
+.dsa-eingabe:focus { outline: none; border-color: var(--d-accent); box-shadow: var(--focus); }
+input.dsa-eingabe, select.dsa-eingabe { height: 38px; }
+.dsa-tabelle input.dsa-eingabe, .dsa-tabelle select.dsa-eingabe { height: 32px; }
+select.dsa-eingabe { -webkit-appearance: none; appearance: none; cursor: pointer; padding-right: 34px; background: var(--d-surface) var(--b-runter) right 10px center / 16px no-repeat; }
 textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
-.dsa-geschlecht { border: 0; padding: 0; margin: 0 0 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.dsa-geschlecht { border: 0; padding: 0; margin: 0 0 14px; display: flex; flex-direction: row; gap: 8px; flex-wrap: wrap; align-items: center; }
 .dsa-geschlecht legend { width: 100%; margin-bottom: 4px; }
 .dsa-radio { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid var(--d-line-2); border-radius: 999px; background: var(--d-surface); cursor: pointer; }
 .dsa-radio:has(input:checked) { border-color: var(--d-accent); background: var(--d-accent-soft); color: var(--d-accent-strong); font-weight: 600; }
@@ -79,7 +87,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 .dsa-chip { border: 1px solid var(--d-line-2); background: var(--d-surface); border-radius: 999px; padding: 5px 12px; font-size: .86rem; color: var(--d-ink-2); transition: background .12s, border-color .12s; }
 .dsa-chip:hover { border-color: var(--d-accent-line); background: var(--d-surface-2); }
 .dsa-chip.an { background: var(--d-accent); border-color: var(--d-accent); color: #fff; }
-.dsa-chip.an::before { content: '✓ '; }
+.dsa-chip.an::before { content: ''; display: inline-block; width: 13px; height: 13px; margin: 0 5px -2px -2px; background-color: currentColor; -webkit-mask: var(--i-haken) center / contain no-repeat; mask: var(--i-haken) center / contain no-repeat; }
 .dsa-detail { margin: 10px 0 0; }
 
 /* Aussagen mit Skala 1–7 */
@@ -115,6 +123,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 .dsa-tabelle th { text-align: left; font-size: .75rem; font-weight: 650; color: var(--d-muted); padding: 4px 6px; border-bottom: 1px solid var(--d-line); }
 .dsa-tabelle td { padding: 4px 4px; }
 .dsa-tabelle .dsa-eingabe { padding: 5px 8px; font-size: .88rem; }
+.dsa-tabelle select.dsa-eingabe { padding-right: 28px; background-position: right 6px center; }
 .dsa-beob { align-items: flex-end; }
 .dsa-weg { border: 0; background: transparent; color: var(--d-faint); font-size: 1.1rem; width: 30px; height: 32px; border-radius: 7px; }
 .dsa-weg:hover { color: var(--d-warn); background: var(--d-warn-soft); }
@@ -131,15 +140,18 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 /* Knöpfe */
 .dsa-navi { display: flex; justify-content: space-between; gap: 10px; margin: 18px 0 8px; }
 .dsa-knopfreihe { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 14px; }
-.dsa-knopf { border: 1px solid var(--d-line-2); background: var(--d-surface); border-radius: var(--d-radius-sm); padding: 8px 16px; font-weight: 600; font-size: .9rem; color: var(--d-ink-2); }
-.dsa-knopf:hover { border-color: var(--d-accent); color: var(--d-accent); }
+.dsa-knopf { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; border: 1px solid var(--d-line-2); background: var(--d-surface); border-radius: var(--d-radius); padding: 9px 16px; font-weight: 600; font-size: 14px; line-height: 1.25; color: var(--d-ink); transition: background .15s, border-color .15s, color .15s; }
+.dsa-knopf:hover { border-color: var(--d-ink-2); }
+.dsa-knopf[data-aktion="word"]::before, .dsa-knopf[data-aktion="drucken"]::before { content: ''; flex: 0 0 auto; width: 16px; height: 16px; background-color: currentColor; -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; }
+.dsa-knopf[data-aktion="word"] { --ic: var(--i-laden); }
+.dsa-knopf[data-aktion="drucken"] { --ic: var(--i-drucker); }
 .dsa-knopf.primaer { background: var(--d-accent); border-color: var(--d-accent); color: #fff; }
 .dsa-knopf.primaer:hover { background: var(--d-accent-strong); color: #fff; }
-.dsa-link { border: 0; background: transparent; color: var(--d-accent); font-weight: 600; font-size: .86rem; padding: 4px 0; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--d-accent-line); }
+.dsa-link { border: 0; background: transparent; color: var(--d-accent); font-weight: 600; font-size: .86rem; padding: 4px 0; text-align: left; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--d-accent-line); }
 .dsa-link:hover { text-decoration-color: var(--d-accent); }
 
 /* Vorschau */
-.dsa-vorschau { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; }
+.dsa-vorschau { position: sticky; top: var(--d-oben); max-height: calc(100vh - var(--d-oben) - 12px); overflow: auto; }
 .dsa-vorschaukopf { font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--d-faint); margin: 0 0 8px; }
 .dsb-papier { background: #fff; border: 1px solid var(--d-line); border-radius: var(--d-radius); box-shadow: 0 1px 2px rgba(14,22,40,.04), 0 10px 28px -12px rgba(14,22,40,.16); padding: 20px 22px; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; line-height: 1.55; color: #1b1b1b; }
 .dsb-papier.gross { padding: 34px 40px; font-size: 14px; }
@@ -179,7 +191,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 .dsa-pruefliste.ok { background: var(--d-gut-soft); border-color: var(--d-gut-2); color: var(--d-gut); }
 .dsa-pruefliste.offen { background: var(--d-warn-soft); border-color: var(--d-warn-2); color: #7a3a12; }
 .dsa-pruefliste ul { margin: 6px 0 0; padding-left: 18px; }
-.dsa-pruefliste .dsa-link { color: inherit; }
+.dsa-pruefliste .dsa-link { color: inherit; padding: 0; vertical-align: top; }
 
 /* Schmale Bildschirme */
 @media (max-width: 1280px) {
@@ -198,7 +210,8 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
   .dsa-skalakopf { padding-left: 0; }
   .dsb-papier.gross { padding: 20px 18px; }
 }
-/* Der DS-Bereich nutzt die volle Breite; "clip" statt "hidden", damit
-   Schrittliste und Vorschau beim Scrollen stehen bleiben (sticky) */
-#ds.tab-content { max-width: none; }
+@media (max-width: 700px) {
+  .dsa-kopf h2 { font-size: 22px; }
+}
+/* "clip" statt "hidden", damit Schrittliste und Vorschau beim Scrollen stehen bleiben (sticky) */
 #main-container { overflow: clip; }

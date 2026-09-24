@@ -11,38 +11,51 @@
 <body>
     <!-- SCHÜLER-MANAGER STARTSEITE -->
     <div id="schueler-manager">
-        <!-- Sprachwahl auch auf der Startseite (wird gemerkt) -->
-        <div class="sm-sprache">
-            <button onclick="switchLanguage('de')" id="sm-lang-btn-de" class="lang-btn active">DE</button>
-            <button onclick="switchLanguage('fr')" id="sm-lang-btn-fr" class="lang-btn">FR</button>
-            <button onclick="switchLanguage('en')" id="sm-lang-btn-en" class="lang-btn">EN</button>
-        </div>
-        <div class="sm-header">
-            <h1>ELDiB Generator</h1>
-            <p>Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen</p>
-        </div>
-        <div class="sm-actions">
-            <button class="sm-btn sm-btn-primary" onclick="smNeuerSchueler()">+ Neuen Sch&uuml;ler anlegen</button>
-        </div>
-        <div class="sm-grid" id="sm-schueler-grid">
-            <!-- Dynamisch gefüllt -->
+        <div class="sm-seite">
+            <div class="sm-kopf">
+                <div class="sm-header">
+                    <h1>ELDiB Generator</h1>
+                    <p>Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen</p>
+                </div>
+                <div class="sm-werkzeuge">
+                    <!-- Sprachwahl auch auf der Startseite (wird gemerkt) -->
+                    <div class="sm-sprache" role="group" aria-label="Sprache · Langue · Language">
+                        <button type="button" onclick="switchLanguage('de')" id="sm-lang-btn-de" class="lang-btn active">DE</button>
+                        <button type="button" onclick="switchLanguage('fr')" id="sm-lang-btn-fr" class="lang-btn">FR</button>
+                        <button type="button" onclick="switchLanguage('en')" id="sm-lang-btn-en" class="lang-btn">EN</button>
+                    </div>
+                    <div class="sm-actions">
+                        <button type="button" class="sm-btn sm-btn-primary" onclick="smNeuerSchueler()">Neuen Sch&uuml;ler anlegen</button>
+                    </div>
+                </div>
+            </div>
+            <div class="sm-grid" id="sm-schueler-grid">
+                <!-- Dynamisch gefüllt -->
+            </div>
         </div>
     </div>
 
-    <!-- Zurück-Button im Editor -->
-    <button class="back-to-manager-btn" id="backToManagerBtn" onclick="smZurueckZurListe()">&larr; Zur&uuml;ck zur &Uuml;bersicht</button>
-    <button class="save-btn-fixed" id="saveBtn" onclick="smManualSave()">&#128190; Speichern</button>
-    <div class="sm-current-info" id="smCurrentInfo"></div>
-
     <div class="container" id="main-container" style="display:none;">
-        <div class="header">
-            <div class="language-toggle" style="position: absolute; top: 30px; right: 20px; display: flex; gap: 4px; z-index: 100;">
-                <button onclick="switchLanguage('de')" id="lang-btn-de" class="lang-btn active" style="padding: 6px 14px; border: 2px solid rgba(255,255,255,0.5); border-radius: 6px; background: rgba(255,255,255,0.3); color: white; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;">DE</button>
-                <button onclick="switchLanguage('fr')" id="lang-btn-fr" class="lang-btn" style="padding: 6px 14px; border: 2px solid rgba(255,255,255,0.2); border-radius: 6px; background: transparent; color: rgba(255,255,255,0.7); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;">FR</button>
-                <button onclick="switchLanguage('en')" id="lang-btn-en" class="lang-btn" style="padding: 6px 14px; border: 2px solid rgba(255,255,255,0.2); border-radius: 6px; background: transparent; color: rgba(255,255,255,0.7); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;">EN</button>
+        <!-- Kopfleiste im Editor: Zurück, Schüler:in, Sprache, Speichern (bleibt oben stehen) -->
+        <header class="app-bar">
+            <button type="button" class="back-to-manager-btn" id="backToManagerBtn" onclick="smZurueckZurListe()">Zur&uuml;ck zur &Uuml;bersicht</button>
+            <span class="app-bar-trenner" aria-hidden="true"></span>
+            <div class="sm-current-info" id="smCurrentInfo"></div>
+            <div class="app-bar-aktionen">
+                <div class="language-toggle" role="group" aria-label="Sprache · Langue · Language">
+                    <button type="button" onclick="switchLanguage('de')" id="lang-btn-de" class="lang-btn active">DE</button>
+                    <button type="button" onclick="switchLanguage('fr')" id="lang-btn-fr" class="lang-btn">FR</button>
+                    <button type="button" onclick="switchLanguage('en')" id="lang-btn-en" class="lang-btn">EN</button>
+                </div>
+                <button type="button" class="save-btn-fixed" id="saveBtn" onclick="smManualSave()">Speichern</button>
             </div>
-            <h1>ELDiB Generator</h1>
-            <p id="header-subtitle">Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen</p>
+        </header>
+
+        <div class="header">
+            <div class="header-text">
+                <h1>ELDiB Generator</h1>
+                <p id="header-subtitle">Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen</p>
+            </div>
             <div class="progress-indicator" id="progress-indicator">
                 <div class="progress-dot active" data-section="stammdaten" onclick="showMainSection('stammdaten')" title="Stammdaten"></div>
                 <div class="progress-dot" data-section="eldib" onclick="showMainSection('eldib')" title="ELDiB Auswertung"></div>
@@ -174,7 +187,7 @@
                         <h2>Bereich Verhalten</h2>
                         <p>V-1 bis V-33</p>
                     </div>
-                    <span class="collapse-icon">&#9660;</span>
+                    <span class="collapse-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                 </div>
                 <div id="verhalten-content" class="bereich-content">
                     <div class="bereich-notizen">
@@ -285,7 +298,7 @@
                         <h2>Bereich Kommunikation</h2>
                         <p>K-1 bis K-35</p>
                     </div>
-                    <span class="collapse-icon">&#9660;</span>
+                    <span class="collapse-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                 </div>
                 <div id="kommunikation-content" class="bereich-content">
                     <div class="bereich-notizen">
@@ -396,7 +409,7 @@
                         <h2>Bereich Sozialisation</h2>
                         <p>SOZ-1 bis SOZ-41</p>
                     </div>
-                    <span class="collapse-icon">&#9660;</span>
+                    <span class="collapse-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                 </div>
                 <div id="sozialisation-content" class="bereich-content">
                     <div class="bereich-notizen">
@@ -507,7 +520,7 @@
                         <h2>Bereich Kognition</h2>
                         <p>KOG-1 bis KOG-62</p>
                     </div>
-                    <span class="collapse-icon">&#9660;</span>
+                    <span class="collapse-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                 </div>
                 <div id="kognition-content" class="bereich-content">
                     <div class="bereich-notizen">
@@ -635,7 +648,7 @@
                         </div>
                         <div class="category-count" id="count-demarches_mentales">
                             <span class="count-number">0</span>
-                            <span class="category-expand-icon">▼</span>
+                            <span class="category-expand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                         </div>
                     </div>
                     <div id="category-demarches_mentales" class="category-items"></div>
@@ -650,7 +663,7 @@
                         </div>
                         <div class="category-count" id="count-manieres_apprendre">
                             <span class="count-number">0</span>
-                            <span class="category-expand-icon">▼</span>
+                            <span class="category-expand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                         </div>
                     </div>
                     <div id="category-manieres_apprendre" class="category-items"></div>
@@ -665,7 +678,7 @@
                         </div>
                         <div class="category-count" id="count-attitudes_relationnelles">
                             <span class="count-number">0</span>
-                            <span class="category-expand-icon">▼</span>
+                            <span class="category-expand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                         </div>
                     </div>
                     <div id="category-attitudes_relationnelles" class="category-items"></div>
@@ -680,7 +693,7 @@
                         </div>
                         <div class="category-count" id="count-attitudes_affectives">
                             <span class="count-number">0</span>
-                            <span class="category-expand-icon">▼</span>
+                            <span class="category-expand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                         </div>
                     </div>
                     <div id="category-attitudes_affectives" class="category-items"></div>
@@ -695,7 +708,7 @@
                         </div>
                         <div class="category-count" id="count-competences_essentielles">
                             <span class="count-number">0</span>
-                            <span class="category-expand-icon">▼</span>
+                            <span class="category-expand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                         </div>
                     </div>
                     <div id="category-competences_essentielles" class="category-items"></div>
@@ -710,7 +723,7 @@
                         </div>
                         <div class="category-count" id="count-culture_loisirs">
                             <span class="count-number">0</span>
-                            <span class="category-expand-icon">▼</span>
+                            <span class="category-expand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
                         </div>
                     </div>
                     <div id="category-culture_loisirs" class="category-items"></div>
@@ -729,59 +742,73 @@
 
         <!-- Export Tab -->
         <div id="export" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: #333;">Dokumente exportieren</h2>
+            <h2>Dokumente exportieren</h2>
 
-            <div id="export-disclaimer" style="background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%); border: 2px solid #F57C00; border-radius: 12px; padding: 24px 28px; margin-bottom: 28px; position: relative; box-shadow: 0 2px 12px rgba(245, 124, 0, 0.15);">
-                <div style="display: flex; align-items: flex-start; gap: 16px;">
-                    <div style="min-width: 44px; height: 44px; background: #F57C00; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; box-shadow: 0 2px 8px rgba(245, 124, 0, 0.3);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                    </div>
-                    <div>
-                        <p id="disclaimer-title" style="font-weight: 800; color: #E65100; font-size: 1.08rem; margin: 0 0 10px 0; letter-spacing: 0.3px;">Hinweis zur Dokumentenprüfung</p>
-                        <p id="disclaimer-text" style="color: #4E342E; font-size: 0.95rem; line-height: 1.7; margin: 0;">
-                            Die nachfolgend generierten Dokumente werden automatisch auf Basis Ihrer Eingaben erstellt. Dieses Instrument dient als <strong>Arbeitshilfe</strong> — die fachliche Verantwortung für Richtigkeit und Vollständigkeit aller Angaben liegt bei den unterzeichnenden Mitarbeiter:innen. Bitte prüfen Sie jedes Dokument sorgfältig vor der Finalisierung.
-                        </p>
-                    </div>
+            <div id="export-disclaimer" role="note">
+                <div>
+                    <p id="disclaimer-title">Hinweis zur Dokumentenprüfung</p>
+                    <p id="disclaimer-text">
+                        Die nachfolgend generierten Dokumente werden automatisch auf Basis Ihrer Eingaben erstellt. Dieses Instrument dient als <strong>Arbeitshilfe</strong> — die fachliche Verantwortung für Richtigkeit und Vollständigkeit aller Angaben liegt bei den unterzeichnenden Mitarbeiter:innen. Bitte prüfen Sie jedes Dokument sorgfältig vor der Finalisierung.
+                    </p>
                 </div>
             </div>
 
-            <div class="form-section">
-                <h3 id="pei-section-title">Plan éducatif individualisé (PEI) generieren</h3>
-                <p style="margin-bottom: 15px; color: #666;" id="pei-section-desc">
-                    Das PEI-Dokument enthält alle ausgewählten Ziele mit den entsprechenden Ich-Zielformulierungen.
-                </p>
-                <button class="btn btn-success" onclick="generatePEI()">Plan éducatif individualisé (PEI) herunterladen (Word)</button>
-            </div>
+            <!-- Reihenfolge der Karten nicht ändern: updateUILanguage() übersetzt sie der Reihe nach
+                 (je Karte: erstes h3, erstes p, erster Knopf) -->
+            <div class="export-raster">
+                <div class="form-section">
+                    <span class="export-ic pei" aria-hidden="true"></span>
+                    <h3 id="pei-section-title">Plan éducatif individualisé (PEI) generieren</h3>
+                    <p id="pei-section-desc">
+                        Das PEI-Dokument enthält alle ausgewählten Ziele mit den entsprechenden Ich-Zielformulierungen.
+                    </p>
+                    <div class="export-fuss">
+                        <button type="button" class="btn btn-primary btn-laden" onclick="generatePEI()">Plan éducatif individualisé (PEI) herunterladen (Word)</button>
+                    </div>
+                </div>
 
-            <div class="form-section" style="border-color: #10b981;">
-                <h3 style="color: #047857;" id="pei-schlank-section-title">PEI – Schlanke Version (nur ELDiB-Tabellen)</h3>
-                <p style="margin-bottom: 15px; color: #666;" id="pei-schlank-section-desc">
-                    Reduzierte Version mit ausschließlich den ELDiB-Tabellen (Ziele pro Bereich mit Zielformulierungen). Ohne Anamnese und Interventionen — diese ergänzen Sie selbst.
-                </p>
-                <button class="btn" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white;" onclick="generateSchlankPEI()" id="pei-schlank-btn">Schlanke ELDiB-Tabellen herunterladen (Word)</button>
-            </div>
+                <div class="form-section">
+                    <span class="export-ic schlank" aria-hidden="true"></span>
+                    <h3 id="pei-schlank-section-title">PEI – Schlanke Version (nur ELDiB-Tabellen)</h3>
+                    <p id="pei-schlank-section-desc">
+                        Reduzierte Version mit ausschließlich den ELDiB-Tabellen (Ziele pro Bereich mit Zielformulierungen). Ohne Anamnese und Interventionen — diese ergänzen Sie selbst.
+                    </p>
+                    <div class="export-fuss">
+                        <button type="button" class="btn btn-primary btn-laden" onclick="generateSchlankPEI()" id="pei-schlank-btn">Schlanke ELDiB-Tabellen herunterladen (Word)</button>
+                    </div>
+                </div>
 
-            <div class="form-section">
-                <h3>Complement generieren</h3>
-                <p style="margin-bottom: 15px; color: #666;">
-                    Das Complement-Dokument enthält die letzten 4 erreichten Items pro Bereich.
-                </p>
-                <button class="btn btn-warning" onclick="generateComplement()">Complement herunterladen (Word)</button>
-            </div>
+                <div class="form-section">
+                    <span class="export-ic complement" aria-hidden="true"></span>
+                    <h3>Complément erstellen</h3>
+                    <p>
+                        Das Complément enthält die letzten 4 erreichten Items pro Bereich.
+                    </p>
+                    <div class="export-fuss">
+                        <button type="button" class="btn btn-primary btn-laden" onclick="generateComplement()">Complément herunterladen (Word)</button>
+                    </div>
+                </div>
 
-            <div class="form-section" style="border-color: #0097A7;">
-                <h3 style="color: #0097A7;">Diagnostic Spécialisé (DS)</h3>
-                <p style="margin-bottom: 15px; color: #666;">Der Bericht entsteht im Schritt „DS-Bericht“. Hier laden Sie ihn direkt als Word-Datei herunter.</p>
-                <button class="btn" style="background: linear-gradient(135deg, #0097A7 0%, #00838F 100%); color: white;" onclick="dsExportAusExport()">DS herunterladen (Word)</button>
-                <button class="btn" id="ds-zum-assistenten" style="margin-left: 8px;" onclick="showMainSection('ds')">Zum DS-Assistenten</button>
-            </div>
+                <div class="form-section">
+                    <span class="export-ic ds" aria-hidden="true"></span>
+                    <h3>Diagnostic Spécialisé (DS)</h3>
+                    <p>Der Bericht entsteht im Schritt „DS-Bericht“. Hier laden Sie ihn direkt als Word-Datei herunter.</p>
+                    <div class="export-fuss">
+                        <button type="button" class="btn btn-primary btn-laden" onclick="dsExportAusExport()">DS herunterladen (Word)</button>
+                        <button type="button" class="btn btn-weiter" id="ds-zum-assistenten" onclick="showMainSection('ds')">Zum DS-Assistenten</button>
+                    </div>
+                </div>
 
-            <div class="form-section" style="border-color: #0097A7;">
-                <h3 style="color: #0097A7;">Schüler-Übersicht</h3>
-                <p style="margin-bottom: 15px; color: #666;">
-                    Zurück zur Übersicht aller Schüler.innen, um eine andere Einschätzung zu öffnen oder eine.n neue.n Schüler.in anzulegen.
-                </p>
-                <button class="btn" style="background: linear-gradient(135deg, #0097A7 0%, #00838F 100%); color: white;" onclick="smZurueckZurListe()">Zur Schüler-Übersicht</button>
+                <div class="form-section">
+                    <span class="export-ic uebersicht" aria-hidden="true"></span>
+                    <h3>Schüler-Übersicht</h3>
+                    <p>
+                        Zurück zur Übersicht aller Schülerinnen und Schüler, um eine andere Einschätzung zu öffnen oder jemanden neu anzulegen.
+                    </p>
+                    <div class="export-fuss">
+                        <button type="button" class="btn btn-weiter" onclick="smZurueckZurListe()">Zur Schüler-Übersicht</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

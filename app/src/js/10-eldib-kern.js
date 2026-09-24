@@ -170,14 +170,11 @@ function showBlockadeMessage(message) {
     // Entferne bestehende Toasts
     document.querySelectorAll('.toast').forEach(t => t.remove());
 
+    // Aussehen (Hinweisfarbe, Warn-Symbol) kommt aus dem Stylesheet: .toast.toast-warning
     const toast = document.createElement('div');
     toast.className = 'toast toast-warning';
-    toast.innerHTML = `⚠️ ${message}`;
-    toast.style.cssText = `
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95)) !important;
-        max-width: 400px;
-        line-height: 1.5;
-    `;
+    toast.setAttribute('role', 'status');
+    toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 5000);
 }

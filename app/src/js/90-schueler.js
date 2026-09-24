@@ -44,26 +44,29 @@ function smRenderListe() {
         return;
     }
 
+    // Initialen stehen im data-Attribut und werden per CSS gezeigt (gehören nicht zum Text der Karte)
     grid.innerHTML = liste.map(s => {
         const hat1 = s.einschaetzung1 && Object.keys(s.einschaetzung1).length > 0;
         const hat2 = s.einschaetzung2 && Object.keys(s.einschaetzung2).length > 0;
         const datum1 = hat1 ? eldibDatum(s.einschaetzung1.stammdaten?.einschaetzungsdatum) : '';
         const datum2 = hat2 ? eldibDatum(s.einschaetzung2.stammdaten?.einschaetzungsdatum) : '';
+        const loeschen = smEscapeHtml(t('smLoeschen'));
         return `
         <div class="sm-card">
             <div class="sm-card-header">
-                <div>
+                <div class="sm-avatar" data-initialen="${smEscapeHtml(smInitialen(s.name)).replace(/"/g, '&quot;')}" aria-hidden="true"></div>
+                <div class="sm-card-titel">
                     <div class="sm-card-name">${smEscapeHtml(s.name)}</div>
                     <div class="sm-card-klasse">${s.klasse ? t('smKlasse') + ' ' + smEscapeHtml(s.klasse) : ''}${s.geburtsdatum ? (s.klasse ? ' · ' : '') + alterText(smBerechneAlter(s.geburtsdatum)) : ''}</div>
                 </div>
-                <button class="sm-card-delete" onclick="smLoescheSchueler('${s.id}')" title="${smEscapeHtml(t('smLoeschen'))}">&times;</button>
+                <button type="button" class="sm-card-delete" onclick="smLoescheSchueler('${s.id}')" title="${loeschen}" aria-label="${loeschen}"></button>
             </div>
             <div class="sm-card-buttons">
-                <button class="sm-einschaetzung-btn ${hat1 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 1)">
+                <button type="button" class="sm-einschaetzung-btn ${hat1 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 1)">
                     <span class="btn-label">${smEscapeHtml(tf('einschaetzungNr', { n: 1 }))}</span>
                     <span class="btn-status">${smEscapeHtml(hat1 ? datum1 || t('smDatenVorhanden') : t('smNochLeer'))}</span>
                 </button>
-                <button class="sm-einschaetzung-btn ${hat2 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 2)">
+                <button type="button" class="sm-einschaetzung-btn ${hat2 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 2)">
                     <span class="btn-label">${smEscapeHtml(tf('einschaetzungNr', { n: 2 }))}</span>
                     <span class="btn-status">${smEscapeHtml(hat2 ? datum2 || t('smDatenVorhanden') : t('smNochLeer'))}</span>
                 </button>
@@ -72,13 +75,31 @@ function smRenderListe() {
     }).join('');
 }
 
-// Anzeige oben in der Mitte: "Name — 1. Einschätzung" in der aktuellen Sprache
+// Initialen für den Namenskreis: "Muster, Tom" -> "TM" (ohne Komma: erstes Wort = Nachname)
+function smInitialen(name) {
+    const text = String(name || '').trim();
+    let nachname = '', vorname = '';
+    if (text.includes(',')) {
+        const teile = text.split(',');
+        nachname = teile[0].trim(); vorname = teile.slice(1).join(',').trim();
+    } else {
+        const woerter = text.split(/\s+/);
+        nachname = woerter[0] || ''; vorname = woerter[1] || '';
+    }
+    return ((vorname.charAt(0) || '') + (nachname.charAt(0) || '')).toUpperCase();
+}
+
+// Anzeige in der Kopfleiste: "Name — 1. Einschätzung" in der aktuellen Sprache.
+// Name und Nummer sind eigene Elemente (Gestaltung); der Text bleibt "Name — Nummer".
 function smZeigeAktuelleInfo() {
     const info = document.getElementById('smCurrentInfo');
     if (!info || !smAktuellerSchueler) return;
     const schueler = smGetListe().find(s => s.id === smAktuellerSchueler.id);
     if (!schueler) return;
-    info.textContent = `${schueler.name} — ${tf('einschaetzungNr', { n: smAktuellerSchueler.einschaetzungNr })}`;
+    info.innerHTML = `<span class="sm-info-name">${smEscapeHtml(schueler.name)}</span><span class="sm-info-sep"> — </span>` +
+        `<span class="sm-info-nr">${smEscapeHtml(tf('einschaetzungNr', { n: smAktuellerSchueler.einschaetzungNr }))}</span>`;
+    info.dataset.initialen = smInitialen(schueler.name);
+    info.title = info.textContent; // voller Name, falls er in der Kopfleiste gekürzt ist
 }
 
 function smEscapeHtml(str) {
@@ -103,21 +124,23 @@ function smNeuerSchueler() {
     overlay.id = 'sm-dialog-overlay';
     overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
     overlay.innerHTML = `
-        <div class="sm-dialog">
-            <h3>${smEscapeHtml(t('smDialogTitel'))}</h3>
-            <label>${smEscapeHtml(t('smNachname'))} <span style="color:#ff6b6b;">*</span></label>
-            <input type="text" id="sm-new-nachname" placeholder="${smEscapeHtml(t('smNachname'))}" autofocus>
-            <label>${smEscapeHtml(t('smVorname'))} <span style="color:#ff6b6b;">*</span></label>
-            <input type="text" id="sm-new-vorname" placeholder="${smEscapeHtml(t('smVorname'))}">
-            <label>${smEscapeHtml(t('geburtsdatum'))} <span style="color:#ff6b6b;">*</span></label>
-            <input type="date" id="sm-new-geburtsdatum">
-            <div id="sm-new-alter" style="margin: -8px 0 8px 0; font-size: 0.85rem; color: rgba(255,255,255,0.6);"></div>
-            <label>${smEscapeHtml(t('klasse'))}</label>
-            <input type="text" id="sm-new-klasse" placeholder="${smEscapeHtml(t('klassePlaceholder'))}">
-            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin: 4px 0 0 0;"><span style="color:#ff6b6b;">*</span> ${smEscapeHtml(t('smPflichtfelder'))}</p>
+        <div class="sm-dialog" role="dialog" aria-modal="true" aria-labelledby="sm-dialog-titel">
+            <h3 id="sm-dialog-titel">${smEscapeHtml(t('smDialogTitel'))}</h3>
+            <div class="sm-dialog-raster">
+                <div class="sm-feld"><label for="sm-new-nachname">${smEscapeHtml(t('smNachname'))} <b class="sm-pflicht">*</b></label>
+                    <input type="text" id="sm-new-nachname" placeholder="${smEscapeHtml(t('smNachname'))}" autofocus></div>
+                <div class="sm-feld"><label for="sm-new-vorname">${smEscapeHtml(t('smVorname'))} <b class="sm-pflicht">*</b></label>
+                    <input type="text" id="sm-new-vorname" placeholder="${smEscapeHtml(t('smVorname'))}"></div>
+                <div class="sm-feld"><label for="sm-new-geburtsdatum">${smEscapeHtml(t('geburtsdatum'))} <b class="sm-pflicht">*</b></label>
+                    <input type="date" id="sm-new-geburtsdatum">
+                    <div id="sm-new-alter" class="sm-alter"></div></div>
+                <div class="sm-feld"><label for="sm-new-klasse">${smEscapeHtml(t('klasse'))}</label>
+                    <input type="text" id="sm-new-klasse" placeholder="${smEscapeHtml(t('klassePlaceholder'))}"></div>
+            </div>
+            <p class="sm-pflicht-hinweis"><b class="sm-pflicht">*</b> ${smEscapeHtml(t('smPflichtfelder'))}</p>
             <div class="sm-dialog-actions">
-                <button class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">${smEscapeHtml(t('smAbbrechen'))}</button>
-                <button class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">${smEscapeHtml(t('smAnlegen'))}</button>
+                <button type="button" class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">${smEscapeHtml(t('smAbbrechen'))}</button>
+                <button type="button" class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">${smEscapeHtml(t('smAnlegen'))}</button>
             </div>
         </div>`;
     document.body.appendChild(overlay);

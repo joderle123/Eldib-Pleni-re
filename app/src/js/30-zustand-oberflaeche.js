@@ -43,22 +43,22 @@ const UI_STRINGS = {
         peiSchlankTitle: 'PEI – Schlanke Version (nur ELDiB-Tabellen)',
         peiSchlankDesc: 'Reduzierte Version mit ausschließlich den ELDiB-Tabellen (Ziele pro Bereich mit Zielformulierungen). Ohne Anamnese und Interventionen — diese ergänzen Sie selbst.',
         peiSchlankBtn: 'Schlanke ELDiB-Tabellen herunterladen (Word)',
-        compTitle: 'Complement generieren',
-        compDesc: 'Das Complement-Dokument enthält die letzten 4 erreichten Items pro Bereich.',
-        compBtn: 'Complement herunterladen (Word)',
+        compTitle: 'Complément erstellen',
+        compDesc: 'Das Complément enthält die letzten 4 erreichten Items pro Bereich.',
+        compBtn: 'Complément herunterladen (Word)',
         dsTitle: 'Diagnostic Spécialisé (DS)',
         dsDesc: 'Der Bericht entsteht im Schritt „DS-Bericht“. Hier laden Sie ihn direkt als Word-Datei herunter.',
         dsBtn: 'DS herunterladen (Word)', dsZumAssistenten: 'Zum DS-Assistenten', dsNavTooltip: 'Spezialisierte Diagnostik Schritt für Schritt',
         saveTitle: 'Daten speichern/laden',
         saveDesc: 'Speichern Sie Ihre Eingaben als JSON-Datei, um sie später fortzusetzen.',
         saveBtn: 'Daten speichern', loadBtn: 'Daten laden',
-        resetTitle: 'Schüler.in anlegen',
-        resetDesc: 'Alle Eingaben löschen und mit einem neuen Schüler.in beginnen. Diese Aktion kann nicht rückgängig gemacht werden!',
+        resetTitle: 'Neu beginnen',
+        resetDesc: 'Alle Eingaben löschen und mit einer neuen Schülerin oder einem neuen Schüler beginnen. Das lässt sich nicht rückgängig machen!',
         resetBtn: 'Alle Daten zurücksetzen',
         itemDetails: 'Item-Details', beobachtungsbeispiele: 'Beobachtungsbeispiele:',
         itemHint: 'Tipp: Diese Beispiele helfen bei der Einschätzung, ob das Verhalten erreicht, nicht erreicht oder als Ziel definiert werden sollte.',
         erreicht: 'Erreicht', ziel: 'Ziel', nichtErreicht: 'Nicht erreicht',
-        zielBtn: '⚡ Ziel', teilweiseBtn: '🤝 Teilweise', erreichtBtn: '✓ Erreicht',
+        zielBtn: 'Ziel', teilweiseBtn: 'Teilweise', erreichtBtn: 'Erreicht',
         interventionen: 'Interventionen',
         zielformulierung: 'Zielformulierung',
         moeglicheUmsetzung: 'Mögliche Umsetzung',
@@ -78,11 +78,11 @@ const UI_STRINGS = {
         katAffectives: 'Attitudes affectives', katCompetences: 'Compétences essentielles', katCulture: 'Culture et loisirs',
         inArbeit: 'In Arbeit',
         // Kopfleiste im Editor
-        zurueckUebersicht: '← Zurück zur Übersicht', speichern: '💾 Speichern', gespeichert: '✓ Gespeichert!',
+        zurueckUebersicht: 'Zurück zur Übersicht', speichern: 'Speichern', gespeichert: 'Gespeichert!',
         einschaetzungNr: '{n}. Einschätzung',
         // Export: Schüler-Übersicht
         uebersichtTitle: 'Schüler-Übersicht',
-        uebersichtDesc: 'Zurück zur Übersicht aller Schüler.innen, um eine andere Einschätzung zu öffnen oder eine.n neue.n Schüler.in anzulegen.',
+        uebersichtDesc: 'Zurück zur Übersicht aller Schülerinnen und Schüler, um eine andere Einschätzung zu öffnen oder jemanden neu anzulegen.',
         uebersichtBtn: 'Zur Schüler-Übersicht',
         // Meldungen
         stufeZurueckgesetzt: 'Stufe {n} zurückgesetzt', itemsErreicht: '{n} Items als erreicht markiert',
@@ -92,8 +92,8 @@ const UI_STRINGS = {
         resetFertig: 'Alle Daten wurden gelöscht',
         keineErreichten: 'Keine erreichten Items',
         // Schüler-Manager (Startseite)
-        smNeu: '+ Neuen Schüler anlegen', smLeer: 'Noch keine Schüler angelegt',
-        smLeerHinweis: 'Klicken Sie auf "+ Neuen Schüler anlegen", um zu beginnen.',
+        smNeu: 'Neuen Schüler anlegen', smLeer: 'Noch keine Schüler angelegt',
+        smLeerHinweis: 'Klicken Sie auf "Neuen Schüler anlegen", um zu beginnen.',
         smKlasse: 'Klasse', smLoeschen: 'Schüler löschen', smDatenVorhanden: 'Daten vorhanden', smNochLeer: 'Noch leer',
         smDialogTitel: 'Neuen Schüler anlegen', smNachname: 'Nachname', smVorname: 'Vorname',
         smPflichtfelder: 'Pflichtfelder', smAbbrechen: 'Abbrechen', smAnlegen: 'Anlegen', smAlter: 'Alter: {n}',
@@ -139,13 +139,13 @@ const UI_STRINGS = {
         saveTitle: 'Sauvegarder/charger les données',
         saveDesc: 'Sauvegardez vos saisies dans un fichier JSON pour les reprendre plus tard.',
         saveBtn: 'Sauvegarder les données', loadBtn: 'Charger les données',
-        resetTitle: 'Créer un nouvel élève',
+        resetTitle: 'Recommencer',
         resetDesc: 'Effacer toutes les saisies et recommencer avec un nouvel élève. Cette action est irréversible !',
         resetBtn: 'Réinitialiser toutes les données',
         itemDetails: 'Détails de l\'item', beobachtungsbeispiele: 'Exemples d\'observation :',
         itemHint: 'Conseil : Ces exemples aident à évaluer si le comportement est atteint, non atteint ou à définir comme objectif.',
         erreicht: 'Atteint', ziel: 'Objectif', nichtErreicht: 'Non atteint',
-        zielBtn: '⚡ Objectif', teilweiseBtn: '🤝 Partiel', erreichtBtn: '✓ Atteint',
+        zielBtn: 'Objectif', teilweiseBtn: 'Partiel', erreichtBtn: 'Atteint',
         interventionen: 'Interventions',
         zielformulierung: 'Formulation de l\'objectif',
         moeglicheUmsetzung: 'Mise en œuvre possible',
@@ -161,7 +161,7 @@ const UI_STRINGS = {
         katDemarches: 'Démarches mentales', katManieres: 'Manières d\'apprendre', katRelationnelles: 'Attitudes relationnelles',
         katAffectives: 'Attitudes affectives', katCompetences: 'Compétences essentielles', katCulture: 'Culture et loisirs',
         inArbeit: 'En cours',
-        zurueckUebersicht: '← Retour à la liste', speichern: '💾 Enregistrer', gespeichert: '✓ Enregistré !',
+        zurueckUebersicht: 'Retour à la liste', speichern: 'Enregistrer', gespeichert: 'Enregistré !',
         einschaetzungNr: 'Évaluation {n}',
         uebersichtTitle: 'Liste des élèves',
         uebersichtDesc: 'Retour à la liste de tous les élèves pour ouvrir une autre évaluation ou ajouter un nouvel élève.',
@@ -172,8 +172,8 @@ const UI_STRINGS = {
         resetFrage: 'Voulez-vous vraiment supprimer toutes les données ?\n\nToutes les données de l\'élève et toutes les sélections seront définitivement supprimées !',
         resetFertig: 'Toutes les données ont été supprimées',
         keineErreichten: 'Aucun item atteint',
-        smNeu: '+ Ajouter un élève', smLeer: 'Aucun élève pour l\'instant',
-        smLeerHinweis: 'Cliquez sur « + Ajouter un élève » pour commencer.',
+        smNeu: 'Ajouter un élève', smLeer: 'Aucun élève pour l\'instant',
+        smLeerHinweis: 'Cliquez sur « Ajouter un élève » pour commencer.',
         smKlasse: 'Classe', smLoeschen: 'Supprimer l\'élève', smDatenVorhanden: 'Données disponibles', smNochLeer: 'Pas encore commencée',
         smDialogTitel: 'Ajouter un élève', smNachname: 'Nom', smVorname: 'Prénom',
         smPflichtfelder: 'Champs obligatoires', smAbbrechen: 'Annuler', smAnlegen: 'Créer', smAlter: 'Âge : {n}',
@@ -210,22 +210,22 @@ const UI_STRINGS = {
         peiSchlankTitle: 'IEP – Lean version (DTORF-R tables only)',
         peiSchlankDesc: 'Reduced version containing only the DTORF-R tables (goals per domain with formulations). Without anamnesis or interventions — you fill these in yourself.',
         peiSchlankBtn: 'Download lean DTORF-R tables (Word)',
-        compTitle: 'Generate Complement',
-        compDesc: 'The Complement document contains the last 4 mastered items per domain.',
-        compBtn: 'Download Complement (Word)',
+        compTitle: 'Create Complément',
+        compDesc: 'The Complément contains the last 4 mastered items per domain.',
+        compBtn: 'Download Complément (Word)',
         dsTitle: 'Specialized Diagnostic Assessment (DS)',
         dsDesc: 'The report is written in the “DS report” step. Download it here directly as a Word file.',
         dsBtn: 'Download DS (Word)', dsZumAssistenten: 'To the DS assistant', dsNavTooltip: 'Specialized diagnostic assessment step by step',
         saveTitle: 'Save/load data',
         saveDesc: 'Save your entries as a JSON file to resume them later.',
         saveBtn: 'Save data', loadBtn: 'Load data',
-        resetTitle: 'Create new student',
+        resetTitle: 'Start over',
         resetDesc: 'Erase all entries and start over with a new student. This action cannot be undone!',
         resetBtn: 'Reset all data',
         itemDetails: 'Item details', beobachtungsbeispiele: 'Observation examples:',
         itemHint: 'Tip: These examples help evaluate whether the behavior is mastered, not yet mastered, or should be defined as a goal.',
         erreicht: 'Mastered', ziel: 'Goal', nichtErreicht: 'Not mastered',
-        zielBtn: '⚡ Goal', teilweiseBtn: '🤝 Partial', erreichtBtn: '✓ Mastered',
+        zielBtn: 'Goal', teilweiseBtn: 'Partial', erreichtBtn: 'Mastered',
         interventionen: 'Interventions',
         zielformulierung: 'Goal formulation',
         moeglicheUmsetzung: 'Possible implementation',
@@ -237,11 +237,11 @@ const UI_STRINGS = {
         weiterKommunikation: 'Continue to Communication', weiterSozialisation: 'Continue to Socialization',
         weiterKognition: 'Continue to Academics/Cognition', weiterZusatz: 'Continue to additional goals', weiterExport: 'Continue to export',
         zusatzTitel: 'Additional goals',
-        zusatzIntro: 'Select additional goals from the different categories. They are automatically included in the IEP and the Complement.',
+        zusatzIntro: 'Select additional goals from the different categories. They are automatically included in the IEP and the Complément.',
         katDemarches: 'Cognitive strategies', katManieres: 'Learning approaches', katRelationnelles: 'Relational attitudes',
         katAffectives: 'Emotional attitudes', katCompetences: 'Essential competencies', katCulture: 'Culture and leisure',
         inArbeit: 'In progress',
-        zurueckUebersicht: '← Back to overview', speichern: '💾 Save', gespeichert: '✓ Saved!',
+        zurueckUebersicht: 'Back to overview', speichern: 'Save', gespeichert: 'Saved!',
         einschaetzungNr: 'Assessment {n}',
         uebersichtTitle: 'Student overview',
         uebersichtDesc: 'Back to the list of all students to open another assessment or to add a new student.',
@@ -252,8 +252,8 @@ const UI_STRINGS = {
         resetFrage: 'Are you sure you want to delete all data?\n\nAll student data and selections will be permanently deleted!',
         resetFertig: 'All data has been deleted',
         keineErreichten: 'No mastered items',
-        smNeu: '+ Add new student', smLeer: 'No students yet',
-        smLeerHinweis: 'Click "+ Add new student" to get started.',
+        smNeu: 'Add new student', smLeer: 'No students yet',
+        smLeerHinweis: 'Click "Add new student" to get started.',
         smKlasse: 'Class', smLoeschen: 'Delete student', smDatenVorhanden: 'Data available', smNochLeer: 'Not started yet',
         smDialogTitel: 'Add new student', smNachname: 'Last name', smVorname: 'First name',
         smPflichtfelder: 'Required fields', smAbbrechen: 'Cancel', smAnlegen: 'Create', smAlter: 'Age: {n}',
@@ -347,16 +347,14 @@ function getCurrentStufen() {
     return STUFEN_ALTER_MAPPING;
 }
 
-// Sprachknöpfe (Editor-Kopf und Schülerübersicht) hervorheben
+// Sprachknöpfe (Editor-Kopf und Schülerübersicht) hervorheben – Aussehen über .active (Stylesheet)
 function markiereSprachKnoepfe(lang) {
     ['de', 'fr', 'en'].forEach(l => {
         ['lang-btn-' + l, 'sm-lang-btn-' + l].forEach(id => {
             const btn = document.getElementById(id);
             if (!btn) return;
             btn.classList.toggle('active', l === lang);
-            btn.style.background = (l === lang) ? 'rgba(255,255,255,0.3)' : 'transparent';
-            btn.style.color = (l === lang) ? 'white' : 'rgba(255,255,255,0.7)';
-            btn.style.borderColor = (l === lang) ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)';
+            btn.setAttribute('aria-pressed', l === lang ? 'true' : 'false');
         });
     });
 }
@@ -903,6 +901,7 @@ function updateProgressIndicator(activeTab) {
 function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast';
+    toast.setAttribute('role', 'status');
     toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
@@ -932,22 +931,24 @@ function initializeZusaetzlicheZiele() {
     categories.forEach(category => {
         const container = document.getElementById(`category-${category}`);
         if (container && zusatzData[category]) {
+            // Stufen-Texte: Sichtbarkeit steuert selectZusatzStatus() über style.display;
+            // Farbe und Punkt je Stufe kommen aus dem Stylesheet (.stufe1-text …)
             container.innerHTML = zusatzData[category].map(goal => `
                 <div class="zusatz-item" id="zusatz-${goal.id}">
                     <div class="zusatz-item-content">
                         <div class="zusatz-item-text">
-                            <strong style="color: var(--gray-900); font-size: 1rem;">${goal.id}: ${goal.title}</strong>
+                            <strong class="zusatz-titel"><span class="zusatz-code">${goal.id}</span><span class="zusatz-doppelpunkt">: </span>${goal.title}</strong>
                             <div class="stufen-beschreibung" id="stufen-desc-${goal.id}">
-                                <p class="stufe-text stufe1-text" style="display:none; margin: 4px 0; color: #f59e0b; font-style: italic; font-size: 0.9rem;">⚡ ${goal.stufen.stufe1}</p>
-                                <p class="stufe-text stufe2-text" style="display:none; margin: 4px 0; color: #3b82f6; font-style: italic; font-size: 0.9rem;">🤝 ${goal.stufen.stufe2}</p>
-                                <p class="stufe-text stufe3-text" style="display:none; margin: 4px 0; color: #10b981; font-style: italic; font-size: 0.9rem;">✓ ${goal.stufen.stufe3}</p>
+                                <p class="stufe-text stufe1-text" style="display:none;">${goal.stufen.stufe1}</p>
+                                <p class="stufe-text stufe2-text" style="display:none;">${goal.stufen.stufe2}</p>
+                                <p class="stufe-text stufe3-text" style="display:none;">${goal.stufen.stufe3}</p>
                             </div>
-                            <p style="margin: 4px 0 0 0; color: var(--gray-500); font-size: 0.8rem;"><strong>${t('interventionen')}:</strong> ${goal.intervention.join(', ')}</p>
+                            <p class="zusatz-interventionen"><strong>${t('interventionen')}:</strong> ${goal.intervention.join(', ')}</p>
                         </div>
-                        <div class="zusatz-item-actions zusatz-3-buttons">
-                            <button class="zusatz-btn stufe1" id="btn-stufe1-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe1')" title="${t('inArbeit')}">${t('zielBtn')}</button>
-                            <button class="zusatz-btn stufe2" id="btn-stufe2-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe2')" title="${t('mitUnterstuetzung')}">${t('teilweiseBtn')}</button>
-                            <button class="zusatz-btn stufe3" id="btn-stufe3-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe3')" title="${t('erreicht')}">${t('erreichtBtn')}</button>
+                        <div class="zusatz-item-actions zusatz-3-buttons" role="group">
+                            <button type="button" class="zusatz-btn stufe1" id="btn-stufe1-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe1')" title="${t('inArbeit')}">${t('zielBtn')}</button>
+                            <button type="button" class="zusatz-btn stufe2" id="btn-stufe2-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe2')" title="${t('mitUnterstuetzung')}">${t('teilweiseBtn')}</button>
+                            <button type="button" class="zusatz-btn stufe3" id="btn-stufe3-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe3')" title="${t('erreicht')}">${t('erreichtBtn')}</button>
                         </div>
                     </div>
                 </div>
@@ -1032,11 +1033,12 @@ function updateZusatzCount(category) {
         const countNumber = countElement.querySelector('.count-number');
         if (countNumber) {
             if (totalCount > 0) {
-                let text = '';
-                if (stufe3Count > 0) text += `${stufe3Count}✓ `;
-                if (stufe2Count > 0) text += `${stufe2Count}🤝 `;
-                if (stufe1Count > 0) text += `${stufe1Count}⚡`;
-                countNumber.textContent = text.trim();
+                // Anzahl je Stufe mit Farbpunkt (Stylesheet: .zc1/.zc2/.zc3), Bedeutung im Tooltip
+                let html = '';
+                if (stufe3Count > 0) html += `<span class="zc zc3" title="${t('erreicht')}">${stufe3Count}</span>`;
+                if (stufe2Count > 0) html += `<span class="zc zc2" title="${t('mitUnterstuetzung')}">${stufe2Count}</span>`;
+                if (stufe1Count > 0) html += `<span class="zc zc1" title="${t('inArbeit')}">${stufe1Count}</span>`;
+                countNumber.innerHTML = html;
             } else {
                 countNumber.textContent = '0';
             }
