@@ -10,10 +10,11 @@ const DsText = (function () {
 'use strict';
 
 const PRON = {
-  de: { m: { N: 'er', D: 'ihm', A: 'ihn', sein: 'sein', seine: 'seine', seinen: 'seinen', seinem: 'seinem', seiner: 'seiner', seines: 'seines' },
-        w: { N: 'sie', D: 'ihr', A: 'sie', sein: 'ihr', seine: 'ihre', seinen: 'ihren', seinem: 'ihrem', seiner: 'ihrer', seines: 'ihres' } },
-  fr: { m: { N: 'il', D: 'lui', A: 'le' }, w: { N: 'elle', D: 'lui', A: 'la' } },
-  en: { m: { N: 'he', D: 'him', A: 'him', his: 'his', himself: 'himself' }, w: { N: 'she', D: 'her', A: 'her', his: 'her', himself: 'herself' } }
+  de: { m: { N: 'er', D: 'ihm', A: 'ihn', T: 'ihm', sein: 'sein', seine: 'seine', seinen: 'seinen', seinem: 'seinem', seiner: 'seiner', seines: 'seines' },
+        w: { N: 'sie', D: 'ihr', A: 'sie', T: 'ihr', sein: 'ihr', seine: 'ihre', seinen: 'ihren', seinem: 'ihrem', seiner: 'ihrer', seines: 'ihres' } },
+  // fr: T = betontes Pronomen nach Präposition ("pour lui / pour elle")
+  fr: { m: { N: 'il', D: 'lui', A: 'le', T: 'lui' }, w: { N: 'elle', D: 'lui', A: 'la', T: 'elle' } },
+  en: { m: { N: 'he', D: 'him', A: 'him', T: 'him', his: 'his', himself: 'himself' }, w: { N: 'she', D: 'her', A: 'her', T: 'her', his: 'her', himself: 'herself' } }
 };
 const KONTRAST_VORSATZ = { fr: ['Toutefois, ', 'En revanche, ', 'Cependant, '], en: ['However, ', 'At the same time, ', 'By contrast, '] };
 
@@ -60,7 +61,8 @@ function person(c, fall) {
 }
 
 // ---------- Platzhalter füllen ----------
-// {Name} {N} {Nd} {Na} {er} … {Q} {QS} {KONTRAST} {liste} … {feld: bedingter Text}
+// {Name} {N} {Nd} {Na} {Nt} {er} … {T} {Q} {QS} {KONTRAST} {liste} … {feld: bedingter Text}
+// {Nt} = Name bzw. betontes Pronomen nach Präposition (fr: pour lui/elle), {T} immer das Pronomen
 // [[männlich|weiblich]]  {{einzahl|mehrzahl}} (Zahl aus vars.zahl bzw. Quelle)
 function fuelle(tpl, c, vars) {
   vars = vars || {};
@@ -100,11 +102,13 @@ function wert(k, c, vars) {
     case 'N': return person(c, 'N');
     case 'Nd': return person(c, 'D');
     case 'Na': return person(c, 'A');
+    case 'Nt': return person(c, 'T');
     case 'Name': c.seit = 1; return c.name;
     case 'Vollname': c.seit = 1; return c.vollname;
     case 'er': case 'il': case 'he': return p.N;
     case 'ihm': case 'lui': return p.D;
     case 'ihn': case 'him': case 'le': return p.A;
+    case 'T': return p.T;
     case 'his': return p.his;
     case 'himself': return p.himself;
     case 'KONTRAST': return (c.kontrast && c.lang === 'de') ? 'jedoch ' : '';
@@ -220,7 +224,8 @@ function sichtweise(bereich, c, ds, opt) {
   c.neuerAbsatz();
   const vorne = [];
   c.vars = { datum: datumText(f[opt.datum], c.lang) };
-  if (opt.intro && !(opt.introWennNicht && bewertung(ds, opt.introWennNicht) != null)) { vorne.push(satz(fuelle(T[opt.intro], c, c.vars), c)); }
+  // Einleitungssatz; beim Kind nur mit Datum (sonst sagt er nichts aus)
+  if (opt.intro && !(opt.introWennNicht && bewertung(ds, opt.introWennNicht) != null) && !(opt.introNurMitDatum && !c.vars.datum)) { vorne.push(satz(fuelle(T[opt.intro], c, c.vars), c)); }
   (opt.chipsVorne || []).forEach(function (g) {
     const l = chips(ds, g[0]).map(function (k) { return fuelle(chipText(c, g[0], k), c); });
     if (l.length) { const v = { liste: liste(l, c) }; if (g[2] === 'liste') { v.zahl = l.length > 1 ? 2 : 1; } vorne.push(satz(fuelle(T[g[1]], c, v), c)); }
@@ -362,7 +367,7 @@ function bericht(lang, ds, stamm, profil) {
   ab.aktuell = F.aktuell(c, ds, stamm, h);
   ab.schule = sichtweise('schule', c, ds, { intro: 'schule_intro', datum: 'schule_datum', ohne: 'schule_ohne',
     chipsVorne: [['s_staerken', 'schule_staerken', 'liste']], chipsHinten: [['s_hilft', 'schule_hilft'], ['s_erwartung', 'schule_erwartung']] });
-  ab.kind = sichtweise('kind', c, ds, { intro: 'kind_intro', introWennNicht: 'k_offen', datum: 'kind_datum', ohne: 'kind_ohne',
+  ab.kind = sichtweise('kind', c, ds, { intro: 'kind_intro', introWennNicht: 'k_offen', introNurMitDatum: true, datum: 'kind_datum', ohne: 'kind_ohne',
     chipsHinten: [['k_interessen', 'kind_interessen'], ['k_wuensche', 'kind_wuensche']],
     extra: function (hinten) { if (frei(ds, 'vertrauensperson')) { hinten.push(satz(fuelle(T.kind_vertrauen, c, { text: frei(ds, 'vertrauensperson') }), c)); } } });
   ab.eltern = sichtweise('eltern', c, ds, { intro: 'eltern_intro', datum: 'eltern_datum', ohne: 'eltern_ohne',

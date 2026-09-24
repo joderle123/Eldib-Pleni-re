@@ -19,7 +19,7 @@ const PROGRAMM = fs.readdirSync(path.join(SRC, 'js')).filter(f => f.endsWith('.j
 // Word-Vorlagen: Konstante im Programm -> Datei in src/vorlagen
 const VORLAGEN = {
   TEMPLATE_DE_CDSE_BASE64: 'PEI_DE.docx',
-  TEMPLATE_DS_CDSE_BASE64: 'DS_DE_alt.docx',
+  TEMPLATE_DS_DE_BASE64: 'DS_DE.docx',
   TEMPLATE_FR_PEI_CDSE_BASE64: 'PEI_FR.docx',
   TEMPLATE_FR_DS_CDSE_BASE64: 'DS_FR.docx'
 };

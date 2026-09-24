@@ -46,9 +46,9 @@ const UI_STRINGS = {
         compTitle: 'Complement generieren',
         compDesc: 'Das Complement-Dokument enthält die letzten 4 erreichten Items pro Bereich.',
         compBtn: 'Complement herunterladen (Word)',
-        dsTitle: 'Diagnostic Spécialisé generieren',
-        dsDesc: 'Generiert den DS mit Platzhaltern. Das ELDiB-Raster und der Altersvergleich werden automatisch ausgefüllt. Der Fließtext muss manuell im Word-Dokument ergänzt werden.',
-        dsBtn: 'DS herunterladen (Word)',
+        dsTitle: 'Diagnostic Spécialisé (DS)',
+        dsDesc: 'Der Bericht entsteht im Schritt „DS-Bericht“. Hier laden Sie ihn direkt als Word-Datei herunter.',
+        dsBtn: 'DS herunterladen (Word)', dsZumAssistenten: 'Zum DS-Assistenten', dsNavTooltip: 'Spezialisierte Diagnostik Schritt für Schritt',
         saveTitle: 'Daten speichern/laden',
         saveDesc: 'Speichern Sie Ihre Eingaben als JSON-Datei, um sie später fortzusetzen.',
         saveBtn: 'Daten speichern', loadBtn: 'Daten laden',
@@ -96,9 +96,9 @@ const UI_STRINGS = {
         compTitle: 'Générer le Complément',
         compDesc: 'Le document Complément contient les 4 derniers items atteints par domaine.',
         compBtn: 'Télécharger le Complément (Word)',
-        dsTitle: 'Générer le Diagnostic Spécialisé',
-        dsDesc: 'Génère le DS avec des espaces réservés. La grille ELDiB et la comparaison d\'âge sont remplies automatiquement. Le texte libre doit être complété manuellement dans le document Word.',
-        dsBtn: 'Télécharger le DS (Word)',
+        dsTitle: 'Diagnostic spécialisé (DS)',
+        dsDesc: 'Le rapport se rédige à l\'étape « Rapport DS ». Ici, vous le téléchargez directement en fichier Word.',
+        dsBtn: 'Télécharger le DS (Word)', dsZumAssistenten: 'Vers l\'assistant DS', dsNavTooltip: 'Diagnostic spécialisé étape par étape',
         saveTitle: 'Sauvegarder/charger les données',
         saveDesc: 'Sauvegardez vos saisies dans un fichier JSON pour les reprendre plus tard.',
         saveBtn: 'Sauvegarder les données', loadBtn: 'Charger les données',
@@ -146,9 +146,9 @@ const UI_STRINGS = {
         compTitle: 'Generate Complement',
         compDesc: 'The Complement document contains the last 4 mastered items per domain.',
         compBtn: 'Download Complement (Word)',
-        dsTitle: 'Generate Specialized Diagnostic (DS)',
-        dsDesc: 'Generates the DS with placeholders. The DTORF-R grid and the age comparison are filled in automatically. The narrative text must be completed manually in the Word document.',
-        dsBtn: 'Download DS (Word)',
+        dsTitle: 'Specialized Diagnostic Assessment (DS)',
+        dsDesc: 'The report is written in the “DS report” step. Download it here directly as a Word file.',
+        dsBtn: 'Download DS (Word)', dsZumAssistenten: 'To the DS assistant', dsNavTooltip: 'Specialized diagnostic assessment step by step',
         saveTitle: 'Save/load data',
         saveDesc: 'Save your entries as a JSON file to resume them later.',
         saveBtn: 'Save data', loadBtn: 'Load data',
@@ -241,6 +241,9 @@ function switchLanguage(lang) {
     // Restore selections for zusätzliche Ziele
     restoreZusatzSelections();
 
+    // DS-Assistent in der neuen Sprache zeigen
+    if (typeof DsAssistent !== 'undefined') DsAssistent.sprachWechsel();
+
     // Save language preference
     if (!isLoadingData) saveToLocalStorage();
 }
@@ -255,7 +258,8 @@ function updateUILanguage() {
     const mainNavBtns = document.querySelectorAll('.main-nav .main-nav-item');
     if (mainNavBtns[0]) { mainNavBtns[0].querySelector('span:last-child').textContent = t('stammdaten'); mainNavBtns[0].title = t('stammdatenTooltip'); }
     if (mainNavBtns[1]) { mainNavBtns[1].querySelector('span:last-child').textContent = t('eldibBewertung'); mainNavBtns[1].title = t('eldibTooltip'); }
-    if (mainNavBtns[2]) { mainNavBtns[2].querySelector('span:last-child').textContent = t('export'); mainNavBtns[2].title = t('exportTooltip'); }
+    if (mainNavBtns[2]) { mainNavBtns[2].querySelector('span:last-child').textContent = (DS_UI[state.language] || DS_UI.de).nav; mainNavBtns[2].title = t('dsNavTooltip'); }
+    if (mainNavBtns[3]) { mainNavBtns[3].querySelector('span:last-child').textContent = t('export'); mainNavBtns[3].title = t('exportTooltip'); }
 
     // Sub nav
     const subNavBtns = document.querySelectorAll('.sub-nav .sub-nav-item');
@@ -373,6 +377,8 @@ function updateUILanguage() {
             sections[3].querySelector('h3').textContent = t('dsTitle');
             sections[3].querySelector('p').textContent = t('dsDesc');
             sections[3].querySelector('button').textContent = t('dsBtn');
+            const zumDs = document.getElementById('ds-zum-assistenten');
+            if (zumDs) zumDs.textContent = t('dsZumAssistenten');
         }
     }
 
@@ -522,13 +528,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, 100);
 
-    // Auto-Save für DS-Felder (Diagnostic Tab)
-    const diagnosticTab = document.getElementById('diagnostic');
-    if (diagnosticTab) {
-        diagnosticTab.addEventListener('input', debounce(saveToLocalStorage, 500));
-        diagnosticTab.addEventListener('change', saveToLocalStorage);
-    }
-
     // Auto-Save für Stammdaten
     const stammdatenTab = document.getElementById('stammdaten');
     if (stammdatenTab) {
@@ -537,7 +536,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize DS section observer
-    initDSObserver();
 });
 
 // Debounce-Funktion für Auto-Save
@@ -561,7 +559,7 @@ function showMainSection(section) {
 
     // Update main nav styling
     mainNavItems.forEach(item => item.classList.remove('active'));
-    const activeMainItem = document.querySelector(`.main-nav-item[onclick*="${section}"]`);
+    const activeMainItem = document.querySelector(`.main-nav-item[onclick*="'${section}'"]`);
     if (activeMainItem) activeMainItem.classList.add('active');
 
     // Show/hide sub-nav
@@ -587,47 +585,11 @@ function updateSubNavActive(tabId) {
     });
 }
 
-function scrollToDSSection(sectionNum) {
-    const section = document.getElementById(`ds-section-${sectionNum}`);
-    if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Update sidebar highlighting
-        document.querySelectorAll('.ds-nav-item').forEach((item, index) => {
-            item.classList.remove('active');
-            if (index === sectionNum - 1) {
-                item.classList.add('active');
-            }
-        });
-    }
-}
-
-// Observe DS sections for auto-highlighting sidebar
-function initDSObserver() {
-    const sections = document.querySelectorAll('[id^="ds-section-"]');
-    const navItems = document.querySelectorAll('.ds-nav-item');
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const sectionNum = entry.target.id.replace('ds-section-', '');
-                navItems.forEach((item, index) => {
-                    item.classList.remove('active');
-                    if (index === parseInt(sectionNum) - 1) {
-                        item.classList.add('active');
-                    }
-                });
-            }
-        });
-    }, { threshold: 0.3, rootMargin: '-100px 0px -50% 0px' });
-
-    sections.forEach(section => observer.observe(section));
-}
-
 function showTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
+    if (tabId === 'ds' && typeof DsAssistent !== 'undefined') DsAssistent.zeigen();
     document.querySelectorAll('.tab').forEach(tab => {
         const onclickAttr = tab.getAttribute('onclick');
         if (onclickAttr && onclickAttr.includes("'" + tabId + "'")) tab.classList.add('active');
@@ -658,7 +620,7 @@ function updateProgressIndicator(activeTab) {
         activeSection = 'eldib';
     }
 
-    const sections = ['stammdaten', 'eldib', 'export'];
+    const sections = ['stammdaten', 'eldib', 'ds', 'export'];
     const activeIndex = sections.indexOf(activeSection);
 
     document.querySelectorAll('.progress-dot').forEach((dot, index) => {
@@ -1413,50 +1375,3 @@ function loadFromLocalStorage() {
         isLoadingData = false;
     }
 }
-
-// ==========================================
-// DS FRAGEBOGEN FUNKTIONEN
-// ==========================================
-
-// Toggle für "Andere"-Felder bei Dropdowns
-document.addEventListener('change', function(e) {
-    // Auftraggeber
-    if (e.target.id === 'ds_auftraggeber') {
-        document.getElementById('ds_auftraggeber_andere_group').style.display =
-            e.target.value === 'andere' ? 'block' : 'none';
-    }
-
-    // Schwangerschaft/Geburt Komplikationen
-    if (e.target.id === 'ds_schwangerschaft') {
-        document.getElementById('ds_schwangerschaft_details_group').style.display =
-            e.target.value === 'komplikationen' ? 'block' : 'none';
-    }
-    if (e.target.id === 'ds_geburt') {
-        document.getElementById('ds_geburt_details_group').style.display =
-            e.target.value === 'komplikationen' ? 'block' : 'none';
-    }
-
-    // Empfehlungen abgestimmt
-    if (e.target.id === 'ds_empfehlungen_abgestimmt') {
-        document.getElementById('ds_vorbehalte_group').style.display =
-            e.target.value === 'ja_vorbehalte' ? 'block' : 'none';
-    }
-
-    // "Andere" Checkboxen
-    if (e.target.name === 'ds_anlass' && e.target.value === 'anlass_andere') {
-        document.getElementById('ds_anlass_andere_group').style.display =
-            e.target.checked ? 'block' : 'none';
-    }
-    if (e.target.name === 'ds_anliegen' && e.target.value === 'anliegen_andere') {
-        document.getElementById('ds_anliegen_andere_group').style.display =
-            e.target.checked ? 'block' : 'none';
-    }
-    if (e.target.name === 'ds_empfehlung' && e.target.value === 'empfehlung_andere') {
-        document.getElementById('ds_empfehlung_andere_group').style.display =
-            e.target.checked ? 'block' : 'none';
-    }
-    if (e.target.name === 'ds_sprachen' && e.target.value === 'sprache_andere') {
-        document.getElementById('ds_sprachen_andere_group').style.display =
-            e.target.checked ? 'block' : 'none';
-    }
-});
