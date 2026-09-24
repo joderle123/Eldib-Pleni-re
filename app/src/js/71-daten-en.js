@@ -1719,534 +1719,731 @@ const ELDIB_DATA_EN = {
 // ==================== ENGLISH INTERVENTIONEN ====================
 const INTERVENTIONEN_EN = {
   "V-1": [
-    "Establish eye contact when speaking",
-    "Use gentle touch to make contact",
-    "Present visual stimuli at eye level"
+    "Activate the goal at the start of the activity",
+    "Reflect back the child\'s reactions to stimuli"
   ],
   "V-2": [
-    "Present stimuli slowly and clearly",
-    "Direct attention through sounds",
-    "Combine pointing and naming"
+    "Activate the goal at the start of the activity",
+    "Read stories aloud while showing the pictures",
+    "Offer sensory and hide-and-seek games (rattles, colorful toys, toys hidden behind different textures)",
+    "Attract attention with voice, facial expressions and gestures (waving, clapping, making sounds)",
+    "Repeat stimuli regularly and give the child time to respond",
+    "Reflect back the child\'s turning toward stimuli"
   ],
   "V-3": [
-    "Give short, clear instructions",
-    "Use interesting materials",
-    "Gradually increase attention span"
+    "Reflect back attentive behavior, individually and in the group",
+    "Direct attention specifically to short explanation phases",
+    "Work with visual reinforcement signals (pictograms)",
+    "Use short, striking stimuli that spark interest",
+    "Offer interactive games (e.g. catching a ball on a signal)",
+    "Offer materials that spark curiosity (building blocks, musical instruments)"
   ],
   "V-4": [
-    "Offer hand-over-hand guidance",
-    "Give simple action prompts",
-    "Praise success immediately"
+    "Phrase behavioral instructions in a targeted, direct way",
+    "Develop and reinforce individual behavioral instructions",
+    "Promote concentration",
+    "Offer playful incentives"
   ],
   "V-5": [
-    "Offer more complex play opportunities",
-    "Support verbal prompts with gestures",
-    "Model the expected action"
+    "Offer targeted activities",
+    "Use role-plays and practical exercises",
+    "Give clear instructions and explanations",
+    "Structure the environment"
   ],
   "V-6": [
-    "Establish routines for self-help",
-    "Use visual schedules",
-    "Practice partial steps individually"
+    "Establish and maintain fixed routines",
+    "Use pictograms",
+    "Demonstrate the steps (learning from a model)",
+    "Offer choices",
+    "Create a supportive environment"
   ],
   "V-7": [
-    "Offer materials in a structured way",
-    "Introduce organizational systems",
-    "Establish cleanup rituals"
+    "Clearly name the expected behavior",
+    "Use tidy-up activities to work toward the goal",
+    "Offer a variety of play materials",
+    "Allow free play",
+    "Observe and support during play",
+    "Organize materials clearly and within easy reach"
   ],
   "V-8": [
-    "Visualize the daily structure",
-    "Announce transitions",
-    "Repeat and consolidate rituals"
+    "Visualize the lesson schedule and the daily schedule",
+    "Set up clearly defined activity areas in the classroom",
+    "Keep rituals reliably",
+    "Establish and maintain fixed routines"
   ],
   "V-9": [
-    "Explain rules for using materials",
-    "Model appropriate handling",
-    "Consistently enforce rule compliance"
+    "Allow play experiences",
+    "Join in the play and act as a role model (learning from a model)",
+    "Set clear game rules and name the related behavioral expectations",
+    "Reflect back appropriate use of materials",
+    "Leave control of the materials with the adult",
+    "Set limits and guide consistently"
   ],
   "V-10": [
-    "Keep wait times short and increase them gradually",
-    "Introduce waiting games",
-    "Praise successful waiting immediately"
+    "Reflect back successful waiting",
+    "Offer physical proximity",
+    "Offer choices",
+    "Give concrete behavioral instructions",
+    "Make the waiting time visible (Time Timer, sand timer, hand signal)",
+    "Introduce predictable routines: where to wait and for how long"
   ],
   "V-11": [
-    "Schedule movement breaks",
-    "Optimize seating position",
-    "Allow fidget tools"
+    "Reflect back staying seated",
+    "Activate the goal concretely on the board or on the child\'s desk",
+    "Set a time structure and make it visible (sand timer, Time Timer, agreed signal)",
+    "Offer physical proximity",
+    "Offer interesting activities in very small groups",
+    "Plan movement breaks"
   ],
   "V-12": [
-    "Make movement activities appealing",
-    "Allow participation without pressure",
-    "Gradually increase engagement"
+    "Provide a fixed time structure",
+    "Plan recurring routines",
+    "Visualize the target behavior with pictograms",
+    "Activate the goal concretely before the movement activity",
+    "Offer appealing movement breaks that spark interest and motivation"
   ],
   "V-13": [
-    "Invite participation",
-    "Create simple ways to take part",
-    "Positively reinforce initiative"
+    "Introduce the goal and activate it before the activity",
+    "Reflect back participation",
+    "Join in and act as a role model (allow imitation)",
+    "Be physically present",
+    "Structure the day with recurring routines",
+    "Consider the child\'s interests and preferences, in line with the developmental stage"
   ],
   "V-14": [
-    "Give praise in measured and authentic doses",
-    "Prepare for overreaction",
-    "Celebrate successes appropriately"
+    "Activate the goal and state clear expectations",
+    "Reflect back an appropriate reaction to praise",
+    "Identify praise situations, create them in role-play and reflect on them",
+    "Introduce the \"victory fist\" ritual",
+    "Build self-esteem: make own strengths conscious, encourage",
+    "Discuss feelings and body reactions, practice self-control techniques"
   ],
   "V-15": [
-    "Break tasks into partial steps",
-    "Visualize the time frame",
-    "Specifically acknowledge completion"
+    "Give short, differentiated tasks that ensure success (avoid overload)",
+    "Structure tasks clearly (one task per page, hand out sheets one at a time)",
+    "Visualize the goal \"finishing\" and announce the work time with the Time Timer",
+    "Guide the work steps with a 5-step plan (understand, get materials ready, do the task, read it over, correct)",
+    "Recall similar tasks already solved and encourage",
+    "Reflect back finishing and give positive feedback on small achievements"
   ],
   "V-16": [
-    "Develop rules together",
-    "Visualize and display rules",
-    "Regularly remind of the rules"
+    "Visualize goals and rules",
+    "Set clear rules and explain them",
+    "Activate and practice goals and rules at set times",
+    "Reflect back rule-aware behavior and give positive feedback",
+    "Be a role model",
+    "Encourage talking about feelings, thoughts and experiences to avoid misunderstandings"
   ],
   "V-17": [
-    "Foster rule understanding through examples",
-    "Explain consequences",
-    "Discuss the purpose of rules"
+    "Work out together why the existing rules make sense",
+    "Explore why rules are needed using everyday situations, situation cards and real experiences",
+    "Reflect on behavior, actions and consequences in the class council",
+    "Agree on behavioral expectations together and visualize the school rules",
+    "Practice behaviors in role-play",
+    "Reflect back reasons given and take them up in the cognitive review"
   ],
   "V-18": [
-    "Collect behavioral alternatives together",
-    "Use role-plays",
-    "Offer choices"
+    "Look for alternative behaviors together in the class council",
+    "Work out alternatives in role-plays and emotion projects",
+    "Agree on ways to handle critical situations (go to an adult, ask for help, go to a safe place)",
+    "Practice calming strategies (counting slowly, breathing exercises, mindfulness)",
+    "State expectations clearly and support them with pictograms and daily and weekly goals",
+    "Redirect and focus on the positive (reflecting)"
   ],
   "V-19": [
-    "Practice group decision-making",
-    "Address acceptance of majority decisions",
-    "Rotate leadership roles"
+    "Start with partner work, then offer and support group activities",
+    "Assign roles yourself at the beginning",
+    "Have a group leader chosen each week on a rotating basis",
+    "Explain the group leader role and help the student internalize it",
+    "Address the topics \"fairness\", \"team spirit\" and \"leadership\"",
+    "Reflect back appropriate behavior as leader and as member and give feedback"
   ],
   "V-20": [
-    "Practice self-control techniques",
-    "Offer distraction strategies",
-    "Positively reinforce non-reaction"
+    "Set rules, goals and spaces for the activities in advance",
+    "Break activities into small units that match the developmental level",
+    "Reflect back restraint",
+    "Interpret behavior (explain what lies behind it)",
+    "At the end of the activity, give immediate, specific feedback on the progress made",
+    "Plan for redirecting or restructuring the activity"
   ],
   "V-21": [
-    "Structure transitions",
-    "Introduce relaxation techniques",
-    "Support self-regulation"
+    "Offer group activities (work phases, sports, art, group games, outings)",
+    "Create a structured environment",
+    "Provide chances to let off steam (breaks, movement activities)",
+    "Prepare activities and transitions in advance",
+    "Be a role model",
+    "Do self-regulation exercises"
   ],
   "V-22": [
-    "Document and show progress",
-    "Compare with earlier behavior",
-    "Conduct reflective conversations"
+    "Set concrete goals and track progress together with the child",
+    "Use the cognitive review",
+    "Make self-reflection possible",
+    "Offer opportunities to talk about one\'s own behavior",
+    "Offer alternative courses of action",
+    "Give positive feedback on progress"
   ],
   "V-23": [
-    "Announce changes in routine in advance",
-    "Make changes visible (daily schedule, symbols)",
-    "Praise flexible responses specifically"
+    "Practice with small, deliberate changes to the routine",
+    "Rehearse appropriate behavior during changes in role-play",
+    "Communicate changes clearly: explain why and what is expected",
+    "Visualize changes (schedule, pictograms)"
   ],
   "V-24": [
-    "Discuss and prepare new situations in advance",
-    "Introduce new activities in small steps",
-    "Offer support from a familiar adult"
+    "Explain new things clearly and give guidance",
+    "Offer visual aids",
+    "Proceed in small steps, practice and repeat",
+    "Demonstrate new things (learning from a model)",
+    "Offer relaxation techniques to reduce stress",
+    "Positively reinforce participation"
   ],
   "V-25": [
-    "Practice alternative behaviors in role-play",
-    "Remind of agreed strategies (signal, cue card)",
-    "Give immediate feedback when they are applied successfully"
+    "Review the rules before the lesson",
+    "Use the cognitive review",
+    "Use role-plays and simulations",
+    "Train conflict resolution (talking about feelings, finding compromises, negotiating solutions)",
+    "Encourage respectful interaction with others"
   ],
   "V-26": [
-    "Practice strategies for provocations (saying stop, walking away)",
-    "Talk through provocative situations afterwards",
-    "Positively reinforce calm reactions"
+    "Talk through provocation situations with the child",
+    "Develop strategies for dealing with provocation (leaving the situation, breathing exercises)",
+    "Reflect back appropriate reactions to provocation",
+    "Discuss alternative actions and practice them in role-play",
+    "Promote communication: addressing conflicts, expressing feelings"
   ],
   "V-27": [
-    "Reflect together on own actions and their consequences",
-    "Agree on ways to make amends",
-    "Acknowledge taking responsibility"
+    "Address feelings and question one\'s own actions (feelings diary, feelings jar, feelings cards, body map)",
+    "Let the child experience consequences (not the same as punishment)",
+    "Set rules and limits",
+    "Build self-confidence (ensure experiences of success, let the child make own decisions)",
+    "Positively reinforce taking responsibility"
   ],
   "V-28": [
-    "Teach the steps of conflict resolution",
-    "Ask for proposed solutions in group discussions",
-    "Let the student put own suggestions into practice"
+    "Create a safe, supportive environment where worries can be raised openly",
+    "Encourage talking openly about feelings, concerns and points of view",
+    "Listen actively",
+    "Name the problem together and understand its cause",
+    "Brainstorm solutions",
+    "Put the solution into practice, then reflect on it and evaluate it"
   ],
   "V-29": [
-    "Practice work habits (punctuality, order) specifically",
-    "Link to the world of work (internship, company visit)",
-    "Record progress in a weekly plan"
+    "Set achievable goals together",
+    "Encourage self-reflection",
+    "Show role models (stories, case studies, mentoring)",
+    "Integrate work-related habits into the curriculum",
+    "Motivate by focusing on progress and effort"
   ],
   "V-30": [
-    "Assign responsible tasks within the group",
-    "Make the student's strengths visible",
-    "Acknowledge positive contributions to the group"
+    "Recognize and value the student\'s positive qualities",
+    "Give opportunities to take on responsibility (develop leadership skills)",
+    "Build teamwork skills through group projects, team games and cooperative activities",
+    "Encourage empathy and social responsibility",
+    "Give positive feedback"
   ],
   "V-31": [
-    "Discuss rules, laws and their purpose",
-    "Discuss current cases from everyday life",
-    "Involve the student in drawing up class rules"
+    "Teach values and norms",
+    "Discuss and reflect on law and order",
+    "Carry out practical exercises",
+    "Prevent violations (anti-bullying programs, conflict resolution strategies, building social skills)",
+    "Model exemplary behavior as the teacher"
   ],
   "V-32": [
-    "Set up a class council or student representation",
-    "Agree on common rules democratically",
-    "Share responsibility for group decisions"
+    "Set up a class council",
+    "Involve the student in developing rules",
+    "Set shared goals and state clear expectations",
+    "Empower the student to make decisions and help shape group life",
+    "Develop leadership skills and encourage",
+    "Be a role model"
   ],
   "V-33": [
-    "Foster independent problem-solving",
-    "Take on a consulting role",
-    "Practice transfer to new situations"
+    "Encourage self-reflection",
+    "Identify the problem",
+    "Analyze the causes",
+    "Look for possible solutions",
+    "Develop an action plan and carry it out",
+    "Reflect on the outcome and adjust the plan"
   ],
   "K-1": [
-    "Pick up and imitate the child's sounds",
+    "Pick up and imitate the child\'s sounds",
     "Offer sound games and songs",
     "Respond immediately to vocalizations"
   ],
   "K-2": [
-    "Seek eye contact when speaking",
-    "Say the child's name before speaking",
-    "Accompany speech with facial expressions and gestures"
+    "Establish eye contact",
+    "Use an engaging voice and gestures",
+    "Speak briefly and clearly",
+    "Involve the child actively: have them look at the person speaking",
+    "Positively reinforce turning toward the speaker"
   ],
   "K-3": [
-    "Give short, clear instructions",
-    "Support instructions with gestures",
-    "Confirm correct responses immediately"
+    "Name familiar objects within sight and wait for a response",
+    "Use recurring key words in routines (e.g. greeting, goodbye)",
+    "Gradually fade supporting gestures until the word alone is enough",
+    "Immediately confirm every fitting response (looking, touching, turning toward the object)"
   ],
   "K-4": [
-    "Ask simple questions and allow time to answer",
-    "Pick up word approximations and repeat them correctly",
-    "Praise attempts to answer"
+    "Use simple language",
+    "Build questions into games and activities (increases motivation)",
+    "Offer answer choices",
+    "Create a safe, respectful environment",
+    "Positively reinforce attempts to answer"
   ],
   "K-5": [
-    "Create occasions to name or ask for something",
-    "Name objects and actions in everyday life",
-    "Pick up and expand spontaneous words"
+    "Model words for objects and events clearly (learning from a model)",
+    "Ask open questions",
+    "Adapt activities to the child\'s interests",
+    "Expand vocabulary",
+    "Hold interactive conversations",
+    "Positively reinforce spontaneously used words"
   ],
   "K-6": [
-    "Fulfil requests after a word (or attempt)",
-    "Build vocabulary for everyday needs",
-    "Respond immediately to verbal utterances"
+    "Create relevant situations in which one word gets the child what they want",
+    "Model words and adapt language to the child\'s level",
+    "Use pictograms",
+    "Give contextual cues (point to the object to be named)",
+    "Name objects and actions using concrete materials (build vocabulary)",
+    "Play search and memory games with naming"
   ],
   "K-7": [
-    "Set up play situations with other children",
-    "Encourage the child to address other children directly",
-    "Offer suitable words for making contact"
+    "Offer role-plays with minimal vocabulary",
+    "Offer simple cooperative games that require a brief exchange",
+    "Visualize the goal with a pictogram",
+    "Reflect back successful words to other children and respond with a smile",
+    "Name objects and actions, use search and memory games",
+    "Structure the room clearly"
   ],
   "K-8": [
-    "Expand the child's utterances by one word",
-    "Model simple sentence patterns",
-    "Use songs and rhymes with repetition"
+    "Have the child repeat whole sentences from an adult or another child",
+    "Reflect back sentences and reinforce them positively",
+    "Practice sentence building through play (pretend play, cuddly toys, short role-plays)"
   ],
   "K-9": [
-    "Ask open and closed questions",
-    "Allow enough time to answer",
-    "Confirm and expand understandable answers"
+    "Ask adapted questions in a targeted way, with direct address and physical proximity (e.g. about a favorite subject or topic)",
+    "Offer visual supports",
+    "Offer cooperative and board games",
+    "Hold one-to-one talks",
+    "Allow small-group work",
+    "Encourage the student to answer"
   ],
   "K-10": [
-    "Expand vocabulary with pictures and objects",
-    "Repeat new words in different situations",
-    "Read aloud and look at picture books together"
+    "Check whether what was said has been understood (gestures, facial expressions, drawing, marking an answer)",
+    "Support verbally and nonverbally (e.g. pointing to the ear)"
   ],
   "K-11": [
-    "Model polite requests and questions",
-    "Offer sentence starters (\"I would like …\")",
-    "Positively reinforce appropriate utterances"
+    "Be a role model and encourage speaking and asking questions",
+    "Practice speaking kindly (role-plays on social situations, hand puppets, stories)",
+    "Practice making contact appropriately (addressing someone, expressing needs, asking questions)",
+    "Introduce \"giraffe language\" (nonviolent communication)",
+    "Visualize the goal \"word sequences\" during activities",
+    "Run a behavior training program for school starters"
   ],
   "K-12": [
-    "Plan regular talk times with adults",
-    "Encourage asking for help",
-    "Show interest in what the child tells"
+    "Create targeted opportunities to talk (morning circle, rituals, class council), one-to-one or in the group",
+    "Listen actively",
+    "Offer speaking games (\"I spy with my little eye\", \"Tell me about your favorite toy\")"
   ],
   "K-13": [
-    "Describe people and things together",
-    "Build vocabulary for characteristics",
-    "Use describing games (\"I spy with my little eye\")"
+    "Plan communication activities (rituals, \"compliment shower\", movement games)",
+    "Offer exercises on differences (pictures to compare)",
+    "Start a project in a small group",
+    "Use pop-up and movable books"
   ],
   "K-14": [
-    "Offer partner talks with a clear task",
-    "Introduce sharing rounds in small groups",
-    "Acknowledge successful exchanges"
+    "Create targeted opportunities to talk with other children (morning circle, rituals, class council)",
+    "Model exchanges between children",
+    "Create a supportive environment"
   ],
   "K-15": [
-    "Plan sharing circles",
-    "Prompt storytelling with questions",
-    "Support accounts of experiences with pictures or photos"
+    "Invite the student to tell about experiences in morning or sharing circle",
+    "Use the class council",
+    "Have conversations during breaks",
+    "Make small talk during transitions and meals",
+    "Hold reflection rounds",
+    "Offer group activities that require exchange"
   ],
   "K-16": [
-    "Name feelings and expand feeling vocabulary",
-    "Model appropriate expression of feelings",
-    "Use feeling cards or a feelings barometer"
+    "Use a feelings barometer or \"mood meter\" (noticing and understanding one\'s own feelings)",
+    "Talk about feelings in morning circle, ask open questions",
+    "Practice sharing feelings: with picture cards, through play and drama",
+    "Address the emotion \"fear\" together and build up resources (toolbox)",
+    "Offer stress management (making a stress ball, relaxation exercises, toolkit of coping strategies)",
+    "Reflect back appropriate expression of feelings and keep eye contact"
   ],
   "K-17": [
-    "Introduce and display discussion rules",
-    "Use a talking stick or speaking card",
-    "Highlight constructive contributions"
+    "State and activate behavioral expectations clearly before the discussion",
+    "Visualize discussion rules with symbol cards",
+    "Use the class council and group activities with active roles",
+    "Reflect back impulses as they arise and practice impulse control strategies",
+    "Learn to recognize nonverbal gestures and respond to them",
+    "Use physical proximity, redirection or choices when needed"
   ],
   "K-18": [
-    "Look at and appreciate successful work together",
-    "Have the student describe what went well",
-    "Display work or let the student present it"
+    "Plan moments of reflection and closing rounds",
+    "Keep a positive diary (\"happiness notebook\")",
+    "Keep a portfolio",
+    "Help the student become aware of own strengths",
+    "Reflect back behavior that suits the situation and learn to tell it apart from less appropriate behavior",
+    "Illustrate and discuss situations with stories and picture cards"
   ],
   "K-19": [
-    "Collect strengths and weaknesses together",
-    "Create self-descriptions (profile, \"all about me\" book)",
-    "Give realistic feedback"
+    "Visualize strengths and weaknesses, describe areas for development",
+    "Use situations as prompts for self-description; encourage and reflect back the positive",
+    "Strengthen resources (resource kit, resource flower, card set)",
+    "Use prompt cards on self-esteem (e.g. \"If you were a candy …\", strengths treasure chest)",
+    "Work with the \"Kids\' Skills\" training book",
+    "Use the cognitive review at the end of the activity, secure small successes"
   ],
   "K-20": [
-    "Practice talking about others respectfully",
-    "Collect positive qualities of others",
-    "Discuss and rephrase hurtful descriptions"
+    "Use the game \"Who am I?\": create a list of adjectives, expand vocabulary",
+    "\"Compliment shower\": give compliments and name other people\'s qualities"
   ],
   "K-21": [
-    "Recognize feelings from facial expressions and pictures",
-    "Discuss situations: how does the other person feel?",
-    "Acknowledge empathic remarks"
+    "Recognize feelings in photos and pictures (e.g. \"The Color Monster\" cards, feelings games)",
+    "Use role-plays and mime",
+    "Debrief conflict situations: how did the other person feel?",
+    "Analyze emotions in different situations (audio stories, role-plays, diary)",
+    "Encourage expressing feelings: verbally, with gestures and creatively (drawing, letters, music)",
+    "Reflect back the recognition of feelings"
   ],
   "K-22": [
-    "Celebrate group successes together",
-    "Present group results",
-    "Name each member's contribution"
+    "Offer group activities and project work",
+    "Give the group positive feedback after the activity",
+    "Offer cooperative games at recess and in gym class",
+    "Hold reflection rounds"
   ],
   "K-23": [
-    "Offer creative means of expression (painting, music, dance, drama)",
-    "Talk about feelings linked to pictures or music",
-    "Value creative work"
+    "Have the student express feelings and qualities through art (drawing, crafts, dance, music, writing)",
+    "Use tasks from music and art therapy",
+    "Build social-emotional topics into school subjects",
+    "Address feelings in a feelings diary (feelings jar, feelings cards, body map)",
+    "Offer role-plays in groups"
   ],
   "K-24": [
-    "Document and show progress",
-    "Compare with earlier behavior",
-    "Conduct reflective conversations"
+    "Set concrete goals and track progress together with the child",
+    "Use the cognitive review",
+    "Make self-reflection possible",
+    "Offer opportunities to talk about one\'s own behavior",
+    "Offer alternative courses of action",
+    "Give positive feedback on progress"
   ],
   "K-25": [
-    "Discuss cause and effect of behavior",
-    "Role-play with a change of perspective",
-    "Gather feedback from others"
+    "Address interdependence: how behaviors influence each other",
+    "Offer role-plays",
+    "Hold reflection rounds",
+    "Offer a trusted person",
+    "Use feelings cards"
   ],
   "K-26": [
-    "Practice I-messages",
-    "Have feelings named in group discussions",
-    "Acknowledge appropriate expression of feelings"
+    "Hold a feelings round with the feelings barometer",
+    "Make room for feelings in morning circle",
+    "Hold reflection rounds"
   ],
   "K-27": [
-    "Practice friendly ways of making contact in role-play",
-    "Create occasions for conversation with peers",
-    "Reinforce positive attempts at contact"
+    "Practice making contact in role-play",
+    "Assign targeted tasks that create contact (e.g. handing out fruit, picking teams in gym class)",
+    "Make out-of-school group experiences possible"
   ],
   "K-28": [
-    "Model praising and encouraging",
-    "Introduce feedback rounds with positive comments",
-    "Acknowledge helpfulness"
+    "Offer teamwork, partner work and team building",
+    "Set up a praise wall",
+    "Hold a \"compliment shower\""
   ],
   "K-29": [
-    "Discuss links between feelings and behavior",
-    "Analyze situations from stories and everyday life",
-    "Have the student form if-then sentences"
+    "Analyze conflicts together",
+    "Create moments of reflection",
+    "Address how feelings and behavior influence each other (interdependence)",
+    "Offer group activities",
+    "Use prevention programs (Stop-Mobbing, police prevention sessions)",
+    "Read and discuss the picture book about the grumpy badger"
   ],
   "K-30": [
-    "Offer discussions on demanding topics",
-    "Discuss idioms and figurative language",
-    "Practice giving reasons and arguing a point"
+    "Expand vocabulary",
+    "Set practice-oriented tasks",
+    "Analyze stories and narratives"
   ],
   "K-31": [
-    "Practice de-escalating phrases",
-    "Practice mediating disputes in role-play",
-    "Acknowledge conciliatory responses"
+    "Teach communication techniques",
+    "Teach conflict management strategies",
+    "Use role-plays",
+    "Address empathy",
+    "Be a role model",
+    "Positively reinforce conciliatory statements"
   ],
   "K-32": [
-    "Have others' contributions taken up (\"I like …'s idea because …\")",
-    "Organize teamwork with a shared result",
-    "Model appreciative feedback"
+    "Be a role model and acknowledge others\' contributions",
+    "Practice active listening",
+    "Promote group work",
+    "Agree on shared values and norms"
   ],
   "K-33": [
-    "Discuss people's motives in stories and news",
-    "Collect different points of view",
-    "Practice taking other perspectives"
+    "Hold discussions and debates",
+    "Analyze media content",
+    "Practice perspective-taking",
+    "Do empathy exercises",
+    "Set reflection tasks",
+    "Positively reinforce nuanced points of view"
   ],
   "K-34": [
-    "Hold conversations about values and beliefs",
-    "Have the student justify own positions",
-    "Moderate discussions on questions of values"
+    "Create a supportive environment",
+    "Create opportunities for self-presentation",
+    "Develop communication skills",
+    "Promote independence"
   ],
   "K-35": [
-    "Reflect on communication in relationships",
-    "Discuss handling conflicts in friendships",
-    "Support contact with friends and groups"
+    "Model positive relationship behavior",
+    "Develop shared values and norms",
+    "Foster empathy",
+    "Teach communication skills explicitly"
   ],
   "SOZ-1": [
-    "Show the adult's presence",
-    "Offer closeness",
-    "Provide security"
+    "Visualize the goal with a pictogram",
+    "Reflect back reactions to contact",
+    "Give feedback through facial expression (smiling, a joyful reaction)",
+    "Provide visual or auditory stimuli",
+    "Offer physical proximity, eye contact or touch",
+    "Use the child\'s name deliberately (name recognition)"
   ],
   "SOZ-2": [
-    "Direct attention to others (\"Look what … is doing\")",
-    "Encourage watching together",
-    "Offer short interaction games"
+    "Visualize the goal with a pictogram",
+    "Reflect back watching",
+    "Give feedback through facial expression (smiling, a joyful reaction)",
+    "Provide visual or auditory stimuli",
+    "Direct attention to what is happening nearby",
+    "Put the child\'s expressions into words"
   ],
   "SOZ-3": [
-    "Address the child by name often",
-    "Use name songs and name games",
-    "Confirm responses to the name immediately"
+    "Visualize the goal with a pictogram",
+    "Reflect back the response to own name",
+    "List different names so the child recognizes their own"
   ],
   "SOZ-4": [
-    "Offer simple, structured play materials",
-    "Allow time for playing alone",
-    "Acknowledge focused play"
+    "Visualize the goal with a pictogram",
+    "Reflect back playing alone",
+    "Give feedback through facial expression (smiling, a joyful reaction)",
+    "Provide individual play materials",
+    "Divide the room into zones and set how many children may play in each zone"
   ],
   "SOZ-5": [
-    "Take up pointing and gestures as communication",
-    "Offer picture cards or signs",
-    "Respond reliably to non-verbal signals"
+    "Visualize the goal with a pictogram",
+    "Reflect back nonverbal messages",
+    "Provide opportunities for imitation",
+    "Communicate with the child using signs and gestures",
+    "Promote contact with peers"
   ],
   "SOZ-6": [
-    "Call the child by name with a gesture",
-    "Link coming with a pleasant experience",
-    "Praise coming immediately"
+    "Visualize the goal with a pictogram",
+    "Reflect back coming over and respond with a smile",
+    "Introduce fixed signals (bell, hand signal) and work on the word \"come\"",
+    "Assign small tasks",
+    "Use behavior cards or a feelings diary to help the child understand requests",
+    "Use regulation methods from SEE Learning"
   ],
   "SOZ-7": [
-    "Give simple, direct requests",
-    "Support requests with gestures or pictures",
-    "Acknowledge compliance immediately"
+    "Phrase requests clearly and in a structured way",
+    "Visualize the goal with a pictogram",
+    "Reflect back following requests",
+    "Assign tasks in the classroom (the child has a job)",
+    "Use visual and auditory signals (e.g. a red ball for a task, tidy-up music)",
+    "Encourage asking when something is unclear, practice understanding messages"
   ],
   "SOZ-8": [
-    "Fulfil requests after a word (or attempt)",
-    "Build vocabulary for everyday needs",
-    "Respond immediately to verbal utterances"
+    "Create relevant situations in which one word gets the child what they want",
+    "Model words and adapt language to the child\'s level",
+    "Use pictograms",
+    "Give contextual cues (point to the object to be named)",
+    "Name objects and actions using concrete materials (build vocabulary)",
+    "Play search and memory games with naming"
   ],
   "SOZ-9": [
-    "Use mirror games and photos of the child",
-    "Model \"I\", \"my\", \"me\"",
-    "Talk about the child and their preferences"
+    "Visualize the goal with a pictogram",
+    "Reflect back what the child says about themselves",
+    "Look in the mirror and draw a self-portrait",
+    "Build awareness of \"mine\" and \"theirs\"",
+    "Have the child present something brought from home",
+    "Offer games about preferences (\"What do I like?\", \"Step forward if this applies to you\")"
   ],
   "SOZ-10": [
-    "Offer the same play materials side by side",
-    "Set up play areas close together",
-    "Accompany and name parallel play"
+    "Structure the room (play zones)",
+    "Encourage imitating other children\'s play",
+    "Offer rotation activities: the same tasks with individual materials, then a switch"
   ],
   "SOZ-11": [
-    "Set up play situations with other children",
-    "Encourage the child to address other children directly",
-    "Offer suitable words for making contact"
+    "Offer role-plays with minimal vocabulary",
+    "Offer simple cooperative games that require a brief exchange",
+    "Visualize the goal with a pictogram",
+    "Reflect back successful words to other children and respond with a smile",
+    "Name objects and actions, use search and memory games",
+    "Structure the room clearly"
   ],
   "SOZ-12": [
-    "Provide a reliable key adult",
-    "Keep up greeting and goodbye rituals",
-    "Respond warmly when the child seeks contact"
+    "Introduce a greeting ritual",
+    "Build the relationship: respond respectfully to the child\'s needs",
+    "Offer activities together with the teacher",
+    "Assign errands (e.g. carrying mail between teachers)",
+    "Practice everyday tasks (ordering at the bakery, shopping at the supermarket)",
+    "Practice making contact through touch in role-play"
   ],
   "SOZ-13": [
-    "Provide pretend-play materials (dress-up, play shop)",
-    "Encourage imaginative play and join in",
-    "Take up the child's ideas"
+    "Visualize the goal with a pictogram",
+    "Use imagination cards",
+    "Divide the classroom into play areas with suitable materials",
+    "Tell stories and act them out",
+    "Reflect back pretend play",
+    "Suggest creative tasks that stimulate imagination"
   ],
   "SOZ-14": [
-    "Keep wait times short and increase them gradually",
-    "Introduce waiting games",
-    "Praise successful waiting immediately"
+    "Reflect back successful waiting",
+    "Offer physical proximity",
+    "Offer choices",
+    "Give concrete behavioral instructions",
+    "Make the waiting time visible (Time Timer, sand timer, hand signal)",
+    "Introduce predictable routines: where to wait and for how long"
   ],
   "SOZ-15": [
-    "Practice making contact in role-play",
-    "Offer partner games",
-    "Reinforce appropriate attempts at contact"
+    "Visualize the goal with a pictogram",
+    "Reflect back friendly approaches",
+    "Promote exchange through targeted activities and group work",
+    "Offer cooperative games (e.g. clapping memory: each child is a card)",
+    "Assign tasks deliberately",
+    "Practice making contact in role-play and discuss it"
   ],
   "SOZ-16": [
-    "Plan activities with shared materials",
-    "Model and name sharing",
-    "Praise successful sharing"
+    "Visualize the goal with a pictogram",
+    "Reflect back sharing",
+    "Offer activities with limited materials that must be shared (e.g. doing a puzzle or building a tower together)",
+    "Have the children share out the food from the class buffet",
+    "Have materials passed on and used in turns",
+    "Offer cooperative games, role-plays and joint projects (e.g. a class newspaper)"
   ],
   "SOZ-17": [
-    "Offer simple rule games for two",
-    "Accompany play and mediate when needed",
-    "Give positive feedback on playing together"
+    "Visualize the goal with a pictogram",
+    "Reflect back playing together",
+    "Offer games for two (board games, tag or soccer at recess)",
+    "Coordinate games and ensure they run in an orderly way",
+    "Use getting-to-know-you, trust and cooperative games",
+    "Reflect afterwards: What went well? What is still difficult?"
   ],
   "SOZ-18": [
-    "Partner work with clearly shared tasks",
-    "Use cooperative games",
-    "Acknowledge cooperation"
+    "Visualize the goal with a pictogram",
+    "Reflect back cooperation and encourage it",
+    "Offer joint tasks (drama, puzzles, drawing a picture together, group work)",
+    "Have partners imitate each other\'s movements (mirror games in gym class)",
+    "Learn to make compromises",
+    "Offer cooperative games"
   ],
   "SOZ-19": [
-    "Use turn orders and waiting symbols",
-    "Use turn-taking games",
-    "Acknowledge sharing and turn-taking without reminders"
+    "Provide limited materials in group activities so that sharing is needed",
+    "Practice taking turns in sports and group activities"
   ],
   "SOZ-20": [
-    "Highlight other children's positive behavior",
-    "Use role models in the group",
-    "Praise successful imitation"
+    "Reflect back desired behavior",
+    "Reflect on one\'s own behavior and that of others"
   ],
   "SOZ-21": [
-    "Evaluate social situations together (right/wrong, fair/unfair)",
-    "Use stories that raise questions of values",
-    "Ask for reasons"
+    "Set up a class council",
+    "Discuss social stories in language lessons"
   ],
   "SOZ-22": [
-    "Let the child lead or demonstrate an activity",
-    "Give an expert role for a skill",
-    "Prepare and support leadership tasks"
+    "Offer group activities and projects with clear roles in which the child can show their skills",
+    "Deliberately hand over the leadership role",
+    "Promote group and cooperative activities",
+    "Assign a role with clear tasks in role-play",
+    "Put strengths in the foreground and build on them (e.g. being the go-to person for reading tasks)"
   ],
   "SOZ-23": [
-    "Take up and try other children's suggestions",
-    "Practice joining in with others' ideas",
-    "Acknowledge flexible participation"
+    "Allow different suggestions and let the children vote",
+    "Offer project work",
+    "Encourage joining in with other children\'s ideas"
   ],
   "SOZ-24": [
-    "Put experiences in order using pictures",
-    "Use time words (first, then, after that)",
-    "Support retelling with follow-up questions"
+    "Introduce a morning ritual for telling about experiences (weekend, vacation, free time)",
+    "Have the child tell about a shared experience",
+    "After a conflict, have the child describe the sequence of events in a one-to-one talk"
   ],
   "SOZ-25": [
-    "Allow contact with preferred children",
-    "Plan joint activities with friends",
-    "Discuss friendship behavior"
+    "Guide breaks: suggest who the child could spend recess with, and involve the other child",
+    "Create supportive pairings when forming groups"
   ],
   "SOZ-26": [
-    "Encourage asking other children for help",
-    "Introduce peer helper systems in class",
-    "Encourage mutual praise"
+    "Offer partner work with self-assessment",
+    "Form learning tandems within self-organized learning (SOLL)"
   ],
   "SOZ-27": [
-    "Develop and display group rules together",
-    "Practice reminding others of rules kindly",
-    "Assign roles such as \"rule keeper\""
+    "Assign visible roles in group work (rule keeper, timekeeper)",
+    "Explain and activate rules and goals clearly",
+    "Make joint agreements",
+    "Hold group discussions",
+    "Teach problem-solving strategies",
+    "Be a role model"
   ],
   "SOZ-28": [
-    "Talk about role models and their qualities",
-    "Use biographies and stories",
-    "Link own goals to role models"
+    "Have the student present a role model",
+    "Read texts about positive role models and work out what they did well"
   ],
   "SOZ-29": [
-    "Reflect on group experiences together",
-    "Have experiences retold in the right order",
-    "Keep a group diary"
+    "Carry out projects and group activities followed by a discussion",
+    "Discuss recess situations together"
   ],
   "SOZ-30": [
-    "Create opportunities for suggestions (class council)",
-    "Let the group vote on activities",
-    "Make it possible to carry out suggestions"
+    "Draw out the student\'s own opinions and ideas one-to-one",
+    "Have activities planned in small groups"
   ],
   "SOZ-31": [
-    "Discuss differences in behavior without judgment",
-    "Have the student compare own behavior with that of others",
-    "Gather feedback within the group"
+    "Read a story aloud and collect ideas",
+    "Offer interactive theater and role-plays with different characters",
+    "Encourage discussions about different opinions and perspectives, stating clear behavioral expectations"
   ],
   "SOZ-32": [
-    "Introduce rules for respectful listening",
-    "Hold opinion rounds",
-    "Acknowledge respectful responses"
+    "Practice active listening",
+    "Set rules for respectful communication",
+    "Hold open discussions",
+    "Foster empathy",
+    "Develop conflict resolution skills",
+    "Be a role model"
   ],
   "SOZ-33": [
-    "Gather feedback from classmates in a structured way",
-    "Talk about the feedback received",
-    "Practice dealing with criticism"
+    "Include peer feedback",
+    "Create a supportive environment",
+    "Encourage reflection",
+    "Promote self-acceptance",
+    "Acknowledge openness"
   ],
   "SOZ-34": [
-    "Hold problem-solving discussions in the group",
-    "Collect and evaluate proposed solutions",
-    "Acknowledge constructive suggestions"
+    "Create a safe, supportive environment where worries can be raised openly",
+    "Encourage talking openly about feelings, concerns and points of view",
+    "Listen actively",
+    "Name the problem together and understand its cause",
+    "Brainstorm solutions",
+    "Put the solution into practice, then reflect on it and evaluate it"
   ],
   "SOZ-35": [
-    "Discuss conflicts of values in stories and everyday life",
-    "Name and compare opposing values",
-    "Have the student justify own position"
+    "Hold open, respectful discussions",
+    "Discuss examples from everyday life",
+    "Take up questions of values in ethics lessons",
+    "Encourage reflection",
+    "Promote critical thinking",
+    "Develop empathy"
   ],
   "SOZ-36": [
-    "Analyze social situations together",
-    "Ask: \"What do we learn from this?\"",
-    "Encourage transfer to own situations"
+    "Observe and analyze social situations",
+    "Study and discuss case studies",
+    "Practice role reversal",
+    "Ask for feedback",
+    "Look for role models",
+    "Support patiently and promote self-regulation"
   ],
   "SOZ-37": [
-    "Discuss other people's feelings and points of view",
-    "Practice taking other perspectives in role-play",
-    "Acknowledge empathic behavior"
+    "Name feelings",
+    "Practice attentive listening",
+    "Use stories to understand other people\'s feelings and points of view",
+    "Strengthen conflict resolution skills",
+    "Encourage self-reflection",
+    "Be a role model"
   ],
   "SOZ-38": [
-    "Let the student take on different roles in the group",
+    "Let the student experience different social roles (team member, mentoring younger students, internship)",
     "Plan role changes in projects",
-    "Reflect on experiences in the roles"
+    "Discuss the expectations of each role in advance",
+    "Reflect together on experiences in the roles"
   ],
   "SOZ-39": [
     "Discuss decision-making situations",
@@ -2264,14 +2461,20 @@ const INTERVENTIONEN_EN = {
     "Support contacts in groups and clubs"
   ],
   "KOG-1": [
-    "Present stimuli slowly and clearly",
-    "Direct attention through sounds",
-    "Combine pointing and naming"
+    "Activate the goal at the start of the activity",
+    "Read stories aloud while showing the pictures",
+    "Offer sensory and hide-and-seek games (rattles, colorful toys, toys hidden behind different textures)",
+    "Attract attention with voice, facial expressions and gestures (waving, clapping, making sounds)",
+    "Repeat stimuli regularly and give the child time to respond",
+    "Reflect back the child\'s turning toward stimuli"
   ],
   "KOG-2": [
-    "Give short, clear instructions",
-    "Use interesting materials",
-    "Gradually increase attention span"
+    "Reflect back attentive behavior, individually and in the group",
+    "Direct attention specifically to short explanation phases",
+    "Work with visual reinforcement signals (pictograms)",
+    "Use short, striking stimuli that spark interest",
+    "Offer interactive games (e.g. catching a ball on a signal)",
+    "Offer materials that spark curiosity (building blocks, musical instruments)"
   ],
   "KOG-3": [
     "Name familiar people and objects",
@@ -2279,9 +2482,10 @@ const INTERVENTIONEN_EN = {
     "Confirm recognition with enthusiasm"
   ],
   "KOG-4": [
-    "Offer more complex play opportunities",
-    "Support verbal prompts with gestures",
-    "Model the expected action"
+    "Offer targeted activities",
+    "Use role-plays and practical exercises",
+    "Give clear instructions and explanations",
+    "Structure the environment"
   ],
   "KOG-5": [
     "Demonstrate simple actions slowly",
@@ -2289,24 +2493,30 @@ const INTERVENTIONEN_EN = {
     "Praise successful imitation"
   ],
   "KOG-6": [
-    "Offer materials for grasping, inserting and stacking",
-    "Create opportunities to move (crawling, climbing, walking)",
+    "Offer stacking, fitting and scribbling materials (e.g. building a tower of 3–5 blocks)",
+    "Practice self-help in daily routines (eating with a spoon, drinking from a cup, taking off a jacket)",
+    "Create opportunities to move (walking, climbing stairs, pushing and pulling things)",
     "Observe and record motor progress"
   ],
   "KOG-7": [
     "Name objects in everyday life",
-    "Play \"Give me …\" and \"Show me …\" games",
+    "Practice requests like \"Give me …\" and \"Show me …\" through play",
     "Confirm the correct choice"
   ],
   "KOG-8": [
-    "Ask simple questions and allow time to answer",
-    "Pick up word approximations and repeat them correctly",
-    "Praise attempts to answer"
+    "Use simple language",
+    "Build questions into games and activities (increases motivation)",
+    "Offer answer choices",
+    "Create a safe, respectful environment",
+    "Positively reinforce attempts to answer"
   ],
   "KOG-9": [
-    "Create occasions to name or ask for something",
-    "Name objects and actions in everyday life",
-    "Pick up and expand spontaneous words"
+    "Model words for objects and events clearly (learning from a model)",
+    "Ask open questions",
+    "Adapt activities to the child\'s interests",
+    "Expand vocabulary",
+    "Hold interactive conversations",
+    "Positively reinforce spontaneously used words"
   ],
   "KOG-10": [
     "Offer shape sorters and inset puzzles",
@@ -2324,7 +2534,7 @@ const INTERVENTIONEN_EN = {
     "Offer seek-and-find pictures"
   ],
   "KOG-13": [
-    "Sorting games with two categories",
+    "Offer sorting games with two categories",
     "Name differences together",
     "Gradually choose more similar materials"
   ],
@@ -2339,12 +2549,13 @@ const INTERVENTIONEN_EN = {
     "Demonstrate how objects are used"
   ],
   "KOG-16": [
-    "Offer gross motor exercises (jumping, balancing)",
-    "Set up an obstacle course",
-    "Appreciate progress in movement"
+    "Offer movement activities at the level of a 3-year-old (riding a tricycle or ride-on toy, jumping with both feet)",
+    "Practice balance (standing briefly on one foot, walking along a line)",
+    "Offer ball games (rolling a ball and catching it with both hands)",
+    "Set up an obstacle course and appreciate progress"
   ],
   "KOG-17": [
-    "Memory and matching games with identical pictures",
+    "Offer memory and matching games with identical pictures",
     "Have the child find identical pictures",
     "Extend tasks step by step"
   ],
@@ -2364,9 +2575,10 @@ const INTERVENTIONEN_EN = {
     "Name opposites in everyday life"
   ],
   "KOG-21": [
-    "Sort pictures by category (animals, vehicles)",
-    "Name common features",
-    "Let the child find own sorting rules"
+    "Sort pictures by category (people, animals, vehicles)",
+    "Connect pictures that belong together (dog – bone, brush – paint)",
+    "Name what they have in common (\"Why do these go together?\")",
+    "Use matching and lotto games"
   ],
   "KOG-22": [
     "Practice counting while pointing (one-to-one)",
@@ -2375,7 +2587,7 @@ const INTERVENTIONEN_EN = {
   ],
   "KOG-23": [
     "Name colors and shapes in everyday life",
-    "Sorting and matching games",
+    "Offer sorting and matching games",
     "Practice pointing and naming alternately"
   ],
   "KOG-24": [
@@ -2389,9 +2601,10 @@ const INTERVENTIONEN_EN = {
     "Have quantities counted in everyday life"
   ],
   "KOG-26": [
-    "Practice cutting, tracing and drawing",
-    "Offer ball and throwing games",
-    "Make exercises gradually harder"
+    "Practice cutting along lines",
+    "Have the child draw shapes and people (triangle, house, person with a body)",
+    "Have the child copy their name from a model",
+    "Offer tracing and pre-writing pattern exercises"
   ],
   "KOG-27": [
     "Have numerals, designs and letters sorted",
@@ -2399,9 +2612,10 @@ const INTERVENTIONEN_EN = {
     "Name the differences"
   ],
   "KOG-28": [
-    "Movement games with jumping, balancing and catching",
-    "Set up an obstacle course",
-    "Practice coordination regularly"
+    "Offer hopping games (hopping on alternate feet, hopping on one foot, hopscotch)",
+    "Practice balance (walking backward along a line, balancing)",
+    "Let the child ride a bike with training wheels or a balance bike",
+    "Set up an obstacle course of increasing difficulty"
   ],
   "KOG-29": [
     "Use dice patterns and dot cards",
@@ -2419,14 +2633,16 @@ const INTERVENTIONEN_EN = {
     "Have the story told"
   ],
   "KOG-32": [
-    "Offer writing and cutting exercises",
-    "Use construction games",
-    "Give feedback on accuracy"
+    "Have the child draw people with details (arms, legs, clothes)",
+    "Practice writing own name from memory",
+    "Practice tying bows (shoelaces, ribbons)",
+    "Offer writing and cutting exercises and give feedback on accuracy"
   ],
   "KOG-33": [
-    "Offer sports and movement games",
-    "Practice balance and coordination",
-    "Make progress visible"
+    "Offer ball games with targeted throwing and catching",
+    "Practice right and left in movement games",
+    "Clap in rhythm and move to music",
+    "Promote cycling and coordination in gym class"
   ],
   "KOG-34": [
     "Practice basic sight words with word cards",
@@ -2481,17 +2697,19 @@ const INTERVENTIONEN_EN = {
   "KOG-44": [
     "Create writing prompts (pictures, experiences)",
     "Offer sentence patterns",
-    "Value the student's own texts"
+    "Value the student\'s own texts"
   ],
   "KOG-45": [
-    "Calculate with a clock and play money",
-    "Act out everyday situations (shopping)",
-    "Solve word problems with time and money"
+    "Practice adding and subtracting up to 100 with materials (hundred chart, ten rods)",
+    "Count in fives and tens",
+    "Read full and half hours on a teaching clock",
+    "Add up coin values with play money (playing shop)"
   ],
   "KOG-46": [
-    "Measure and weigh in everyday life",
-    "Introduce units of measurement concretely",
-    "Estimate and compare quantities"
+    "Clarify time concepts (quarter hour, half hour, day, week, month, year)",
+    "Measure lengths with a ruler and tape measure (centimeters, meters)",
+    "Measure liquids (liter, half liter, quarter liter)",
+    "Have measurement terms read and explained in the student\'s own words"
   ],
   "KOG-47": [
     "Have texts read and retold",
@@ -2499,9 +2717,10 @@ const INTERVENTIONEN_EN = {
     "Keep a reading journal"
   ],
   "KOG-48": [
-    "Show place value with materials",
-    "Practice written calculation methods",
-    "Consolidate multiplication tables"
+    "Represent place values with materials and a place-value chart",
+    "Practice adding and subtracting with regrouping",
+    "Introduce multiplication with materials",
+    "Solve problems about size relationships (\"A is taller than B, B is taller than C …\")"
   ],
   "KOG-49": [
     "Have letters, messages or reports written",
@@ -2525,7 +2744,7 @@ const INTERVENTIONEN_EN = {
   ],
   "KOG-53": [
     "Discuss characters from books and films",
-    "Work out characters' motives",
+    "Work out characters\' motives",
     "Justify own opinion about characters"
   ],
   "KOG-54": [
@@ -2534,9 +2753,12 @@ const INTERVENTIONEN_EN = {
     "Use rule cards"
   ],
   "KOG-55": [
-    "Discuss conflicts of values in stories and everyday life",
-    "Name and compare opposing values",
-    "Have the student justify own position"
+    "Hold open, respectful discussions",
+    "Discuss examples from everyday life",
+    "Take up questions of values in ethics lessons",
+    "Encourage reflection",
+    "Promote critical thinking",
+    "Develop empathy"
   ],
   "KOG-56": [
     "Offer logic tasks and puzzles",
@@ -2545,7 +2767,7 @@ const INTERVENTIONEN_EN = {
   ],
   "KOG-57": [
     "Discuss current topics and news",
-    "Have the student ask for others' opinions",
+    "Have the student ask for others\' opinions",
     "Hold discussion rounds"
   ],
   "KOG-58": [
@@ -2560,13 +2782,16 @@ const INTERVENTIONEN_EN = {
   ],
   "KOG-60": [
     "Teach strategies for word problems",
-    "Everyday problems with fractions and decimals",
+    "Solve everyday problems with fractions, decimals and negative numbers (recipes, prices, temperatures)",
     "Have solution methods explained"
   ],
   "KOG-61": [
-    "Foster independent problem-solving",
-    "Take on a consulting role",
-    "Practice transfer to new situations"
+    "Encourage self-reflection",
+    "Identify the problem",
+    "Analyze the causes",
+    "Look for possible solutions",
+    "Develop an action plan and carry it out",
+    "Reflect on the outcome and adjust the plan"
   ],
   "KOG-62": [
     "Transfer learning to everyday situations (budget, forms)",
