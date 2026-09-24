@@ -105,7 +105,7 @@ const DS_UI = {
       nicht: 'N’apparaît pas dans le rapport.',
       deutlich: 'Est mentionné comme indice net.', teilweise: 'Est mentionné comme indice possible.',
       haupt: 'Est mentionné comme explication la plus probable.', neben: 'Est mentionné comme explication possible.',
-      braucht: 'Figure sous « a surtout besoin de … ».', profitiert: 'Figure sous « bénéficie en outre de … ».',
+      braucht: 'Figure sous « a surtout besoin de … ».', profitiert: 'Figure sous « bénéficierait en outre de … ».',
       ohne: 'Figure dans l’énumération « aucun signe de … ».'
     },
     vorschau: 'Ce qui figurera dans le rapport', vorschauLeer: 'Pas encore de texte. Dès que vous saisissez des informations, le rapport apparaît ici.',
@@ -282,7 +282,7 @@ const DS_DECKBLATT = {
   en: { titel: 'Specialized Diagnostic Assessment', unter: 'of the Centre pour le développement socio-émotionnel (CDSE)', name: 'Student’s name', matricule: 'Social security number',
     alter: 'Age', schule: 'School', klasse: 'Class', sprachen: 'Languages', empfehlungen: 'CDSE recommendations', unterschrift: 'Unité de diagnostic, de conseil et de suivi',
     cni: { diag_kompetenzzentrum: 'Specialized diagnostic assessment in cooperation with a competence center', beratung_eltern: 'Counseling and guidance for the parents and the student',
-      beratung_fachleute: 'Counseling and guidance for professionals', lernwerkstatt: 'Specialized learning workshop (Atelier d’apprentissage spécifique)', isa: 'Specialized outpatient intervention (ISA)', beschulung: 'Specialized schooling at the CDSE',
+      beratung_fachleute: 'Counseling and guidance for professionals', lernwerkstatt: 'Specialized learning workshop (Atelier d’apprentissage spécifique)', isa: 'Specialized ambulatory intervention (ISA)', beschulung: 'Specialized schooling at the CDSE',
       clapa: 'Classe de Participation', cst: 'Centre socio-thérapeutique (CST)', annexe: 'Annexe Junglinster', ausland: 'Specialized schooling abroad', rehabilitation: 'Rehabilitation',
       abschluss: 'End of CDSE support', schliessung: 'Closure of the CDSE file' } }
 };
@@ -516,7 +516,20 @@ const DsAssistent = (function () {
     ab.interventionen = iv.length ? [{ typ: 'tabelle', id: 'interventionen', kopf: [U2.tab.datum, U2.tab.art],
       zeilen: iv.map(function (r) { return [DsText.datum(r.datum, lang), U2.opt.interventionen[r.art] || r.art || '']; }) }] : [];
     ab.raster = [{ typ: 'raster' }];
+    if (lang === 'fr') { apostrophe(ab); }
     return ab;
+  }
+  // Französisch: überall der typografische Apostroph (auch in eigenen Texten)
+  function apostrophe(ab) {
+    const a = function (t) { return String(t).replace(/'/g, '’'); };
+    Object.keys(ab).forEach(function (k) {
+      (ab[k] || []).forEach(function (b) {
+        if (b.text != null) { b.text = a(b.text); }
+        if (b.punkte) { b.punkte = b.punkte.map(a); }
+        if (b.zeilen) { b.zeilen = b.zeilen.map(function (z) { return z.map(a); }); }
+        if (b.kopf) { b.kopf = b.kopf.map(a); }
+      });
+    });
   }
   function bloeckeZuText(bl, lang) {
     const U2 = DS_UI[lang] || DS_UI.de;

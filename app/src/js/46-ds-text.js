@@ -34,7 +34,7 @@ function kontext(lang, ds, stamm) {
     lang: lang, T: T, g: g,
     name: vorname || T.s.das_kind || 'das Kind',
     vollname: (vorname && nachname) ? vorname + ' ' + nachname : (vorname || voll),
-    seit: 0, kontrast: false,
+    seit: 0, kontrast: false, kontrastNr: 0,
     q: (T.quellen && T.quellen.eltern[f.eltern_quelle || 'eltern']) || null,
     qs: (T.quellen && T.quellen.schule[f.schule_quelle || 'lehrperson']) || null,
     alter: alterJahre(stamm && stamm.geburtsdatum)
@@ -112,7 +112,7 @@ function wert(k, c, vars) {
     case 'his': return p.his;
     case 'himself': return p.himself;
     case 'KONTRAST': return (c.kontrast && c.lang === 'de') ? 'jedoch ' : '';
-    case 'Q': return c.q ? c.q.n : '';
+    case 'Q': if (c.q && (c.q.zahl || 1) === 1) { c.seit = 0; } return c.q ? c.q.n : '';
     case 'Qd': return c.q ? c.q.d : '';
     case 'Qg': return c.q ? c.q.g : '';
     case 'QS': return c.qs ? c.qs.n : '';
@@ -129,13 +129,16 @@ function satz(s, c) {
   return gross(s);
 }
 function franz(s) {
-  // Elision vor Vokal/stummem h und französische Leerzeichen vor : ; ! ?
-  s = s.replace(/\b(de|que|ne|se|le|la|je|me|te|lorsque|puisque|jusque) (?=[aeiouyhàâéèêëîïôûùœAEIOUYHÀÂÉÈÊÎÔÛ])/g, function (m, w) {
-    if (/^(le|la)$/.test(w)) { return "l'"; }
-    return w.slice(0, -1) + "'";
+  // Elision vor Vokal/stummem h. Keine \b-Grenzen: die kennen keine Akzente
+  // ("Hélène a" würde sonst zu "Hélèn'a"). Y (Yanis) wird nicht elidiert.
+  const BUCHST = 'A-Za-zÀ-ÖØ-öø-ÿŒœ\'’';
+  s = s.replace(new RegExp('(^|[^' + BUCHST + '])(de|que|ne|se|le|la|je|me|te|lorsque|puisque|jusque) (?=[aeiouyhàâéèêëîïôûùœAEIOUHÀÂÉÈÊÎÔÛ])', 'g'), function (m, v, w) {
+    return v + (/^(le|la)$/.test(w) ? "l'" : w.slice(0, -1) + "'");
   });
-  s = s.replace(/\bsi (?=ils?\b)/g, "s'");
-  return s.replace(/ ?([:;!?])(?=\s|$)/g, ' $1').replace(/« ?/g, '« ').replace(/ ?»/g, ' »');
+  s = s.replace(new RegExp('(^|[^' + BUCHST + '])si (?=ils?(?![' + BUCHST + ']))', 'g'), "$1s'");
+  // Leerzeichen vor : ; ! ? und in « », typografischer Apostroph
+  s = s.replace(/ ?([:;!?])(?=\s|$)/g, ' $1').replace(/« ?/g, '« ').replace(/ ?»/g, ' »');
+  return s.replace(/'/g, '’');
 }
 
 // Aufzählung "a, b und c"
@@ -167,7 +170,7 @@ function aussageSatz(c, id, r, kontrast) {
   c.kontrast = false;
   if (kontrast && c.lang !== 'de') {
     const v = KONTRAST_VORSATZ[c.lang];
-    const vors = v[(id.length + r) % v.length];
+    const vors = v[(c.kontrastNr++) % v.length];   /* reihum, damit sich nichts wiederholt */
     s = vors + (s.indexOf(c.name) === 0 ? s : klein(s));
   }
   return s;
@@ -346,10 +349,12 @@ function beduerfnisse(c, ds) {
 }
 
 // ---------- Datum ----------
+const MONATE_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 function datumText(iso, lang) {
   if (!iso) { return ''; }
   const d = new Date(iso + 'T12:00:00');
   if (isNaN(d)) { return String(iso); }
+  if (lang === 'en') { return d.getDate() + ' ' + MONATE_EN[d.getMonth()] + ' ' + d.getFullYear(); }
   const p = function (n) { return (n < 10 ? '0' : '') + n; };
   return p(d.getDate()) + (lang === 'en' ? '/' : '.') + p(d.getMonth() + 1) + (lang === 'en' ? '/' : '.') + d.getFullYear();
 }

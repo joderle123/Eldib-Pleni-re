@@ -50,7 +50,7 @@ DS_TEXTE.de.fakten = (function () {
       c.neuerAbsatz();
       const wer = (O.auftraggeber[f.auftraggeber || 'cni'] || O.auftraggeber.cni)[1];
       const wer2 = f.auftraggeber === 'andere' && h.frei(ds, 'auftraggeber_andere') ? h.frei(ds, 'auftraggeber_andere') : wer;
-      s.push(h.satz(h.fuelle('Das Zentrum für sozio-emotionale Entwicklung (CDSE) wurde{datum: am {datum}} von {wer} beauftragt, eine vertiefende Diagnostik bei {Vollname} durchzuführen, um {seinen} aktuellen sozio-emotionalen Entwicklungsstand und Förderbedarf festzustellen.', c, { datum: h.datum(f.auftrag_datum, 'de'), wer: wer2 }), c));
+      s.push(h.satz(h.fuelle('Das Zentrum für sozio-emotionale Entwicklung (CDSE) wurde{datum: am {datum}} von {wer} beauftragt, eine vertiefende Diagnostik bei {wem} durchzuführen, um {seinen} aktuellen sozio-emotionalen Entwicklungsstand und Förderbedarf festzustellen.', c, { datum: h.datum(f.auftrag_datum, 'de'), wer: wer2, wem: c.vollname || (c.g === 'w' ? 'der Schülerin' : 'dem Schüler') }), c));
       const anl = h.chips(ds, 'anlass').map(function (k) { return h.chipText(c, 'anlass', k); });
       if (h.frei(ds, 'anlass_andere')) { anl.push(h.frei(ds, 'anlass_andere')); }
       if (anl.length) { s.push(h.satz(h.fuelle('Die Beauftragung erfolgte aufgrund von {liste}.', c, { liste: h.liste(anl, c) }), c)); }
@@ -152,8 +152,8 @@ DS_TEXTE.de.fakten = (function () {
       const s = [];
       if (klasse || schule) {
         const am = /^(Lycée|Lyzeum|Athénée|Institut|Centre|Zentrum)/i.test(schule) ? 'am' : 'an der';
-        s.push(h.satz(h.fuelle('Derzeit besucht {N}{klasse: die Klasse {klasse}}{schule: {am} {schule}}{lp: bei {lp}}.', c,
-          { klasse: klasse ? klasse : 'eine Klasse', schule: schule, am: am, lp: h.frei(ds, 'lehrperson') }), c));
+        const tpl = klasse ? 'Derzeit besucht {N} die Klasse {klasse}{schule: {am} {schule}}{lp: bei {lp}}.' : 'Derzeit wird {N} {am} {schule}{lp: bei {lp}} beschult.';
+        s.push(h.satz(h.fuelle(tpl, c, { klasse: klasse, schule: schule, am: am, lp: h.frei(ds, 'lehrperson') }), c));
       }
       if (h.frei(ds, 'eseb_referenz')) { s.push(h.satz(h.fuelle('{seine} Referenzperson im ESEB ist {x}.', c, { x: h.frei(ds, 'eseb_referenz') }), c)); }
       const b = s.length ? [h.block(s.join(' '))] : [];
