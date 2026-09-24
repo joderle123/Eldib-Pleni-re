@@ -1,0 +1,749 @@
+function dsGetDomainPrefix(domain) {
+    const map = { verhalten: 'V', kommunikation: 'K', sozialisation: 'SOZ', kognition: 'KOG' };
+    return map[domain] || domain;
+}
+
+// ==========================================
+// SCHÜLER-MANAGER
+// ==========================================
+
+const SM_KEY = 'eldib-schueler-liste';
+const SM_AKTIV_KEY = 'eldib-sm-aktiv';
+let smAktuellerSchueler = null; // { id, einschaetzungNr }
+let smIsReloading = false; // Flag to prevent beforeunload from overwriting data during location.reload()
+
+function smGetListe() {
+    try {
+        return JSON.parse(localStorage.getItem(SM_KEY)) || [];
+    } catch { return []; }
+}
+
+function smSaveListe(liste) {
+    try {
+        localStorage.setItem(SM_KEY, JSON.stringify(liste));
+    } catch (e) {
+        console.error('Fehler beim Speichern der Schülerliste:', e);
+        alert('Fehler beim Speichern! Möglicherweise ist der Speicher voll. Bitte exportieren Sie Ihre Daten als JSON-Backup.');
+    }
+}
+
+function smGenerateId() {
+    return 'sch-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+}
+
+function smRenderListe() {
+    const grid = document.getElementById('sm-schueler-grid');
+    const liste = smGetListe();
+
+    if (liste.length === 0) {
+        grid.innerHTML = `
+            <div class="sm-empty">
+                <p>Noch keine Sch&uuml;ler angelegt</p>
+                <small>Klicken Sie auf &quot;+ Neuen Sch&uuml;ler anlegen&quot;, um zu beginnen.</small>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = liste.map(s => {
+        const hat1 = s.einschaetzung1 && Object.keys(s.einschaetzung1).length > 0;
+        const hat2 = s.einschaetzung2 && Object.keys(s.einschaetzung2).length > 0;
+        const datum1 = hat1 && s.einschaetzung1.stammdaten?.einschaetzungsdatum
+            ? new Date(s.einschaetzung1.stammdaten.einschaetzungsdatum).toLocaleDateString('de-DE')
+            : '';
+        const datum2 = hat2 && s.einschaetzung2.stammdaten?.einschaetzungsdatum
+            ? new Date(s.einschaetzung2.stammdaten.einschaetzungsdatum).toLocaleDateString('de-DE')
+            : '';
+        return `
+        <div class="sm-card">
+            <div class="sm-card-header">
+                <div>
+                    <div class="sm-card-name">${smEscapeHtml(s.name)}</div>
+                    <div class="sm-card-klasse">${s.klasse ? 'Klasse ' + smEscapeHtml(s.klasse) : ''}${s.geburtsdatum ? (s.klasse ? ' · ' : '') + smBerechneAlter(s.geburtsdatum) + ' Jahre' : ''}</div>
+                </div>
+                <button class="sm-card-delete" onclick="smLoescheSchueler('${s.id}')" title="Sch&uuml;ler l&ouml;schen">&times;</button>
+            </div>
+            <div class="sm-card-buttons">
+                <button class="sm-einschaetzung-btn ${hat1 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 1)">
+                    <span class="btn-label">1. Einsch&auml;tzung</span>
+                    <span class="btn-status">${hat1 ? datum1 || 'Daten vorhanden' : 'Noch leer'}</span>
+                </button>
+                <button class="sm-einschaetzung-btn ${hat2 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 2)">
+                    <span class="btn-label">2. Einsch&auml;tzung</span>
+                    <span class="btn-status">${hat2 ? datum2 || 'Daten vorhanden' : 'Noch leer'}</span>
+                </button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function smEscapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+}
+
+function smBerechneAlter(geburtsdatumStr) {
+    if (!geburtsdatumStr) return '';
+    const geb = new Date(geburtsdatumStr);
+    const heute = new Date();
+    let alter = heute.getFullYear() - geb.getFullYear();
+    const monatsDiff = heute.getMonth() - geb.getMonth();
+    if (monatsDiff < 0 || (monatsDiff === 0 && heute.getDate() < geb.getDate())) alter--;
+    return alter;
+}
+
+function smNeuerSchueler() {
+    const overlay = document.createElement('div');
+    overlay.className = 'sm-dialog-overlay';
+    overlay.id = 'sm-dialog-overlay';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = `
+        <div class="sm-dialog">
+            <h3>Neuen Sch&uuml;ler anlegen</h3>
+            <label>Nachname <span style="color:#ff6b6b;">*</span></label>
+            <input type="text" id="sm-new-nachname" placeholder="Nachname" autofocus>
+            <label>Vorname <span style="color:#ff6b6b;">*</span></label>
+            <input type="text" id="sm-new-vorname" placeholder="Vorname">
+            <label>Geburtsdatum <span style="color:#ff6b6b;">*</span></label>
+            <input type="date" id="sm-new-geburtsdatum">
+            <div id="sm-new-alter" style="margin: -8px 0 8px 0; font-size: 0.85rem; color: rgba(255,255,255,0.6);"></div>
+            <label>Klasse/Cycle</label>
+            <input type="text" id="sm-new-klasse" placeholder="z.B. C2.1">
+            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin: 4px 0 0 0;"><span style="color:#ff6b6b;">*</span> Pflichtfelder</p>
+            <div class="sm-dialog-actions">
+                <button class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">Abbrechen</button>
+                <button class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">Anlegen</button>
+            </div>
+        </div>`;
+    document.body.appendChild(overlay);
+    setTimeout(() => document.getElementById('sm-new-nachname')?.focus(), 100);
+
+    // Alter berechnen bei Geburtsdatum-Eingabe
+    document.getElementById('sm-new-geburtsdatum')?.addEventListener('change', function() {
+        const alterDiv = document.getElementById('sm-new-alter');
+        if (!this.value || !alterDiv) return;
+        const geb = new Date(this.value);
+        const heute = new Date();
+        let alter = heute.getFullYear() - geb.getFullYear();
+        const monatsDiff = heute.getMonth() - geb.getMonth();
+        if (monatsDiff < 0 || (monatsDiff === 0 && heute.getDate() < geb.getDate())) alter--;
+        alterDiv.textContent = alter >= 0 ? `Alter: ${alter} Jahre` : '';
+    });
+}
+
+function smSchuelerAnlegen() {
+    const nachname = document.getElementById('sm-new-nachname')?.value?.trim();
+    const vorname = document.getElementById('sm-new-vorname')?.value?.trim();
+    const geburtsdatum = document.getElementById('sm-new-geburtsdatum')?.value;
+    const klasse = document.getElementById('sm-new-klasse')?.value?.trim();
+
+    const fehlende = [];
+    if (!nachname) fehlende.push('Nachname');
+    if (!vorname) fehlende.push('Vorname');
+    if (!geburtsdatum) fehlende.push('Geburtsdatum');
+
+    if (fehlende.length > 0) {
+        alert('Bitte folgende Pflichtfelder ausfüllen:\n- ' + fehlende.join('\n- '));
+        return;
+    }
+
+    const name = nachname + ', ' + vorname;
+    const liste = smGetListe();
+    liste.push({
+        id: smGenerateId(),
+        name: name,
+        klasse: klasse || '',
+        geburtsdatum: geburtsdatum,
+        einschaetzung1: null,
+        einschaetzung2: null
+    });
+    smSaveListe(liste);
+    document.getElementById('sm-dialog-overlay')?.remove();
+    smRenderListe();
+}
+
+function smLoescheSchueler(id) {
+    const liste = smGetListe();
+    const schueler = liste.find(s => s.id === id);
+    if (!schueler) return;
+    if (!confirm(`"${schueler.name}" wirklich löschen?\n\nAlle Einschätzungen dieses Schülers werden unwiderruflich gelöscht!`)) return;
+    smSaveListe(liste.filter(s => s.id !== id));
+    smRenderListe();
+}
+
+function smOeffneEinschaetzung(id, nr) {
+    const liste = smGetListe();
+    const schueler = liste.find(s => s.id === id);
+    if (!schueler) return;
+
+    smAktuellerSchueler = { id, einschaetzungNr: nr };
+
+    // Daten der gewählten Einschätzung laden
+    const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
+
+    if (daten) {
+        // Bestehende Einschätzung laden
+        localStorage.setItem('eldib-data', JSON.stringify(daten));
+    } else if (nr === 2 && schueler.einschaetzung1) {
+        // 2. Einschätzung: ELDiB-Daten aus 1. Einschätzung übernehmen
+        const basis = schueler.einschaetzung1;
+        // Alle Stammdaten aus der 1. Einschätzung übernehmen (inkl. Matricule, Förderort, etc.)
+        const basisStammdaten = basis.stammdaten || {};
+        const neueDaten = {
+            language: basis.language || 'de',
+            selections: JSON.parse(JSON.stringify(basis.selections || {})),
+            zusaetzlicheZiele: JSON.parse(JSON.stringify(basis.zusaetzlicheZiele || {
+                demarches_mentales: {},
+                manieres_apprendre: {},
+                attitudes_relationnelles: {},
+                attitudes_affectives: {},
+                competences_essentielles: {},
+                culture_loisirs: {}
+            })),
+            stammdaten: {
+                schueler_name: schueler.name,
+                geburtsdatum: schueler.geburtsdatum || basisStammdaten.geburtsdatum || '',
+                matricule: basisStammdaten.matricule || '',
+                foerderort: basisStammdaten.foerderort || '',
+                klasse: schueler.klasse || basisStammdaten.klasse || '',
+                schuljahr: basisStammdaten.schuljahr || '',
+                periodenTyp: basisStammdaten.periodenTyp || 'trimester',
+                periode: basisStammdaten.periode || '1',
+                einschaetzungsdatum: '',
+                einschaetzende: basisStammdaten.einschaetzende || '',
+                eltern1_name: basisStammdaten.eltern1_name || '',
+                eltern1_tel: basisStammdaten.eltern1_tel || '',
+                eltern1_email: basisStammdaten.eltern1_email || ''
+            },
+            dsData: {}
+        };
+        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+    } else {
+        // Neue Einschätzung: Stammdaten vorausfüllen
+        const neueDaten = {
+            language: 'de',
+            selections: {},
+            zusaetzlicheZiele: {
+                demarches_mentales: {},
+                manieres_apprendre: {},
+                attitudes_relationnelles: {},
+                attitudes_affectives: {},
+                competences_essentielles: {},
+                culture_loisirs: {}
+            },
+            stammdaten: {
+                schueler_name: schueler.name,
+                geburtsdatum: schueler.geburtsdatum || '',
+                klasse: schueler.klasse || ''
+            },
+            dsData: {}
+        };
+        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+    }
+
+    // Manager ausblenden, Editor einblenden
+    document.getElementById('schueler-manager').style.display = 'none';
+    document.getElementById('main-container').style.display = '';
+    document.getElementById('backToManagerBtn').style.display = 'block';
+    document.getElementById('saveBtn').style.display = 'block';
+
+    // Info-Badge anzeigen
+    const info = document.getElementById('smCurrentInfo');
+    info.textContent = `${schueler.name} — ${nr}. Einschätzung`;
+    info.style.display = 'block';
+
+    // Flag setzen um zu verhindern, dass beforeunload die vorbereiteten Daten überschreibt
+    smIsReloading = true;
+    // Seite neu laden, damit loadFromLocalStorage() die Daten einliest
+    location.reload();
+}
+
+function smZurueckZurListe() {
+    // Aktuelle Daten in den Schüler zurückspeichern
+    smSaveAktuelleEinschaetzung();
+
+    // Manager-Modus wiederherstellen
+    smAktuellerSchueler = null;
+    localStorage.removeItem('eldib-data');
+
+    // UI zurücksetzen
+    document.getElementById('schueler-manager').style.display = '';
+    document.getElementById('main-container').style.display = 'none';
+    document.getElementById('backToManagerBtn').style.display = 'none';
+    document.getElementById('smCurrentInfo').style.display = 'none';
+
+    smRenderListe();
+}
+
+function smSaveAktuelleEinschaetzung() {
+    if (!smAktuellerSchueler) return;
+
+    const data = {
+        language: state.language,
+        selections: state.selections,
+        zusaetzlicheZiele: state.zusaetzlicheZiele,
+        stammdaten: getStammdaten(),
+        dsData: getDSData(),
+        bereichNotizen: {
+            verhalten: document.getElementById('notizen-verhalten')?.value || '',
+            kommunikation: document.getElementById('notizen-kommunikation')?.value || '',
+            sozialisation: document.getElementById('notizen-sozialisation')?.value || '',
+            kognition: document.getElementById('notizen-kognition')?.value || '',
+            zusaetzlich: document.getElementById('notizen-zusaetzlich')?.value || ''
+        },
+        savedAt: new Date().toISOString()
+    };
+
+    const liste = smGetListe();
+    const idx = liste.findIndex(s => s.id === smAktuellerSchueler.id);
+    if (idx === -1) return;
+
+    if (smAktuellerSchueler.einschaetzungNr === 1) {
+        liste[idx].einschaetzung1 = data;
+    } else {
+        liste[idx].einschaetzung2 = data;
+    }
+
+    // Name, Klasse und Geburtsdatum synchronisieren
+    if (data.stammdaten.schueler_name) {
+        liste[idx].name = data.stammdaten.schueler_name;
+    }
+    if (data.stammdaten.klasse) {
+        liste[idx].klasse = data.stammdaten.klasse;
+    }
+    if (data.stammdaten.geburtsdatum) {
+        liste[idx].geburtsdatum = data.stammdaten.geburtsdatum;
+    }
+
+    smSaveListe(liste);
+}
+
+function smManualSave() {
+    saveToLocalStorage();
+    const btn = document.getElementById('saveBtn');
+    if (btn) {
+        const origText = btn.innerHTML;
+        btn.innerHTML = '&#10003; Gespeichert!';
+        btn.classList.add('saved');
+        setTimeout(() => {
+            btn.innerHTML = origText;
+            btn.classList.remove('saved');
+        }, 2000);
+    }
+}
+
+// Auto-Save in Schüler-Liste (überschreibt bestehende saveToLocalStorage)
+const _originalSaveToLocalStorage = saveToLocalStorage;
+saveToLocalStorage = function() {
+    _originalSaveToLocalStorage();
+    smSaveAktuelleEinschaetzung();
+};
+
+// JSON Import
+function smImportJSON() {
+    document.getElementById('smImportFile').click();
+}
+
+function smHandleImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+
+            // Prüfe ob es eine Schüler-Liste ist (Array) oder einzelne Daten
+            if (Array.isArray(data)) {
+                // Import einer kompletten Schüler-Liste
+                const liste = smGetListe();
+                data.forEach(s => {
+                    if (s.name && s.id) {
+                        // Prüfe auf doppelte IDs
+                        if (!liste.find(x => x.id === s.id)) {
+                            liste.push(s);
+                        }
+                    }
+                });
+                smSaveListe(liste);
+                smRenderListe();
+                showToast(`${data.length} Schüler importiert`);
+            } else if (data.stammdaten) {
+                // Import einzelner Einschätzungs-Daten (altes Format)
+                const name = data.stammdaten.schueler_name || file.name.replace('.json', '');
+                const klasse = data.stammdaten.klasse || '';
+                const liste = smGetListe();
+                liste.push({
+                    id: smGenerateId(),
+                    name: name,
+                    klasse: klasse,
+                    einschaetzung1: data,
+                    einschaetzung2: null
+                });
+                smSaveListe(liste);
+                smRenderListe();
+                showToast(`"${name}" importiert`);
+            } else {
+                alert('Unbekanntes Dateiformat.');
+            }
+        } catch (err) {
+            alert('Fehler beim Import: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = ''; // Reset für erneuten Import
+}
+
+function smExportAlleJSON() {
+    const liste = smGetListe();
+    if (liste.length === 0) {
+        alert('Keine Schüler zum Exportieren vorhanden.');
+        return;
+    }
+    const blob = new Blob([JSON.stringify(liste, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `eldib_alle_schueler_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+}
+
+// INIT: Beim Laden entscheiden ob Manager oder Editor anzeigen
+(function smInit() {
+    // Prüfe ob wir gerade einen Schüler bearbeiten
+    const aktivData = localStorage.getItem(SM_AKTIV_KEY);
+    let showEditor = false;
+
+    if (aktivData) {
+        try {
+            const parsed = JSON.parse(aktivData);
+            const liste = smGetListe();
+            const schueler = liste.find(s => s.id === parsed.id);
+
+            if (schueler) {
+                // Schüler existiert - Editor anzeigen
+                smAktuellerSchueler = parsed;
+                showEditor = true;
+
+                // Sicherstellen dass eldib-data aus der Schülerliste geladen wird
+                // (kann verloren gehen wenn Browser/Tab geschlossen wurde)
+                const existingData = localStorage.getItem('eldib-data');
+                if (!existingData) {
+                    const nr = parsed.einschaetzungNr;
+                    const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
+                    if (daten) {
+                        // Bestehende Einschätzung — Profildaten synchronisieren
+                        const merged = JSON.parse(JSON.stringify(daten));
+                        merged.stammdaten = merged.stammdaten || {};
+                        merged.stammdaten.schueler_name = schueler.name;
+                        merged.stammdaten.geburtsdatum = schueler.geburtsdatum || merged.stammdaten.geburtsdatum || '';
+                        merged.stammdaten.klasse = schueler.klasse || merged.stammdaten.klasse || '';
+                        localStorage.setItem('eldib-data', JSON.stringify(merged));
+                    } else if (nr === 2 && schueler.einschaetzung1) {
+                        // 2. Einschätzung: ALLE Daten aus 1. übernehmen
+                        const basis = schueler.einschaetzung1;
+                        const basisStammdaten = basis.stammdaten || {};
+                        const neueDaten = {
+                            language: basis.language || 'de',
+                            selections: JSON.parse(JSON.stringify(basis.selections || {})),
+                            zusaetzlicheZiele: JSON.parse(JSON.stringify(basis.zusaetzlicheZiele || {
+                                demarches_mentales: {}, manieres_apprendre: {},
+                                attitudes_relationnelles: {}, attitudes_affectives: {},
+                                competences_essentielles: {}, culture_loisirs: {}
+                            })),
+                            stammdaten: {
+                                schueler_name: schueler.name,
+                                geburtsdatum: schueler.geburtsdatum || basisStammdaten.geburtsdatum || '',
+                                matricule: basisStammdaten.matricule || '',
+                                foerderort: basisStammdaten.foerderort || '',
+                                klasse: schueler.klasse || basisStammdaten.klasse || '',
+                                schuljahr: basisStammdaten.schuljahr || '',
+                                periodenTyp: basisStammdaten.periodenTyp || 'trimester',
+                                periode: basisStammdaten.periode || '1',
+                                einschaetzungsdatum: '',
+                                einschaetzende: basisStammdaten.einschaetzende || '',
+                                eltern1_name: basisStammdaten.eltern1_name || '',
+                                eltern1_tel: basisStammdaten.eltern1_tel || '',
+                                eltern1_email: basisStammdaten.eltern1_email || ''
+                            },
+                            dsData: JSON.parse(JSON.stringify(basis.dsData || {}))
+                        };
+                        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+                    } else {
+                        // Leere Einschätzung: ALLE Profildaten als Stammdaten
+                        const neueDaten = {
+                            language: 'de',
+                            selections: {},
+                            zusaetzlicheZiele: {
+                                demarches_mentales: {}, manieres_apprendre: {},
+                                attitudes_relationnelles: {}, attitudes_affectives: {},
+                                competences_essentielles: {}, culture_loisirs: {}
+                            },
+                            stammdaten: {
+                                schueler_name: schueler.name,
+                                geburtsdatum: schueler.geburtsdatum || '',
+                                matricule: '',
+                                foerderort: '',
+                                klasse: schueler.klasse || '',
+                                schuljahr: '',
+                                periodenTyp: 'trimester',
+                                periode: '1',
+                                einschaetzungsdatum: '',
+                                einschaetzende: '',
+                                eltern1_name: '',
+                                eltern1_tel: '',
+                                eltern1_email: ''
+                            },
+                            dsData: {}
+                        };
+                        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+                    }
+                }
+
+                document.getElementById('schueler-manager').style.display = 'none';
+                document.getElementById('main-container').style.display = '';
+                document.getElementById('backToManagerBtn').style.display = 'block';
+                document.getElementById('saveBtn').style.display = 'block';
+
+                const info = document.getElementById('smCurrentInfo');
+                info.textContent = `${schueler.name} — ${smAktuellerSchueler.einschaetzungNr}. Einschätzung`;
+                info.style.display = 'block';
+            } else {
+                // Schüler existiert nicht mehr in der Liste
+                // eldib-data behalten für Wiederherstellung, nur SM_AKTIV_KEY entfernen
+                localStorage.removeItem(SM_AKTIV_KEY);
+                // Versuche eldib-data als neuen Schüler zu migrieren
+                const orphanedData = localStorage.getItem('eldib-data');
+                if (orphanedData) {
+                    try {
+                        const oData = JSON.parse(orphanedData);
+                        if (oData.stammdaten && oData.stammdaten.schueler_name) {
+                            const liste2 = smGetListe();
+                            liste2.push({
+                                id: smGenerateId(),
+                                name: oData.stammdaten.schueler_name,
+                                klasse: oData.stammdaten.klasse || '',
+                                einschaetzung1: oData,
+                                einschaetzung2: null
+                            });
+                            smSaveListe(liste2);
+                        }
+                    } catch {}
+                }
+                localStorage.removeItem('eldib-data');
+            }
+        } catch {
+            localStorage.removeItem(SM_AKTIV_KEY);
+        }
+    }
+
+    if (!showEditor) {
+        // Manager anzeigen
+        smRenderListe();
+
+        // Migriere verwaiste eldib-data: Wenn eldib-data existiert aber kein aktiver Schüler
+        const alteDaten = localStorage.getItem('eldib-data');
+        if (alteDaten) {
+            try {
+                const data = JSON.parse(alteDaten);
+                if (data.stammdaten && data.stammdaten.schueler_name) {
+                    const liste = smGetListe();
+                    // Prüfe ob dieser Schüler bereits in der Liste existiert (anhand Name)
+                    const bereitsVorhanden = liste.some(s => s.name === data.stammdaten.schueler_name);
+                    if (!bereitsVorhanden) {
+                        liste.push({
+                            id: smGenerateId(),
+                            name: data.stammdaten.schueler_name,
+                            klasse: data.stammdaten.klasse || '',
+                            einschaetzung1: data,
+                            einschaetzung2: null
+                        });
+                        smSaveListe(liste);
+                        smRenderListe();
+                    }
+                }
+            } catch {}
+            // Alte eldib-data aufräumen wenn wir im Manager-Modus sind
+            localStorage.removeItem('eldib-data');
+        }
+    }
+})();
+
+// Überschreibe smOeffneEinschaetzung mit localStorage-Persistenz
+smOeffneEinschaetzung = function(id, nr) {
+    // Aktuelle Einschätzung sichern bevor gewechselt wird
+    if (smAktuellerSchueler) {
+        smSaveAktuelleEinschaetzung();
+    }
+
+    const liste = smGetListe();
+    const schueler = liste.find(s => s.id === id);
+    if (!schueler) return;
+
+    smAktuellerSchueler = { id, einschaetzungNr: nr };
+    localStorage.setItem(SM_AKTIV_KEY, JSON.stringify(smAktuellerSchueler));
+
+    // Daten der gewählten Einschätzung laden
+    const daten = nr === 1 ? schueler.einschaetzung1 : schueler.einschaetzung2;
+
+    if (daten) {
+        // Bestehende Einschätzung laden — Stammdaten aus Profil synchronisieren
+        const merged = JSON.parse(JSON.stringify(daten));
+        merged.stammdaten = merged.stammdaten || {};
+        merged.stammdaten.schueler_name = schueler.name;
+        merged.stammdaten.geburtsdatum = schueler.geburtsdatum || merged.stammdaten.geburtsdatum || '';
+        merged.stammdaten.klasse = schueler.klasse || merged.stammdaten.klasse || '';
+        localStorage.setItem('eldib-data', JSON.stringify(merged));
+    } else if (nr === 2 && schueler.einschaetzung1) {
+        // 2. Einschätzung: ALLE Daten aus 1. Einschätzung übernehmen
+        const basis = schueler.einschaetzung1;
+        const basisStammdaten = basis.stammdaten || {};
+        const neueDaten = {
+            language: basis.language || 'de',
+            selections: JSON.parse(JSON.stringify(basis.selections || {})),
+            zusaetzlicheZiele: JSON.parse(JSON.stringify(basis.zusaetzlicheZiele || {
+                demarches_mentales: {},
+                manieres_apprendre: {},
+                attitudes_relationnelles: {},
+                attitudes_affectives: {},
+                competences_essentielles: {},
+                culture_loisirs: {}
+            })),
+            stammdaten: {
+                schueler_name: schueler.name,
+                geburtsdatum: schueler.geburtsdatum || basisStammdaten.geburtsdatum || '',
+                matricule: basisStammdaten.matricule || '',
+                foerderort: basisStammdaten.foerderort || '',
+                klasse: schueler.klasse || basisStammdaten.klasse || '',
+                schuljahr: basisStammdaten.schuljahr || '',
+                periodenTyp: basisStammdaten.periodenTyp || 'trimester',
+                periode: basisStammdaten.periode || '1',
+                einschaetzungsdatum: '',
+                einschaetzende: basisStammdaten.einschaetzende || '',
+                eltern1_name: basisStammdaten.eltern1_name || '',
+                eltern1_tel: basisStammdaten.eltern1_tel || '',
+                eltern1_email: basisStammdaten.eltern1_email || ''
+            },
+            dsData: JSON.parse(JSON.stringify(basis.dsData || {}))
+        };
+        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+    } else {
+        // Neue Einschätzung: ALLE Profildaten als Stammdaten übernehmen
+        const neueDaten = {
+            language: 'de',
+            selections: {},
+            zusaetzlicheZiele: {
+                demarches_mentales: {},
+                manieres_apprendre: {},
+                attitudes_relationnelles: {},
+                attitudes_affectives: {},
+                competences_essentielles: {},
+                culture_loisirs: {}
+            },
+            stammdaten: {
+                schueler_name: schueler.name,
+                geburtsdatum: schueler.geburtsdatum || '',
+                matricule: '',
+                foerderort: '',
+                klasse: schueler.klasse || '',
+                schuljahr: '',
+                periodenTyp: 'trimester',
+                periode: '1',
+                einschaetzungsdatum: '',
+                einschaetzende: '',
+                eltern1_name: '',
+                eltern1_tel: '',
+                eltern1_email: ''
+            },
+            dsData: {}
+        };
+        localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
+    }
+
+    // Flag setzen um zu verhindern, dass beforeunload/pagehide die vorbereiteten Daten überschreibt
+    smIsReloading = true;
+    // Seite neu laden, damit alles korrekt initialisiert wird
+    location.reload();
+};
+
+// Überschreibe smZurueckZurListe mit localStorage-Persistenz
+smZurueckZurListe = function() {
+    // Erst speichern und prüfen ob es geklappt hat
+    const prevSchueler = smAktuellerSchueler;
+    try {
+        smSaveAktuelleEinschaetzung();
+        // Verifizieren dass die Daten in der Schülerliste angekommen sind
+        if (prevSchueler) {
+            const liste = smGetListe();
+            const schueler = liste.find(s => s.id === prevSchueler.id);
+            const nr = prevSchueler.einschaetzungNr;
+            const gespeicherteDaten = nr === 1 ? schueler?.einschaetzung1 : schueler?.einschaetzung2;
+            if (!gespeicherteDaten || !gespeicherteDaten.savedAt) {
+                console.warn('Speicherung konnte nicht verifiziert werden - behalte eldib-data als Backup');
+                // eldib-data nicht löschen als Sicherheitsnetz
+                smAktuellerSchueler = null;
+                smIsReloading = true;
+                localStorage.removeItem(SM_AKTIV_KEY);
+                location.reload();
+                return;
+            }
+        }
+    } catch (e) {
+        console.error('Fehler beim Speichern vor Zurück:', e);
+        // Bei Fehler eldib-data behalten als Backup
+        smAktuellerSchueler = null;
+        smIsReloading = true;
+        localStorage.removeItem(SM_AKTIV_KEY);
+        location.reload();
+        return;
+    }
+    smAktuellerSchueler = null;
+    smIsReloading = true;
+    localStorage.removeItem(SM_AKTIV_KEY);
+    localStorage.removeItem('eldib-data');
+    location.reload();
+};
+
+// Zentrale Speicher-Funktion für alle Event-Handler
+function smSaveAll() {
+    try {
+        saveToLocalStorage(); // speichert eldib-data UND Schülerliste (via Override)
+    } catch (e) {
+        console.error('Fehler beim Speichern:', e);
+    }
+}
+
+// Beim Seitenverlassen speichern (nur wenn kein geplanter Reload läuft)
+window.addEventListener('beforeunload', function() {
+    if (smAktuellerSchueler && !smIsReloading) {
+        smSaveAll();
+    }
+});
+
+// pagehide ist zuverlässiger als beforeunload auf Mobilgeräten
+window.addEventListener('pagehide', function() {
+    if (smAktuellerSchueler && !smIsReloading) {
+        smSaveAll();
+    }
+});
+
+// Periodisches Auto-Save alle 10 Sekunden (Sicherheitsnetz)
+setInterval(function() {
+    if (smAktuellerSchueler && !smIsReloading) {
+        smSaveAll();
+    }
+}, 10000);
+
+// Speichern wenn Tab/Fenster den Fokus verliert
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden' && smAktuellerSchueler && !smIsReloading) {
+        smSaveAll();
+    }
+});
+
+// Speichern wenn Fenster den Fokus verliert (zusätzlicher Schutz)
+window.addEventListener('blur', function() {
+    if (smAktuellerSchueler && !smIsReloading) {
+        smSaveAll();
+    }
+});
+
+    
