@@ -3094,3 +3094,29 @@
             white-space: nowrap;
         }
     
+
+        /* Sprachwahl auf der Schülerübersicht (gleicher Stil wie im Editor-Kopf) */
+        .sm-sprache {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            display: flex;
+            gap: 4px;
+            z-index: 2;
+        }
+        .sm-sprache .lang-btn {
+            padding: 6px 14px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .sm-sprache .lang-btn.active {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            border-color: rgba(255,255,255,0.5);
+        }

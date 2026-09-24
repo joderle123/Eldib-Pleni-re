@@ -96,9 +96,9 @@ function canSetZiel(code) {
                 const dispCode = getDisplayCode(item.code);
                 let message;
                 if (lng === 'en') {
-                    message = `Goal not possible: ${dispCode} is marked as "not mastered". First reach the previous developmental stages.`;
+                    message = `Goal not possible: ${dispCode} is marked as "not mastered". The earlier developmental steps have to be mastered first.`;
                 } else if (lng === 'fr') {
-                    message = `Objectif impossible : ${dispCode} est marqué comme « non atteint ». Atteignez d'abord les étapes de développement précédentes.`;
+                    message = `Objectif impossible : ${dispCode} est marqué comme « non atteint ». Les étapes de développement précédentes doivent d'abord être atteintes.`;
                 } else {
                     message = `Ziel nicht möglich: ${dispCode} ist als "nicht erreicht" markiert. Erreichen Sie zuerst die vorherigen Entwicklungsstufen.`;
                 }
@@ -113,15 +113,14 @@ function canSetZiel(code) {
     // Blockiert werden nur Stufen, die das Kind altersmäßig noch gar nicht erreicht hat.
     const alter = getSchuelerAlter();
     if (alter !== null) {
-        const stufenMap = (state.language === 'fr') ? STUFEN_ALTER_MAPPING_FR : STUFEN_ALTER_MAPPING;
-        const stufeAlter = stufenMap[stufe];
+        const stufeAlter = getCurrentStufen()[stufe]; // Stufenname/Alter in der aktuellen Sprache
         if (stufeAlter && alter < stufeAlter.min) {
             const lng = state.language;
             let message;
             if (lng === 'en') {
-                message = `Goal not possible: The student is ${alter} years old. ${stufeAlter.name} (${stufeAlter.beschreibung}) has not yet been reached biologically.`;
+                message = `Goal not possible: the student is ${alter} years old. ${stufeAlter.name} (${stufeAlter.beschreibung}) has not yet been reached in terms of age.`;
             } else if (lng === 'fr') {
-                message = `Objectif impossible : L'élève a ${alter} ans. ${stufeAlter.name} (${stufeAlter.beschreibung}) n'a pas encore été atteint biologiquement.`;
+                message = `Objectif impossible : l'élève a ${alter} ans. Le ${stufeAlter.name} (${stufeAlter.beschreibung}) n'est pas encore atteint du point de vue de l'âge.`;
             } else {
                 message = `Ziel nicht möglich: Der Schüler ist ${alter} Jahre alt. ${stufeAlter.name} (${stufeAlter.beschreibung}) wurde biologisch noch nicht erreicht.`;
             }
@@ -136,9 +135,9 @@ function canSetZiel(code) {
         const bereichName = getCurrentEldibData()[bereich]?.name || bereich;
         let message;
         if (lng === 'en') {
-            message = `Goal not possible: Domain ${bereichName} already has 4 goals. Maximum 4 goals per domain.`;
+            message = `Goal not possible: the ${bereichName} domain already has 4 goals (maximum 4 goals per domain).`;
         } else if (lng === 'fr') {
-            message = `Objectif impossible : Le domaine ${bereichName} a déjà 4 objectifs. Maximum 4 objectifs par domaine.`;
+            message = `Objectif impossible : le domaine ${bereichName} a déjà 4 objectifs (maximum 4 objectifs par domaine).`;
         } else {
             message = `Ziel nicht möglich: Der Bereich ${bereichName} hat bereits 4 Ziele. Maximal 4 Ziele pro Bereich erlaubt.`;
         }
@@ -187,7 +186,7 @@ function updateAlterAnzeige() {
     const anzeige = document.getElementById('alter-anzeige');
 
     if (alter !== null && anzeige) {
-        anzeige.textContent = `${alter} Jahre`;
+        anzeige.textContent = alterText(alter);
         anzeige.classList.remove('hidden');
 
         // Aktualisiere alle blockierten Ziel-Buttons basierend auf Alter
@@ -199,51 +198,23 @@ function updateAlterAnzeige() {
     if (!isLoadingData) saveToLocalStorage();
 }
 
-// Aktualisiert alle Ziel-Buttons basierend auf Altersblockade
+// Aktualisiert alle Ziel-Buttons (Alter, "nicht erreicht", max. 4 Ziele).
+// Dieselbe Regel wie beim Klick (canSetZiel): Ziele sind ab dem Mindestalter der Stufe möglich.
+// (Früher galt hier noch die alte Regel "Alter > Maximum der Stufe" mit deutschem Hinweis.)
 function updateAllBlockedButtonsByAge() {
-    const alter = getSchuelerAlter();
-    if (alter === null) {
-        // Kein Alter eingegeben - entferne alle Altersblockaden
-        document.querySelectorAll('.option-btn.ziel.blocked').forEach(btn => {
-            // Prüfe ob nur durch Alter blockiert war
-            const itemDiv = btn.closest('.item');
-            if (itemDiv) {
-                const code = itemDiv.id.replace('item-', '');
-                const check = canSetZiel(code);
-                if (check.allowed) {
-                    btn.classList.remove('blocked');
-                    btn.title = '';
-                }
-            }
-        });
-        return;
-    }
-
-    // Gehe durch alle Bereiche
-    for (const [bereich, bereichData] of Object.entries(ELDIB_DATA)) {
-        for (const [stufeNr, stufeData] of Object.entries(bereichData.stufen)) {
-            const stufeAlter = STUFEN_ALTER_MAPPING[parseInt(stufeNr)];
-
+    for (const bereichData of Object.values(ELDIB_DATA)) {
+        for (const stufeData of Object.values(bereichData.stufen)) {
             for (const item of stufeData.items) {
                 const zielBtn = document.querySelector(`#item-${item.code} .option-btn.ziel`);
-                if (zielBtn) {
-                    // Prüfe ob durch Alter blockiert (biologisches Alter <= Maximum der Stufe)
-                    // Ziel nur möglich wenn Alter > max (Stufe bereits "überholt")
-                    if (stufeAlter && alter <= stufeAlter.max) {
-                        zielBtn.classList.add('blocked');
-                        zielBtn.title = `Ziel nicht möglich: Schüler ist ${alter} Jahre. ${stufeAlter.name} (${stufeAlter.beschreibung}) - Ziele nur für bereits durchschrittene Stufen möglich.`;
-                    } else {
-                        // Prüfe ob durch "nicht erreicht" oder max-ziele blockiert
-                        const check = canSetZiel(item.code);
-                        const isCurrentlyZiel = state.selections[item.code]?.status === 'ziel';
-                        if (check.allowed || isCurrentlyZiel) {
-                            zielBtn.classList.remove('blocked');
-                            zielBtn.title = '';
-                        } else {
-                            zielBtn.classList.add('blocked');
-                            zielBtn.title = check.message;
-                        }
-                    }
+                if (!zielBtn) continue;
+                const check = canSetZiel(item.code);
+                const isCurrentlyZiel = state.selections[item.code]?.status === 'ziel';
+                if (check.allowed || isCurrentlyZiel) {
+                    zielBtn.classList.remove('blocked');
+                    zielBtn.title = '';
+                } else {
+                    zielBtn.classList.add('blocked');
+                    zielBtn.title = check.message;
                 }
             }
         }

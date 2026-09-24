@@ -5,14 +5,14 @@ const ELDIB_DATA_EN = {
     "color": "#e74c3c",
     "stufen": {
       "1": {
-        "name": "Stage I: Responding to the environment with pleasure",
-        "ziel": "Trust in own bodily capacities",
+        "name": "Stage I: Responding to the Environment with Pleasure",
+        "ziel": "To trust own body and skills",
         "items": [
           {
             "nr": 1,
             "code": "V-1",
             "keyword": "Indicates Awareness",
-            "description": "Shows awareness of a sensory stimulus.",
+            "description": "Shows awareness of a sensory stimulus by moving toward or away from its source.",
             "zielformulierungen": [
               "I look at the teacher when they touch me."
             ]
@@ -39,8 +39,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 4,
             "code": "V-4",
-            "keyword": "Responds to Simple Stim./Motor Behav.",
-            "description": "Responds on their own to simple environmental stimuli with a motor action.",
+            "keyword": "Responds to Simple Stimulus with Motor Behavior",
+            "description": "Responds spontaneously to a simple environmental stimulus with a motor action.",
             "zielformulierungen": [
               "When the teacher reaches out their hand, I take it."
             ]
@@ -48,8 +48,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 5,
             "code": "V-5",
-            "keyword": "Responds to Complex Stim.",
-            "description": "Responds to complex environmental stimuli and verbal cues with motor actions.",
+            "keyword": "Responds to Complex Stimulus with Motor Behavior",
+            "description": "Responds to complex environmental stimuli or verbal cues with motor actions.",
             "zielformulierungen": [
               "I build a tower when I am given building blocks.",
               "I throw the ball back when the teacher throws it to me."
@@ -68,7 +68,7 @@ const ELDIB_DATA_EN = {
           {
             "nr": 7,
             "code": "V-7",
-            "keyword": "Responds Independently/Play Materials",
+            "keyword": "Responds Independently to Play Materials",
             "description": "Responds independently to various play materials.",
             "zielformulierungen": [
               "I put the books on the shelf when the teacher says so.",
@@ -79,7 +79,7 @@ const ELDIB_DATA_EN = {
             "nr": 8,
             "code": "V-8",
             "keyword": "Indicates Recall of Routine",
-            "description": "Shows recognition of routines.",
+            "description": "Shows recognition of routines by moving from one activity to the next without physical prompting.",
             "zielformulierungen": [
               "When the teacher says we are going to recess, I clear my desk."
             ]
@@ -87,13 +87,13 @@ const ELDIB_DATA_EN = {
         ]
       },
       "2": {
-        "name": "Stage II: Responding to the environment with success",
-        "ziel": "Successfully participate in routines and activities",
+        "name": "Stage II: Responding to the Environment with Success",
+        "ziel": "To participate successfully in routines and activities",
         "items": [
           {
             "nr": 9,
             "code": "V-9",
-            "keyword": "Uses Play Material Appropriately",
+            "keyword": "Uses Play Materials Appropriately",
             "description": "Uses play materials appropriately.",
             "zielformulierungen": [
               "At recess I use the soccer ball on the soccer field.",
@@ -103,8 +103,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 10,
             "code": "V-10",
-            "keyword": "Waits/No Intervention",
-            "description": "Waits without physical guidance from an adult.",
+            "keyword": "Waits Without Physical Intervention",
+            "description": "Waits without physical intervention by an adult.",
             "zielformulierungen": [
               "I wait until the teacher calls me by name.",
               "I raise my hand and wait until it is my turn."
@@ -113,8 +113,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 11,
             "code": "V-11",
-            "keyword": "Participates/Sitting/No Intervention",
-            "description": "Participates verbally and physically in seated activities.",
+            "keyword": "Participates in Sitting Activities Without Intervention",
+            "description": "Participates verbally and physically in seated activities without physical intervention by an adult.",
             "zielformulierungen": [
               "I stay seated during the math task.",
               "During work phases I stay in my seat."
@@ -123,8 +123,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 12,
             "code": "V-12",
-            "keyword": "Participates/Movement/No Intervention",
-            "description": "Participates verbally and physically in movement activities.",
+            "keyword": "Participates in Movement Activities Without Intervention",
+            "description": "Participates verbally and physically in movement activities without physical intervention by an adult.",
             "zielformulierungen": [
               "I participate during physical education.",
               "I join in during the movement break."
@@ -134,7 +134,7 @@ const ELDIB_DATA_EN = {
             "nr": 13,
             "code": "V-13",
             "keyword": "Participates Spontaneously",
-            "description": "Participates verbally and physically in activities on their own.",
+            "description": "Participates spontaneously, verbally and physically, in activities without physical intervention by an adult.",
             "zielformulierungen": [
               "I sit down in the morning circle when the day begins.",
               "I raise my hand in class."
@@ -143,8 +143,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 14,
             "code": "V-14",
-            "keyword": "Accepts Praise, Success with Control",
-            "description": "Accepts praise or success without inappropriate behavior.",
+            "keyword": "Accepts Praise or Success with Control",
+            "description": "Accepts praise or success without inappropriate behavior or loss of control.",
             "zielformulierungen": [
               "I accept praise from others and keep control.",
               "When I am praised, I am happy and behave reasonably."
@@ -153,14 +153,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "3": {
-        "name": "Stage III: Acquiring skills for successful participation in a group",
-        "ziel": "Apply acquired skills to successfully manage one's own behavior within a group",
+        "name": "Stage III: Learning Skills for Successful Group Participation",
+        "ziel": "To apply acquired skills to manage own behavior successfully within a group",
         "items": [
           {
             "nr": 15,
             "code": "V-15",
             "keyword": "Completes Individual Tasks Independently",
-            "description": "Completes short individual tasks independently.",
+            "description": "Completes short individual tasks with familiar materials independently, without adult intervention.",
             "zielformulierungen": [
               "When I understand a task, I solve it on my own.",
               "I finish a task I have started."
@@ -169,8 +169,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 16,
             "code": "V-16",
-            "keyword": "Conveys Awareness/Expected Conduct",
-            "description": "Shows awareness of expected behaviors.",
+            "keyword": "Conveys Awareness of Expected Conduct",
+            "description": "Shows awareness of the behavior expected by parents, school and community.",
             "zielformulierungen": [
               "I can say what our class rules and goals are.",
               "I know the rules that make sure everyone feels comfortable."
@@ -180,7 +180,7 @@ const ELDIB_DATA_EN = {
             "nr": 17,
             "code": "V-17",
             "keyword": "Gives Reasons for Expectations",
-            "description": "Gives reasons for behavioral expectations.",
+            "description": "Gives reasons for the behavioral expectations of parents, school and community.",
             "zielformulierungen": [
               "I say why I should behave in a friendly and peaceful way.",
               "I explain why our class goals exist."
@@ -189,8 +189,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 18,
             "code": "V-18",
-            "keyword": "Tells Other Appropriate Behavior",
-            "description": "Describes alternative behavior options.",
+            "keyword": "Describes Other Appropriate Behaviors",
+            "description": "Describes to others alternative, more appropriate behaviors for a given situation.",
             "zielformulierungen": [
               "I say how I could behave differently and appropriately.",
               "I think about how I can behave more peacefully."
@@ -199,8 +199,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 19,
             "code": "V-19",
-            "keyword": "Responds Approp./Leader Choice",
-            "description": "Responds appropriately to the group's choice of leader.",
+            "keyword": "Responds Appropriately to Leader Choice",
+            "description": "Responds appropriately when the group chooses a leader, whether chosen as leader or as participant.",
             "zielformulierungen": [
               "I accept the group's decision.",
               "When I am chosen as leader, I take responsibility."
@@ -209,8 +209,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 20,
             "code": "V-20",
-            "keyword": "Refrains Behavior/Others Lose Control",
-            "description": "Refrains from unacceptable behavior.",
+            "keyword": "Refrains from Inappropriate Behavior When Others Lose Control",
+            "description": "Refrains from unacceptable behavior when other group members lose control.",
             "zielformulierungen": [
               "When other children argue, I stay calm.",
               "Even when others behave inappropriately, I keep my good behavior."
@@ -220,7 +220,7 @@ const ELDIB_DATA_EN = {
             "nr": 21,
             "code": "V-21",
             "keyword": "Maintains Acceptable Behavior in Group",
-            "description": "Maintains self-control during group activities.",
+            "description": "Maintains appropriate physical and verbal self-control during group activities.",
             "zielformulierungen": [
               "I keep control of my behavior during group activities.",
               "I stay calm during transitions between activities."
@@ -229,14 +229,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "4": {
-        "name": "Stage IV: Investing in group processes",
-        "ziel": "Use personal skills to contribute to the group's success",
+        "name": "Stage IV: Investing in Group Processes",
+        "ziel": "To contribute individual effort to group success",
         "items": [
           {
             "nr": 22,
             "code": "V-22",
-            "keyword": "Indicates Beginning Awareness/Own Progress",
-            "description": "Shows awareness of own behavioral progress.",
+            "keyword": "Indicates Beginning Awareness of Own Progress",
+            "description": "Shows beginning awareness of own progress in behavior.",
             "zielformulierungen": [
               "I recognize when I have improved.",
               "I can describe what I could not do before."
@@ -245,8 +245,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 23,
             "code": "V-23",
-            "keyword": "Indicates Flexibility/Procedures",
-            "description": "Shows flexibility when there are changes.",
+            "keyword": "Indicates Flexibility When Procedures Change",
+            "description": "Shows flexibility when procedures change to meet the changing needs of the group.",
             "zielformulierungen": [
               "I stay calm when the plan changes.",
               "I adapt when things go differently than planned."
@@ -255,8 +255,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 24,
             "code": "V-24",
-            "keyword": "Participates/New Experience With Control",
-            "description": "Participates in new experiences with self-control.",
+            "keyword": "Participates in New Experiences with Control",
+            "description": "Participates verbally and physically in new experiences with self-control.",
             "zielformulierungen": [
               "I try new activities and stay calm while doing so.",
               "During new experiences I behave with self-control."
@@ -266,7 +266,7 @@ const ELDIB_DATA_EN = {
             "nr": 25,
             "code": "V-25",
             "keyword": "Implements Alternative Behaviors",
-            "description": "Applies alternative behaviors.",
+            "description": "Applies appropriate alternative behaviors.",
             "zielformulierungen": [
               "I apply the alternative behaviors we have discussed.",
               "In difficult situations I use the strategies I have learned."
@@ -275,8 +275,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 26,
             "code": "V-26",
-            "keyword": "Responds/Provocation With Control",
-            "description": "Responds to provocations with self-control.",
+            "keyword": "Responds to Provocation with Control",
+            "description": "Responds to provocation with verbal and physical self-control.",
             "zielformulierungen": [
               "When someone provokes me, I stay calm.",
               "I do not let myself be provoked."
@@ -285,8 +285,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 27,
             "code": "V-27",
-            "keyword": "Accepts Responsibility/Actions, Attitudes",
-            "description": "Accepts responsibility for own behavior.",
+            "keyword": "Accepts Responsibility for Own Actions and Attitudes",
+            "description": "Accepts responsibility for the consequences of own actions and attitudes.",
             "zielformulierungen": [
               "I take responsibility for my behavior.",
               "I accept the consequences of my behavior."
@@ -295,8 +295,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 28,
             "code": "V-28",
-            "keyword": "Suggests Interpersonal & Group Solutions",
-            "description": "Responds with constructive solution proposals.",
+            "keyword": "Suggests Solutions to Interpersonal and Group Problems",
+            "description": "Responds to interpersonal and group problems by suggesting constructive solutions.",
             "zielformulierungen": [
               "When there are problems, I make constructive suggestions.",
               "I help to resolve conflicts."
@@ -305,14 +305,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "5": {
-        "name": "Stage V: Applying individual and group skills in new situations",
-        "ziel": "Meet real-life experiences with constructive behavior",
+        "name": "Stage V: Applying Individual/Group Skills in New Situations",
+        "ziel": "To respond to real-life experiences with constructive behavior",
         "items": [
           {
             "nr": 29,
             "code": "V-29",
             "keyword": "Seeks New Work Skills",
-            "description": "Develops new personal habits.",
+            "description": "Develops new personal habits or skills related to the world of work.",
             "zielformulierungen": [
               "I develop habits that will help me in my working life."
             ]
@@ -321,7 +321,7 @@ const ELDIB_DATA_EN = {
             "nr": 30,
             "code": "V-30",
             "keyword": "Seeks Desired Group Role",
-            "description": "Seeks a positive role in the group.",
+            "description": "Seeks and develops a positive role in a group.",
             "zielformulierungen": [
               "I look for a positive role in the group.",
               "I contribute positively to the group."
@@ -330,8 +330,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 31,
             "code": "V-31",
-            "keyword": "Understands, Accepts Law & Order",
-            "description": "Shows understanding of principles of law and order.",
+            "keyword": "Understands and Accepts Law and Order",
+            "description": "Shows understanding and acceptance of rules, law and order at school and in the community.",
             "zielformulierungen": [
               "I understand and accept rules and laws.",
               "I follow the rules at school and in public."
@@ -340,8 +340,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 32,
             "code": "V-32",
-            "keyword": "Participates/Group Self-Governance",
-            "description": "Supports procedures for self-governance.",
+            "keyword": "Participates in Group Self-Governance",
+            "description": "Supports and takes part in the self-governance procedures of the group.",
             "zielformulierungen": [
               "I support rules that improve community life.",
               "I take personal responsibility."
@@ -351,7 +351,7 @@ const ELDIB_DATA_EN = {
             "nr": 33,
             "code": "V-33",
             "keyword": "Solves Personal Problems",
-            "description": "Solves problems through insight and analysis.",
+            "description": "Solves personal problems through insight, analysis and generalization.",
             "zielformulierungen": [
               "I solve my problems by thinking about them.",
               "I analyze situations and find my own solutions."
@@ -367,14 +367,14 @@ const ELDIB_DATA_EN = {
     "color": "#3498db",
     "stufen": {
       "1": {
-        "name": "Stage I: Responding to the environment with pleasure",
-        "ziel": "Uses words to meet needs",
+        "name": "Stage I: Responding to the Environment with Pleasure",
+        "ziel": "To use words to meet needs",
         "items": [
           {
             "nr": 1,
             "code": "K-1",
             "keyword": "Produces Sounds",
-            "description": "Produces sounds.",
+            "description": "Produces sounds and repeats own sound sequences, socially or in imitation.",
             "zielformulierungen": [
               "I produce different sounds."
             ]
@@ -383,7 +383,7 @@ const ELDIB_DATA_EN = {
             "nr": 2,
             "code": "K-2",
             "keyword": "Attends to Speaker",
-            "description": "Directs attention to the speaker.",
+            "description": "Directs attention to the person speaking.",
             "zielformulierungen": [
               "I look at the person who is speaking."
             ]
@@ -391,8 +391,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 3,
             "code": "K-3",
-            "keyword": "Responds/Verbal Stim./Motor Behav.",
-            "description": "Responds to a verbal cue.",
+            "keyword": "Responds to Verbal Stimulus with Motor Behavior",
+            "description": "Responds to a verbal stimulus with a movement or an action.",
             "zielformulierungen": [
               "When someone says something, I respond to it."
             ]
@@ -400,8 +400,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 4,
             "code": "K-4",
-            "keyword": "Responds/Cues/Word Approx.",
-            "description": "Responds verbally to questions.",
+            "keyword": "Responds to Cues with Word Approximations",
+            "description": "Responds verbally to an adult's questions or prompts with word approximations.",
             "zielformulierungen": [
               "When I am asked something, I answer."
             ]
@@ -409,8 +409,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 5,
             "code": "K-5",
-            "keyword": "Use Word Approx. Spontaneously",
-            "description": "Uses words on their own.",
+            "keyword": "Uses Word Approximations Spontaneously",
+            "description": "Spontaneously uses word approximations or meaningful words to describe, name or ask for an object or an action.",
             "zielformulierungen": [
               "When the teacher shows me something, I respond."
             ]
@@ -418,8 +418,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 6,
             "code": "K-6",
-            "keyword": "Uses Word/To Adult",
-            "description": "Produces words for adults.",
+            "keyword": "Uses Words with Adults",
+            "description": "Uses recognizable single words in various activities to obtain a desired response from an adult.",
             "zielformulierungen": [
               "I speak to the teacher when I want something."
             ]
@@ -427,8 +427,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 7,
             "code": "K-7",
-            "keyword": "Uses Word/To Peer",
-            "description": "Produces words for peers.",
+            "keyword": "Uses Words with Peers",
+            "description": "Uses recognizable single words in various activities to obtain a desired response from another child.",
             "zielformulierungen": [
               "I speak to the other child when I want something."
             ]
@@ -436,8 +436,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 8,
             "code": "K-8",
-            "keyword": "Uses Word Sequence/No Model",
-            "description": "Produces a meaningful word sequence.",
+            "keyword": "Uses Word Sequences Without a Model",
+            "description": "Produces a meaningful sequence of words without a model to obtain a response or to describe something.",
             "zielformulierungen": [
               "When I want to say something, I make a whole sentence."
             ]
@@ -445,14 +445,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "2": {
-        "name": "Stage II: Responding to the environment with success",
-        "ziel": "Uses words to influence others",
+        "name": "Stage II: Responding to the Environment with Success",
+        "ziel": "To use words to affect others in constructive ways",
         "items": [
           {
             "nr": 9,
             "code": "K-9",
-            "keyword": "Answers with Recog. Words",
-            "description": "Answers questions meaningfully.",
+            "keyword": "Answers with Recognizable Words",
+            "description": "Answers a child's or an adult's question or request with one or more recognizable, meaningful and relevant words.",
             "zielformulierungen": [
               "I answer in a way that everyone can understand."
             ]
@@ -461,7 +461,7 @@ const ELDIB_DATA_EN = {
             "nr": 10,
             "code": "K-10",
             "keyword": "Exhibits Receptive Vocabulary",
-            "description": "Shows receptive vocabulary.",
+            "description": "Shows a receptive vocabulary no more than two years below age expectations.",
             "zielformulierungen": [
               "I listen so that I learn new words."
             ]
@@ -469,8 +469,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 11,
             "code": "K-11",
-            "keyword": "Commands, Questions/Word Sequence",
-            "description": "Uses appropriate word sequences.",
+            "keyword": "Uses Word Sequences for Commands and Questions",
+            "description": "Spontaneously uses simple, appropriate word sequences to describe, ask questions or make requests.",
             "zielformulierungen": [
               "I speak politely when I want something."
             ]
@@ -478,8 +478,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 12,
             "code": "K-12",
-            "keyword": "Shares Minimal Information/Adult",
-            "description": "Shares information with adults.",
+            "keyword": "Shares Minimal Information with an Adult",
+            "description": "Spontaneously starts and takes part in a minimal exchange of information with an adult.",
             "zielformulierungen": [
               "When I need help, I speak to the teacher."
             ]
@@ -487,8 +487,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 13,
             "code": "K-13",
-            "keyword": "Describes Characteristics/Self, Others",
-            "description": "Describes characteristics of self and others.",
+            "keyword": "Describes Characteristics of Self and Others",
+            "description": "Describes simple, visible characteristics of self and others.",
             "zielformulierungen": [
               "I say what I am good at and what others are good at."
             ]
@@ -496,8 +496,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 14,
             "code": "K-14",
-            "keyword": "Shares Minimal Information/Peer",
-            "description": "Shares information with other children.",
+            "keyword": "Shares Minimal Information with a Peer",
+            "description": "Spontaneously takes part in a minimal exchange of information with another child.",
             "zielformulierungen": [
               "I tell the children in my class about something."
             ]
@@ -505,14 +505,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "3": {
-        "name": "Stage III: Acquiring skills for successful participation in a group",
-        "ziel": "Uses words in the group",
+        "name": "Stage III: Learning Skills for Successful Group Participation",
+        "ziel": "To use words to express oneself constructively in the group",
         "items": [
           {
             "nr": 15,
             "code": "K-15",
             "keyword": "Describes Personal Experiences",
-            "description": "Describes own experiences.",
+            "description": "Spontaneously uses words to describe personal experiences, ideas or work.",
             "zielformulierungen": [
               "I talk about things I have experienced."
             ]
@@ -520,8 +520,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 16,
             "code": "K-16",
-            "keyword": "Shows Feeling Responses Approp.",
-            "description": "Shows appropriate emotional responses.",
+            "keyword": "Shows Appropriate Feeling Responses",
+            "description": "Uses words or gestures to show appropriate positive and negative emotional responses.",
             "zielformulierungen": [
               "When I am angry, I say what bothers me without hurting anyone."
             ]
@@ -529,17 +529,17 @@ const ELDIB_DATA_EN = {
           {
             "nr": 17,
             "code": "K-17",
-            "keyword": "Participates Approp./Group Discussion",
-            "description": "Participates in group discussions.",
+            "keyword": "Participates Appropriately in Group Discussion",
+            "description": "Takes part in group discussions without disrupting the group.",
             "zielformulierungen": [
-              "I participate reasonably in class discussions."
+              "I take part sensibly in class discussions."
             ]
           },
           {
             "nr": 18,
             "code": "K-18",
             "keyword": "Indicates Pride in Self",
-            "description": "Shows pride in own work.",
+            "description": "Spontaneously uses words or gestures to express pride in own work or activity.",
             "zielformulierungen": [
               "I am proud of the work I have done."
             ]
@@ -547,8 +547,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 19,
             "code": "K-19",
-            "keyword": "Describes Attributes/Self",
-            "description": "Describes own attributes.",
+            "keyword": "Describes Own Attributes",
+            "description": "Describes own characteristic attributes, strengths and weaknesses.",
             "zielformulierungen": [
               "I describe my strengths and weaknesses."
             ]
@@ -556,8 +556,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 20,
             "code": "K-20",
-            "keyword": "Describes Attributes/Others",
-            "description": "Describes the attributes of others.",
+            "keyword": "Describes Attributes of Others",
+            "description": "Describes the attributes or characteristics of others.",
             "zielformulierungen": [
               "I describe others without hurting them."
             ]
@@ -574,8 +574,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 22,
             "code": "K-22",
-            "keyword": "Verbalizes Pride/Group Achievement",
-            "description": "Shows pride in group achievements.",
+            "keyword": "Verbalizes Pride in Group Achievement",
+            "description": "Spontaneously expresses pride in group achievements in words.",
             "zielformulierungen": [
               "I show pride in our group achievement."
             ]
@@ -583,14 +583,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "4": {
-        "name": "Stage IV: Investing in group processes",
-        "ziel": "Shows understanding of feelings",
+        "name": "Stage IV: Investing in Group Processes",
+        "ziel": "To use words to show understanding of feelings and behavior in self and others",
         "items": [
           {
             "nr": 23,
             "code": "K-23",
-            "keyword": "Channels Feelings/Creative Media",
-            "description": "Expresses feelings creatively.",
+            "keyword": "Channels Feelings Through Creative Media",
+            "description": "Expresses own feelings or experiences through creative media such as art, music, dance or drama.",
             "zielformulierungen": [
               "I express my feelings through art, music or dance."
             ]
@@ -598,8 +598,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 24,
             "code": "K-24",
-            "keyword": "Same as B-22 (Indicates Flexibility)",
-            "description": "Shows awareness of progress.",
+            "keyword": "Indicates Beginning Awareness of Own Progress (same as BEH-22)",
+            "description": "Shows beginning awareness of own progress.",
             "zielformulierungen": [
               "I recognize my own progress."
             ]
@@ -607,8 +607,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 25,
             "code": "K-25",
-            "keyword": "Explains/Behavior Influences Others'",
-            "description": "Explains how behavior influences others.",
+            "keyword": "Explains How Own Behavior Influences Others",
+            "description": "Explains how own behavior influences the behavior of others.",
             "zielformulierungen": [
               "I explain how my behavior influences others."
             ]
@@ -616,8 +616,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 26,
             "code": "K-26",
-            "keyword": "Verbalizes Feelings Approp. in Group",
-            "description": "Expresses own feelings.",
+            "keyword": "Verbalizes Feelings Appropriately in the Group",
+            "description": "Expresses own feelings in the group verbally, spontaneously and appropriately.",
             "zielformulierungen": [
               "I express my feelings with appropriate words."
             ]
@@ -626,7 +626,7 @@ const ELDIB_DATA_EN = {
             "nr": 27,
             "code": "K-27",
             "keyword": "Initiates Positive Relationship Verbally",
-            "description": "Initiates positive relationships.",
+            "description": "Uses words to start positive relationships with peers and adults.",
             "zielformulierungen": [
               "I speak in a friendly way to build relationships."
             ]
@@ -634,8 +634,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 28,
             "code": "K-28",
-            "keyword": "Praises, Supports Others Verbally",
-            "description": "Praises and supports others.",
+            "keyword": "Praises and Supports Others Verbally",
+            "description": "Uses words to praise or support others.",
             "zielformulierungen": [
               "I praise others when they have done something well."
             ]
@@ -643,8 +643,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 29,
             "code": "K-29",
-            "keyword": "Expresses Cause-Effect/Feelings, Behavior",
-            "description": "Describes cause and effect.",
+            "keyword": "Expresses Cause and Effect of Feelings and Behavior",
+            "description": "Spontaneously describes cause-and-effect relationships between feelings and behavior in self and others.",
             "zielformulierungen": [
               "I describe the connection between feelings and behavior."
             ]
@@ -652,14 +652,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "5": {
-        "name": "Stage V: Applying individual and group skills in new situations",
-        "ziel": "Sustains relationships",
+        "name": "Stage V: Applying Individual/Group Skills in New Situations",
+        "ziel": "To use words to establish and enrich relationships",
         "items": [
           {
             "nr": 30,
             "code": "K-30",
-            "keyword": "Uses Complex, Figurative Statements",
-            "description": "Formulates complex statements.",
+            "keyword": "Uses Complex and Figurative Statements",
+            "description": "Makes verbal statements that are generally complex in structure and figurative or abstract in content.",
             "zielformulierungen": [
               "I express myself in complex sentences."
             ]
@@ -668,16 +668,16 @@ const ELDIB_DATA_EN = {
             "nr": 31,
             "code": "K-31",
             "keyword": "Uses Conciliatory Verbal Responses",
-            "description": "Chooses conciliatory language.",
+            "description": "Spontaneously chooses conciliatory, calming language in provocative group situations.",
             "zielformulierungen": [
-              "When provoked, I try to mediate."
+              "When someone provokes me, I try to calm things down."
             ]
           },
           {
             "nr": 32,
             "code": "K-32",
-            "keyword": "Recognizes, Includes Others' Contribu.",
-            "description": "Acknowledges the contributions of others.",
+            "keyword": "Recognizes and Includes Others' Contributions",
+            "description": "Encourages others by acknowledging their contributions and spontaneously includes their comments or ideas.",
             "zielformulierungen": [
               "I acknowledge the contributions of others."
             ]
@@ -685,8 +685,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 33,
             "code": "K-33",
-            "keyword": "Describes Multiple Motives, Values",
-            "description": "Describes different motives.",
+            "keyword": "Describes Multiple Motives and Values",
+            "description": "Describes different motives and values in a social context.",
             "zielformulierungen": [
               "I understand that people have different motives."
             ]
@@ -694,8 +694,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 34,
             "code": "K-34",
-            "keyword": "Expresses Values, Ideals",
-            "description": "Describes own values.",
+            "keyword": "Expresses Values and Ideals",
+            "description": "Spontaneously expresses own values, ideals and beliefs without adult support.",
             "zielformulierungen": [
               "I describe what is important to me in life."
             ]
@@ -703,8 +703,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 35,
             "code": "K-35",
-            "keyword": "Sustains Interpersonal, Group Relations",
-            "description": "Sustains positive relationships.",
+            "keyword": "Sustains Interpersonal and Group Relationships",
+            "description": "Uses communication skills to sustain positive interpersonal and group relationships.",
             "zielformulierungen": [
               "I sustain my relationships through good communication."
             ]
@@ -719,13 +719,13 @@ const ELDIB_DATA_EN = {
     "color": "#2ecc71",
     "stufen": {
       "1": {
-        "name": "Stage I: Responding to the environment with pleasure",
-        "ziel": "Trust an adult",
+        "name": "Stage I: Responding to the Environment with Pleasure",
+        "ziel": "To trust an adult enough to respond to him or her",
         "items": [
           {
             "nr": 1,
             "code": "SOZ-1",
-            "keyword": "Indicates Awareness/Others",
+            "keyword": "Indicates Awareness of Others",
             "description": "Is aware of the presence of others.",
             "zielformulierungen": [
               "When the teacher touches me, I turn around."
@@ -734,8 +734,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 2,
             "code": "SOZ-2",
-            "keyword": "Attends/Other's Behavior",
-            "description": "Directs attention to others.",
+            "keyword": "Attends to Others' Behavior",
+            "description": "Directs attention to the behavior of others.",
             "zielformulierungen": [
               "When the teacher tells me to watch, I do so."
             ]
@@ -744,7 +744,7 @@ const ELDIB_DATA_EN = {
             "nr": 3,
             "code": "SOZ-3",
             "keyword": "Responds to Name",
-            "description": "Responds to own name.",
+            "description": "Responds when an adult says their name.",
             "zielformulierungen": [
               "When the teacher calls me by name, I look over."
             ]
@@ -752,8 +752,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 4,
             "code": "SOZ-4",
-            "keyword": "Engages/Solitary Play",
-            "description": "Plays by themselves.",
+            "keyword": "Engages in Solitary Play",
+            "description": "Occupies self alone with an organized play activity.",
             "zielformulierungen": [
               "I play alone when necessary."
             ]
@@ -761,8 +761,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 5,
             "code": "SOZ-5",
-            "keyword": "Interacts Non-Verbally/Adult",
-            "description": "Interacts non-verbally.",
+            "keyword": "Interacts Non-Verbally with Adults",
+            "description": "Interacts non-verbally with adults to express needs.",
             "zielformulierungen": [
               "When I want something, I point at the object."
             ]
@@ -770,8 +770,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 6,
             "code": "SOZ-6",
-            "keyword": "Responds/Cue/Come",
-            "description": "Comes when called.",
+            "keyword": "Responds to Request to Come",
+            "description": "Comes to an adult in response to a verbal or non-verbal request.",
             "zielformulierungen": [
               "When the teacher calls me, I go to them."
             ]
@@ -779,8 +779,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 7,
             "code": "SOZ-7",
-            "keyword": "Demonstrates Understanding/Cue",
-            "description": "Understands requests.",
+            "keyword": "Demonstrates Understanding of Requests",
+            "description": "Shows understanding of simple verbal requests or instructions addressed directly to the child.",
             "zielformulierungen": [
               "When the teacher asks me to do something, I do it."
             ]
@@ -788,8 +788,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 8,
             "code": "SOZ-8",
-            "keyword": "Same as C-6 (Uses Word/To Adult)",
-            "description": "Produces words for adults.",
+            "keyword": "Uses Words with Adults (same as COM-6)",
+            "description": "Uses recognizable single words in various activities to obtain a desired response from an adult.",
             "zielformulierungen": [
               "I speak to the teacher when I want something."
             ]
@@ -797,8 +797,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 9,
             "code": "SOZ-9",
-            "keyword": "Begins Emergence/Self",
-            "description": "Shows self-awareness.",
+            "keyword": "Shows Beginning Awareness of Self",
+            "description": "Shows a beginning awareness of self ('I', 'me', 'my').",
             "zielformulierungen": [
               "I talk about myself and use: I, my, me."
             ]
@@ -806,8 +806,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 10,
             "code": "SOZ-10",
-            "keyword": "Participates/Parallel Play",
-            "description": "Participates in parallel play.",
+            "keyword": "Participates in Parallel Play",
+            "description": "Spontaneously takes part in parallel play activities.",
             "zielformulierungen": [
               "I play alone next to others."
             ]
@@ -815,8 +815,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 11,
             "code": "SOZ-11",
-            "keyword": "Same as C-7 (Uses Word/To Peer)",
-            "description": "Produces words for peers.",
+            "keyword": "Uses Words with Peers (same as COM-7)",
+            "description": "Uses recognizable single words in various activities to obtain a desired response from another child.",
             "zielformulierungen": [
               "I speak to the other child when I want something."
             ]
@@ -824,8 +824,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 12,
             "code": "SOZ-12",
-            "keyword": "Seeks Contact/Familiar Adults",
-            "description": "Seeks contact with adults.",
+            "keyword": "Seeks Contact with Familiar Adults",
+            "description": "Seeks contact with a familiar adult in different situations.",
             "zielformulierungen": [
               "When class begins, I greet the teacher."
             ]
@@ -833,14 +833,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "2": {
-        "name": "Stage II: Responding to the environment with success",
-        "ziel": "Successfully participate in activities",
+        "name": "Stage II: Responding to the Environment with Success",
+        "ziel": "To participate successfully in activities with others",
         "items": [
           {
             "nr": 13,
             "code": "SOZ-13",
             "keyword": "Demonstrates Imaginative Play",
-            "description": "Engages in imaginative play.",
+            "description": "Spontaneously uses imagination in play in different contexts.",
             "zielformulierungen": [
               "I make up things to play on my own."
             ]
@@ -848,8 +848,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 14,
             "code": "SOZ-14",
-            "keyword": "Same as B-10 (Waits/No Intervention)",
-            "description": "Waits without help.",
+            "keyword": "Waits Without Physical Intervention (same as BEH-10)",
+            "description": "Waits without physical intervention by an adult.",
             "zielformulierungen": [
               "I wait until it is my turn."
             ]
@@ -857,8 +857,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 15,
             "code": "SOZ-15",
-            "keyword": "Initiates Social Movement/Peer",
-            "description": "Initiates social contact.",
+            "keyword": "Initiates Social Contact with a Peer",
+            "description": "Makes appropriate social contact with another child.",
             "zielformulierungen": [
               "I approach my classmates in a friendly way."
             ]
@@ -866,8 +866,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 16,
             "code": "SOZ-16",
-            "keyword": "Participates/Directed Sharing Activity",
-            "description": "Shares with others.",
+            "keyword": "Participates in a Directed Sharing Activity",
+            "description": "Participates in an activity that requires sharing.",
             "zielformulierungen": [
               "I share with other children."
             ]
@@ -875,8 +875,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 17,
             "code": "SOZ-17",
-            "keyword": "Participates/Interactive Play",
-            "description": "Participates in interactive play.",
+            "keyword": "Participates in Interactive Play",
+            "description": "Participates successfully in interactive play with another child.",
             "zielformulierungen": [
               "I play peacefully together with other children."
             ]
@@ -884,8 +884,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 18,
             "code": "SOZ-18",
-            "keyword": "Cooperates/Peer/Organ. Times",
-            "description": "Cooperates with other children.",
+            "keyword": "Cooperates with Peers in Organized Activities",
+            "description": "Cooperates independently with other children during organized activities and games.",
             "zielformulierungen": [
               "In partner work I work together with another child."
             ]
@@ -893,14 +893,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "3": {
-        "name": "Stage III: Acquiring skills for successful participation in a group",
-        "ziel": "Experience group activities as satisfying",
+        "name": "Stage III: Learning Skills for Successful Group Participation",
+        "ziel": "To find satisfaction in group activities",
         "items": [
           {
             "nr": 19,
             "code": "SOZ-19",
-            "keyword": "Shares Material, Takes Turns",
-            "description": "Shares and takes turns.",
+            "keyword": "Shares Materials and Takes Turns",
+            "description": "Spontaneously shares materials and takes turns without verbal prompting from adults.",
             "zielformulierungen": [
               "I share and take turns with other children."
             ]
@@ -908,8 +908,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 20,
             "code": "SOZ-20",
-            "keyword": "Imitates Approp. Behavior",
-            "description": "Imitates appropriate behavior.",
+            "keyword": "Imitates Appropriate Behavior",
+            "description": "Spontaneously imitates the appropriate behavior of another child.",
             "zielformulierungen": [
               "When others behave well, I do the same."
             ]
@@ -917,8 +917,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 21,
             "code": "SOZ-21",
-            "keyword": "Labels Situation/Values",
-            "description": "Evaluates social situations.",
+            "keyword": "Labels Situations with Values",
+            "description": "Describes simple social situations with evaluative statements such as right/wrong, good/bad, fair/unfair.",
             "zielformulierungen": [
               "I say whether I think something is right or wrong."
             ]
@@ -926,8 +926,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 22,
             "code": "SOZ-22",
-            "keyword": "Leads, Demonstrates for Group",
-            "description": "Leads group activities.",
+            "keyword": "Leads or Demonstrates for the Group",
+            "description": "Leads or demonstrates something in a group activity.",
             "zielformulierungen": [
               "I show or explain to others how something is done."
             ]
@@ -935,8 +935,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 23,
             "code": "SOZ-23",
-            "keyword": "Participates/Activity Suggested by Peer",
-            "description": "Accepts suggestions from others.",
+            "keyword": "Participates in an Activity Suggested by a Peer",
+            "description": "Participates in an activity suggested by another child without reacting inappropriately.",
             "zielformulierungen": [
               "I accept suggestions from my classmates."
             ]
@@ -945,7 +945,7 @@ const ELDIB_DATA_EN = {
             "nr": 24,
             "code": "SOZ-24",
             "keyword": "Sequences Own Experiences",
-            "description": "Describes experiences.",
+            "description": "Describes own experiences in the order in which they happened.",
             "zielformulierungen": [
               "I tell in the correct order what happened."
             ]
@@ -954,7 +954,7 @@ const ELDIB_DATA_EN = {
             "nr": 25,
             "code": "SOZ-25",
             "keyword": "Indicates Developing Friendship",
-            "description": "Shows preference for particular children.",
+            "description": "Shows the beginning of a friendship through a preference for a particular child.",
             "zielformulierungen": [
               "I make contact with a child I especially like."
             ]
@@ -962,8 +962,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 26,
             "code": "SOZ-26",
-            "keyword": "Seeks Assistance, Praise/Peer",
-            "description": "Seeks help from other children.",
+            "keyword": "Seeks Assistance or Praise from a Peer",
+            "description": "Spontaneously seeks support or praise from another child.",
             "zielformulierungen": [
               "I ask other children for help."
             ]
@@ -971,23 +971,23 @@ const ELDIB_DATA_EN = {
           {
             "nr": 27,
             "code": "SOZ-27",
-            "keyword": "Assists Others/Conforming",
-            "description": "Helps with following rules.",
+            "keyword": "Assists Others in Following Group Rules",
+            "description": "Helps others to follow the group rules.",
             "zielformulierungen": [
-              "I remind others kindly of the group rules."
+              "I kindly remind others of the group rules."
             ]
           }
         ]
       },
       "4": {
-        "name": "Stage IV: Investing in group processes",
-        "ziel": "Successfully participate as a group member",
+        "name": "Stage IV: Investing in Group Processes",
+        "ziel": "To participate spontaneously and successfully as a group member",
         "items": [
           {
             "nr": 28,
             "code": "SOZ-28",
             "keyword": "Identifies with Adult Heroes",
-            "description": "Identifies with role models.",
+            "description": "Identifies with adult leaders, heroes or public figures.",
             "zielformulierungen": [
               "I model myself on positive role models."
             ]
@@ -995,8 +995,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 29,
             "code": "SOZ-29",
-            "keyword": "Sequences Group Experience",
-            "description": "Describes group experiences.",
+            "keyword": "Sequences Group Experiences",
+            "description": "Describes social experiences in the order in which they happened.",
             "zielformulierungen": [
               "I talk about group experiences."
             ]
@@ -1004,8 +1004,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 30,
             "code": "SOZ-30",
-            "keyword": "Suggests Activ./Peer Group",
-            "description": "Suggests group activities.",
+            "keyword": "Suggests Activities to the Peer Group",
+            "description": "Spontaneously suggests an appropriate group activity to the peer group.",
             "zielformulierungen": [
               "I suggest activities to the group."
             ]
@@ -1013,8 +1013,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 31,
             "code": "SOZ-31",
-            "keyword": "Expresses Aware./Others' Different Actions",
-            "description": "Recognizes differences.",
+            "keyword": "Expresses Awareness of Own and Others' Different Actions",
+            "description": "Expresses verbally an awareness that own actions differ from those of others.",
             "zielformulierungen": [
               "I recognize differences between my behavior and that of others."
             ]
@@ -1023,7 +1023,7 @@ const ELDIB_DATA_EN = {
             "nr": 32,
             "code": "SOZ-32",
             "keyword": "Listens to Others' Opinions",
-            "description": "Respects the opinions of others.",
+            "description": "Listens to and respects the ideas, thoughts and opinions of others.",
             "zielformulierungen": [
               "I listen to others and respect their opinion."
             ]
@@ -1031,8 +1031,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 33,
             "code": "SOZ-33",
-            "keyword": "Expresses Inter./Peer Opinion of Self",
-            "description": "Is interested in the opinions of others.",
+            "keyword": "Expresses Interest in Peers' Opinion of Self",
+            "description": "Openly shows interest in peers' opinion of self.",
             "zielformulierungen": [
               "I am interested in what others think about me."
             ]
@@ -1041,7 +1041,7 @@ const ELDIB_DATA_EN = {
             "nr": 34,
             "code": "SOZ-34",
             "keyword": "Suggests Solutions to Problems",
-            "description": "Makes constructive suggestions.",
+            "description": "Responds to interpersonal and group problems by suggesting constructive solutions.",
             "zielformulierungen": [
               "When there are problems, I make constructive suggestions."
             ]
@@ -1050,7 +1050,7 @@ const ELDIB_DATA_EN = {
             "nr": 35,
             "code": "SOZ-35",
             "keyword": "Discriminates Opposite Social Values",
-            "description": "Recognizes different values.",
+            "description": "Recognizes and distinguishes opposing values in social situations.",
             "zielformulierungen": [
               "I distinguish between right and wrong."
             ]
@@ -1058,8 +1058,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 36,
             "code": "SOZ-36",
-            "keyword": "Draws Infer. from Social Situations",
-            "description": "Draws inferences.",
+            "keyword": "Draws Inferences from Social Situations",
+            "description": "Draws conclusions from social situations.",
             "zielformulierungen": [
               "I learn from social situations."
             ]
@@ -1067,14 +1067,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "5": {
-        "name": "Stage V: Applying individual and group skills in new situations",
-        "ziel": "Build lasting relationships",
+        "name": "Stage V: Applying Individual/Group Skills in New Situations",
+        "ziel": "To initiate and maintain lasting, effective relationships with others independently",
         "items": [
           {
             "nr": 37,
             "code": "SOZ-37",
-            "keyword": "Understands, Respects Others",
-            "description": "Understands the feelings of others.",
+            "keyword": "Understands and Respects Others",
+            "description": "Shows understanding of and respect for the situations, feelings and attitudes of others.",
             "zielformulierungen": [
               "I understand how others feel."
             ]
@@ -1082,8 +1082,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 38,
             "code": "SOZ-38",
-            "keyword": "Interacts Successfully/Multiple Roles",
-            "description": "Interacts in various roles.",
+            "keyword": "Interacts Successfully in Multiple Roles",
+            "description": "Interacts successfully with others in different social roles.",
             "zielformulierungen": [
               "I can take on different roles in a group."
             ]
@@ -1091,8 +1091,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 39,
             "code": "SOZ-39",
-            "keyword": "Makes Personal Choices/Values",
-            "description": "Decides according to own values.",
+            "keyword": "Makes Personal Choices Based on Own Values",
+            "description": "Makes personal decisions in social situations based on own values and principles.",
             "zielformulierungen": [
               "I decide according to my own values."
             ]
@@ -1100,19 +1100,19 @@ const ELDIB_DATA_EN = {
           {
             "nr": 40,
             "code": "SOZ-40",
-            "keyword": "Indicates Self Understanding/Goals",
-            "description": "Shows a realistic self-understanding.",
+            "keyword": "Indicates Self-Understanding and Personal Goals",
+            "description": "Shows a realistic self-understanding, e.g. by describing own goals and the gap between what is and what is wanted.",
             "zielformulierungen": [
-              "I know my strengths and weaknesses realistically."
+              "I have a realistic view of my strengths and weaknesses."
             ]
           },
           {
             "nr": 41,
             "code": "SOZ-41",
             "keyword": "Sustains Relationships",
-            "description": "Builds lasting relationships.",
+            "description": "Builds and sustains lasting individual and group relationships.",
             "zielformulierungen": [
-              "I build long-term friendships."
+              "I build lasting friendships."
             ]
           }
         ]
@@ -1125,32 +1125,32 @@ const ELDIB_DATA_EN = {
     "color": "#f39c12",
     "stufen": {
       "1": {
-        "name": "Stage I: Responding to the environment with pleasure",
-        "ziel": "Respond to the environment",
+        "name": "Stage I: Responding to the Environment with Pleasure",
+        "ziel": "To respond to the environment with purposeful body movements and basic mental processes",
         "items": [
           {
             "nr": 1,
             "code": "KOG-1",
-            "keyword": "Same as B-2 (Reacts by Attending)",
-            "description": "Responds to a sensory stimulus.",
+            "keyword": "Reacts by Attending (same as BEH-2)",
+            "description": "Reacts to a sensory stimulus by turning toward the source.",
             "zielformulierungen": [
-              "I turn toward stimuli that interest me."
+              "I turn toward things that interest me."
             ]
           },
           {
             "nr": 2,
             "code": "KOG-2",
-            "keyword": "Same as B-3 (Responds by Sustained Attending)",
-            "description": "Shows brief attention.",
+            "keyword": "Responds by Sustained Attending (same as BEH-3)",
+            "description": "Responds to a stimulus with briefly sustained attention.",
             "zielformulierungen": [
-              "I stay briefly focused on one thing."
+              "I pay attention to one thing for a short time."
             ]
           },
           {
             "nr": 3,
             "code": "KOG-3",
-            "keyword": "Shows Short Term Memory",
-            "description": "Recognizes people and objects.",
+            "keyword": "Shows Short-Term Memory",
+            "description": "Shows short-term memory by spontaneously recognizing familiar people and objects.",
             "zielformulierungen": [
               "I recognize familiar people and things."
             ]
@@ -1158,8 +1158,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 4,
             "code": "KOG-4",
-            "keyword": "Same as B-5 (Responds to Complex Stim.)",
-            "description": "Responds to complex stimuli.",
+            "keyword": "Responds to Complex Stimulus with Motor Behavior (same as BEH-5)",
+            "description": "Responds to complex environmental stimuli or verbal cues with motor actions.",
             "zielformulierungen": [
               "I respond to instructions with actions."
             ]
@@ -1168,7 +1168,7 @@ const ELDIB_DATA_EN = {
             "nr": 5,
             "code": "KOG-5",
             "keyword": "Imitates Acts of Adults",
-            "description": "Imitates simple actions.",
+            "description": "Spontaneously imitates simple, familiar actions of an adult.",
             "zielformulierungen": [
               "I imitate simple actions."
             ]
@@ -1176,8 +1176,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 6,
             "code": "KOG-6",
-            "keyword": "Shows Fine, Gross Motor/18 months",
-            "description": "Shows basic motor skills.",
+            "keyword": "Shows Fine and Gross Motor Skills (18 Months)",
+            "description": "Shows gross and fine motor skills at the level of an 18-month-old child.",
             "zielformulierungen": [
               "I demonstrate basic motor skills."
             ]
@@ -1185,8 +1185,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 7,
             "code": "KOG-7",
-            "keyword": "Knows Names/Objects",
-            "description": "Understands object labels.",
+            "keyword": "Knows Names of Objects",
+            "description": "Understands the names of familiar objects and responds correctly to 'Give me…' or 'Show me…'.",
             "zielformulierungen": [
               "I understand the names of familiar things."
             ]
@@ -1194,8 +1194,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 8,
             "code": "KOG-8",
-            "keyword": "Same as C-4 (Responds/Cues/Word Approx.)",
-            "description": "Responds verbally to questions.",
+            "keyword": "Responds to Cues with Word Approximations (same as COM-4)",
+            "description": "Responds verbally to an adult's questions or prompts with word approximations.",
             "zielformulierungen": [
               "I answer questions with words."
             ]
@@ -1203,8 +1203,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 9,
             "code": "KOG-9",
-            "keyword": "Same as C-5 (Use Word Approx. Spontaneously)",
-            "description": "Uses words spontaneously.",
+            "keyword": "Uses Word Approximations Spontaneously (same as COM-5)",
+            "description": "Spontaneously uses word approximations or meaningful words to describe, name or ask for an object or an action.",
             "zielformulierungen": [
               "I use words on my own."
             ]
@@ -1212,17 +1212,17 @@ const ELDIB_DATA_EN = {
           {
             "nr": 10,
             "code": "KOG-10",
-            "keyword": "Matches Shapes, Objects with Spaces",
-            "description": "Recognizes shapes.",
+            "keyword": "Matches Shapes and Objects with Spaces",
+            "description": "Fits objects into the spaces that match them (e.g. a shape sorter).",
             "zielformulierungen": [
-              "I recognize shapes and match them."
+              "I put each shape into the right space."
             ]
           },
           {
             "nr": 11,
             "code": "KOG-11",
             "keyword": "Identifies Body Parts (4)",
-            "description": "Identifies body parts.",
+            "description": "Identifies own body parts (at least four).",
             "zielformulierungen": [
               "I point to and name my body parts."
             ]
@@ -1230,8 +1230,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 12,
             "code": "KOG-12",
-            "keyword": "Recognizes Detail/Pictures",
-            "description": "Recognizes details in pictures.",
+            "keyword": "Recognizes Details in Pictures",
+            "description": "Points out simple details in pictures with gestures or words.",
             "zielformulierungen": [
               "I recognize details in pictures."
             ]
@@ -1240,7 +1240,7 @@ const ELDIB_DATA_EN = {
             "nr": 13,
             "code": "KOG-13",
             "keyword": "Sorts Objects",
-            "description": "Sorts objects.",
+            "description": "Sorts two kinds of objects that differ only slightly from each other.",
             "zielformulierungen": [
               "I sort things by characteristics."
             ]
@@ -1249,7 +1249,7 @@ const ELDIB_DATA_EN = {
             "nr": 14,
             "code": "KOG-14",
             "keyword": "Labels Pictures",
-            "description": "Names pictures.",
+            "description": "Uses recognizable single words to name familiar things, animals or people in simple pictures.",
             "zielformulierungen": [
               "I name pictures with the right words."
             ]
@@ -1257,14 +1257,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "2": {
-        "name": "Stage II: Responding to the environment with success",
-        "ziel": "Participate in activities",
+        "name": "Stage II: Responding to the Environment with Success",
+        "ziel": "To participate in activities requiring self-help, motor coordination, language and mental processes",
         "items": [
           {
             "nr": 15,
             "code": "KOG-15",
             "keyword": "Recognizes Use of Objects",
-            "description": "Recognizes the use of objects.",
+            "description": "Recognizes the use of familiar objects in appropriate pretend play.",
             "zielformulierungen": [
               "I know what things are used for."
             ]
@@ -1272,8 +1272,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 16,
             "code": "KOG-16",
-            "keyword": "Performs Body Coord./3 year",
-            "description": "Motor skills of a 3-year-old.",
+            "keyword": "Performs Body Coordination at 3-Year Level",
+            "description": "Performs at least two simple body coordination activities at the level of a three-year-old.",
             "zielformulierungen": [
               "I move in an age-appropriate way."
             ]
@@ -1282,7 +1282,7 @@ const ELDIB_DATA_EN = {
             "nr": 17,
             "code": "KOG-17",
             "keyword": "Matches Identical Pictures (of 3)",
-            "description": "Matches identical pictures.",
+            "description": "Picks out two identical pictures when shown two identical pictures and one different one.",
             "zielformulierungen": [
               "I find pictures that are the same."
             ]
@@ -1290,8 +1290,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 18,
             "code": "KOG-18",
-            "keyword": "Performs Fine Motor Coord./3 year",
-            "description": "Fine motor skills of a 3-year-old.",
+            "keyword": "Performs Fine Motor Coordination at 3-Year Level",
+            "description": "Performs at least two fine motor activities at the level of a three-year-old.",
             "zielformulierungen": [
               "I can make fine movements."
             ]
@@ -1300,7 +1300,7 @@ const ELDIB_DATA_EN = {
             "nr": 19,
             "code": "KOG-19",
             "keyword": "Recognizes Different Object (of 3)",
-            "description": "Recognizes differences.",
+            "description": "Recognizes the different object when two are identical and one is different.",
             "zielformulierungen": [
               "I find the one that is different."
             ]
@@ -1309,7 +1309,7 @@ const ELDIB_DATA_EN = {
             "nr": 20,
             "code": "KOG-20",
             "keyword": "Understands 3 Opposites",
-            "description": "Understands opposites.",
+            "description": "Understands at least three simple opposites.",
             "zielformulierungen": [
               "I know opposites like big/small."
             ]
@@ -1317,8 +1317,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 21,
             "code": "KOG-21",
-            "keyword": "Categorizes Diff. Pictures/Similar Assoc.",
-            "description": "Categorizes pictures.",
+            "keyword": "Categorizes Different Pictures by Similar Association",
+            "description": "Categorizes simple pictures that are different but share similar characteristics or associations.",
             "zielformulierungen": [
               "I sort things into groups."
             ]
@@ -1326,8 +1326,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 22,
             "code": "KOG-22",
-            "keyword": "Counts to 4 (1 to 1)",
-            "description": "Counts to 4.",
+            "keyword": "Counts to 4 (One-to-One Correspondence)",
+            "description": "Counts to 4 in the correct order, pointing to one object after another.",
             "zielformulierungen": [
               "I count to 4."
             ]
@@ -1335,8 +1335,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 23,
             "code": "KOG-23",
-            "keyword": "Identifies 4 colors, 3 shapes",
-            "description": "Identifies colors and shapes.",
+            "keyword": "Identifies 4 Colors and 3 Shapes",
+            "description": "Identifies four colors and three shapes by naming or pointing.",
             "zielformulierungen": [
               "I know colors and shapes."
             ]
@@ -1344,17 +1344,17 @@ const ELDIB_DATA_EN = {
           {
             "nr": 24,
             "code": "KOG-24",
-            "keyword": "Alternates Same, Different Pict. or Object",
-            "description": "Alternates between tasks.",
+            "keyword": "Alternates Same and Different Pictures or Objects",
+            "description": "Responds correctly when asked to identify identical and different pictures alternately.",
             "zielformulierungen": [
-              "I can switch between tasks."
+              "I can switch between finding what is the same and what is different."
             ]
           },
           {
             "nr": 25,
             "code": "KOG-25",
-            "keyword": "Counts to 10 (1 to 1)",
-            "description": "Counts to 10.",
+            "keyword": "Counts to 10 (One-to-One Correspondence)",
+            "description": "Counts to 10, pointing to one object after another.",
             "zielformulierungen": [
               "I count to 10."
             ]
@@ -1362,8 +1362,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 26,
             "code": "KOG-26",
-            "keyword": "Performs Eye-Hand Coord./5 year",
-            "description": "Eye-hand coordination at age 5.",
+            "keyword": "Performs Eye-Hand Coordination at 5-Year Level",
+            "description": "Performs at least two eye-hand coordination activities at the level of a five-year-old.",
             "zielformulierungen": [
               "My eyes and hands work well together."
             ]
@@ -1371,8 +1371,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 27,
             "code": "KOG-27",
-            "keyword": "Discriminates Num., Designs, Upr. Case Letters",
-            "description": "Distinguishes numerals and letters.",
+            "keyword": "Discriminates Numerals, Designs and Upper-Case Letters",
+            "description": "Distinguishes numerals, designs and upper-case letters.",
             "zielformulierungen": [
               "I tell numbers from letters."
             ]
@@ -1380,8 +1380,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 28,
             "code": "KOG-28",
-            "keyword": "Performs Body Coord./5 year",
-            "description": "Motor skills of a 5-year-old.",
+            "keyword": "Performs Body Coordination at 5-Year Level",
+            "description": "Performs at least two body coordination activities at the level of a five-year-old.",
             "zielformulierungen": [
               "I move like a 5-year-old."
             ]
@@ -1390,7 +1390,7 @@ const ELDIB_DATA_EN = {
             "nr": 29,
             "code": "KOG-29",
             "keyword": "Recognizes Groups to 5",
-            "description": "Recognizes groups up to 5.",
+            "description": "Recognizes groups of objects up to 5 without counting.",
             "zielformulierungen": [
               "I recognize small quantities at a glance."
             ]
@@ -1398,8 +1398,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 30,
             "code": "KOG-30",
-            "keyword": "Demonstrates Rote Memory/5 year",
-            "description": "Reproduces memorized material.",
+            "keyword": "Demonstrates Rote Memory at 5-Year Level",
+            "description": "Recites things learned by heart at the level of a five-year-old.",
             "zielformulierungen": [
               "I know songs and rhymes by heart."
             ]
@@ -1408,7 +1408,7 @@ const ELDIB_DATA_EN = {
             "nr": 31,
             "code": "KOG-31",
             "keyword": "Sequences 3 Pictures",
-            "description": "Puts pictures in sequence.",
+            "description": "Puts three simple pictures that tell a story in the correct order.",
             "zielformulierungen": [
               "I put pictures in the correct order."
             ]
@@ -1416,14 +1416,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "3": {
-        "name": "Stage III: Acquiring skills for successful participation in a group",
-        "ziel": "Participates in a learning group",
+        "name": "Stage III: Learning Skills for Successful Group Participation",
+        "ziel": "To participate successfully in a learning group using basic learning skills",
         "items": [
           {
             "nr": 32,
             "code": "KOG-32",
-            "keyword": "Performs Eye-Hand Coord./6 year",
-            "description": "Eye-hand coordination at age 6.",
+            "keyword": "Performs Eye-Hand Coordination at 6-Year Level",
+            "description": "Performs at least two eye-hand coordination skills at the level of a six-year-old.",
             "zielformulierungen": [
               "I can work precisely with my hands."
             ]
@@ -1431,8 +1431,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 33,
             "code": "KOG-33",
-            "keyword": "Performs Body Coord./6 year",
-            "description": "Motor skills of a 6-year-old.",
+            "keyword": "Performs Body Coordination at 6-Year Level",
+            "description": "Performs at least two body coordination activities at the level of a six-year-old.",
             "zielformulierungen": [
               "I can move well."
             ]
@@ -1441,7 +1441,7 @@ const ELDIB_DATA_EN = {
             "nr": 34,
             "code": "KOG-34",
             "keyword": "Reads 50 Primary Words",
-            "description": "Reads 50 primary words.",
+            "description": "Reads a basic vocabulary of 50 words.",
             "zielformulierungen": [
               "I read simple words."
             ]
@@ -1449,8 +1449,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 35,
             "code": "KOG-35",
-            "keyword": "Recognizes, Writes Numerals/Groups 1-10",
-            "description": "Recognizes and writes numerals up to 10.",
+            "keyword": "Recognizes and Writes Numerals for Groups 1–10",
+            "description": "Recognizes and writes numerals as symbols for quantities up to 10.",
             "zielformulierungen": [
               "I write the numbers from 1 to 10."
             ]
@@ -1458,8 +1458,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 36,
             "code": "KOG-36",
-            "keyword": "Writes 50 Primary Words/Mem., Dictation",
-            "description": "Writes 50 primary words.",
+            "keyword": "Writes 50 Primary Words from Memory or Dictation",
+            "description": "Writes a basic vocabulary of at least 50 words from dictation or from memory.",
             "zielformulierungen": [
               "I write simple words."
             ]
@@ -1467,8 +1467,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 37,
             "code": "KOG-37",
-            "keyword": "Listens/Story/Comprehension",
-            "description": "Understands stories.",
+            "keyword": "Listens to a Story with Comprehension",
+            "description": "Listens to a story and understands the facts and the sequence of events.",
             "zielformulierungen": [
               "I understand stories I hear."
             ]
@@ -1477,7 +1477,7 @@ const ELDIB_DATA_EN = {
             "nr": 38,
             "code": "KOG-38",
             "keyword": "Explains Others' Behavior",
-            "description": "Explains the behavior of others.",
+            "description": "Explains the behavior of others by recognizing cause and effect.",
             "zielformulierungen": [
               "I explain why someone does something."
             ]
@@ -1485,8 +1485,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 39,
             "code": "KOG-39",
-            "keyword": "Reads Sentences/Comprehension",
-            "description": "Understands sentences that are read.",
+            "keyword": "Reads Sentences with Comprehension",
+            "description": "Reads basic sentences with understanding.",
             "zielformulierungen": [
               "I understand what I read."
             ]
@@ -1494,8 +1494,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 40,
             "code": "KOG-40",
-            "keyword": "Adds, Subtracts/1-9",
-            "description": "Adds and subtracts up to 9.",
+            "keyword": "Adds and Subtracts to 9",
+            "description": "Masters all additions and subtractions up to 9.",
             "zielformulierungen": [
               "I add and subtract up to 9."
             ]
@@ -1504,7 +1504,7 @@ const ELDIB_DATA_EN = {
             "nr": 41,
             "code": "KOG-41",
             "keyword": "Identifies Illogical Elements",
-            "description": "Recognizes inconsistencies.",
+            "description": "Identifies illogical elements in simple situations.",
             "zielformulierungen": [
               "I recognize when something is not right."
             ]
@@ -1512,8 +1512,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 42,
             "code": "KOG-42",
-            "keyword": "Writes Sentences About Story",
-            "description": "Writes answer sentences.",
+            "keyword": "Writes Sentences About a Story",
+            "description": "Writes simple sentences to answer an adult's questions about a story.",
             "zielformulierungen": [
               "I write answers in complete sentences."
             ]
@@ -1521,8 +1521,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 43,
             "code": "KOG-43",
-            "keyword": "Performs Physical Skills, Games/Elem.",
-            "description": "Shows motor competence.",
+            "keyword": "Performs Physical Skills and Games (Elementary Level)",
+            "description": "Masters at least two physical skills or active sports games typical of primary school.",
             "zielformulierungen": [
               "I can take part in sports and movement games."
             ]
@@ -1531,7 +1531,7 @@ const ELDIB_DATA_EN = {
             "nr": 44,
             "code": "KOG-44",
             "keyword": "Writes Simple Sentences",
-            "description": "Formulates own sentences.",
+            "description": "Formulates and writes simple sentences independently.",
             "zielformulierungen": [
               "I write my own sentences."
             ]
@@ -1539,8 +1539,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 45,
             "code": "KOG-45",
-            "keyword": "Adds, Subtracts/Time/Money",
-            "description": "Calculates with time and money.",
+            "keyword": "Adds and Subtracts with Time and Money",
+            "description": "Applies number concepts of addition and subtraction to time and money.",
             "zielformulierungen": [
               "I calculate with time and money."
             ]
@@ -1548,8 +1548,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 46,
             "code": "KOG-46",
-            "keyword": "Reads, Explains Meas. Words",
-            "description": "Understands units of measurement.",
+            "keyword": "Reads and Explains Measurement Words",
+            "description": "Reads and explains quantitative terms for time, length and liquid volume.",
             "zielformulierungen": [
               "I understand units of measurement."
             ]
@@ -1557,8 +1557,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 47,
             "code": "KOG-47",
-            "keyword": "Reads, Tells About Stories",
-            "description": "Reads and retells stories.",
+            "keyword": "Reads and Tells About Stories",
+            "description": "Reads a story or an article and talks about the main character and the plot or content.",
             "zielformulierungen": [
               "I read stories and retell them."
             ]
@@ -1566,8 +1566,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 48,
             "code": "KOG-48",
-            "keyword": "Uses Place Value, Regroup, Mult., Seriation",
-            "description": "Calculates with larger numbers.",
+            "keyword": "Uses Place Value, Regrouping, Multiplication and Seriation",
+            "description": "Calculates with larger numbers (place value, regrouping, multiplication and division).",
             "zielformulierungen": [
               "I calculate with larger numbers."
             ]
@@ -1575,14 +1575,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "4": {
-        "name": "Stage IV: Investing in group processes",
-        "ziel": "Uses cognitive skills for group experiences",
+        "name": "Stage IV: Investing in Group Processes",
+        "ziel": "To use cognitive and academic skills to participate successfully in social group experiences",
         "items": [
           {
             "nr": 49,
             "code": "KOG-49",
             "keyword": "Writes to Communicate",
-            "description": "Writes to communicate.",
+            "description": "Writes to give information, describe events or communicate feelings.",
             "zielformulierungen": [
               "I write to communicate."
             ]
@@ -1590,8 +1590,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 50,
             "code": "KOG-50",
-            "keyword": "Multiplies, Divides to 100",
-            "description": "Multiplies and divides up to 100.",
+            "keyword": "Multiplies and Divides to 100",
+            "description": "Masters simple multiplication and division up to 100.",
             "zielformulierungen": [
               "I multiply and divide up to 100."
             ]
@@ -1599,8 +1599,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 51,
             "code": "KOG-51",
-            "keyword": "Reads for Pleasure, Information",
-            "description": "Reads to learn.",
+            "keyword": "Reads for Pleasure and Information",
+            "description": "Reads for pleasure and to find information.",
             "zielformulierungen": [
               "I enjoy reading to learn new things."
             ]
@@ -1608,8 +1608,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 52,
             "code": "KOG-52",
-            "keyword": "Computes Money to $10.00",
-            "description": "Calculates with money up to 10 euros.",
+            "keyword": "Computes Money to €10",
+            "description": "Calculates amounts of money up to 10 euros.",
             "zielformulierungen": [
               "I calculate with money up to 10 euros."
             ]
@@ -1617,8 +1617,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 53,
             "code": "KOG-53",
-            "keyword": "Explains Fiction Characters",
-            "description": "Understands fictional characters.",
+            "keyword": "Explains Fictional Characters",
+            "description": "Describes fictional characters from books, television and film and explains their motives.",
             "zielformulierungen": [
               "I understand characters from stories."
             ]
@@ -1626,8 +1626,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 54,
             "code": "KOG-54",
-            "keyword": "Uses Grammatical Rules/Writing",
-            "description": "Uses grammar correctly.",
+            "keyword": "Uses Grammatical Rules in Writing",
+            "description": "Uses grammatical rules to write sentences, paragraphs and short essays.",
             "zielformulierungen": [
               "I write with correct grammar."
             ]
@@ -1635,8 +1635,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 55,
             "code": "KOG-55",
-            "keyword": "Same as S-35 (Discriminates Opposite Social Values)",
-            "description": "Recognizes different values.",
+            "keyword": "Discriminates Opposite Social Values (same as SOC-35)",
+            "description": "Recognizes and distinguishes opposing values in social situations.",
             "zielformulierungen": [
               "I recognize different values."
             ]
@@ -1644,8 +1644,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 56,
             "code": "KOG-56",
-            "keyword": "Solves Measurement, Logic Problems",
-            "description": "Solves logic problems.",
+            "keyword": "Solves Measurement and Logic Problems",
+            "description": "Uses logical and quantitative concepts to analyze, evaluate and solve simple logic problems.",
             "zielformulierungen": [
               "I solve problems with units of measurement."
             ]
@@ -1653,14 +1653,14 @@ const ELDIB_DATA_EN = {
         ]
       },
       "5": {
-        "name": "Stage V: Applying individual and group skills in new situations",
-        "ziel": "Uses cognitive skills for personal experiences",
+        "name": "Stage V: Applying Individual/Group Skills in New Situations",
+        "ziel": "To use cognitive skills successfully to enrich personal experiences",
         "items": [
           {
             "nr": 57,
             "code": "KOG-57",
-            "keyword": "Seeks Others' Opinions/Current Issues",
-            "description": "Is interested in current topics.",
+            "keyword": "Seeks Others' Opinions on Current Issues",
+            "description": "Seeks other people's opinions on current issues.",
             "zielformulierungen": [
               "I take an interest in current topics."
             ]
@@ -1668,8 +1668,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 58,
             "code": "KOG-58",
-            "keyword": "Discriminates Fact/Opinion",
-            "description": "Distinguishes facts from opinions.",
+            "keyword": "Discriminates Fact from Opinion",
+            "description": "Distinguishes facts from opinions in texts.",
             "zielformulierungen": [
               "I distinguish facts from opinions."
             ]
@@ -1677,8 +1677,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 59,
             "code": "KOG-59",
-            "keyword": "Recognizes, Explains Illogical Behavior",
-            "description": "Recognizes contradictory behavior.",
+            "keyword": "Recognizes and Explains Illogical Behavior",
+            "description": "Recognizes illogical and inconsistent behavior in social situations and explains it.",
             "zielformulierungen": [
               "I recognize contradictory behavior."
             ]
@@ -1686,8 +1686,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 60,
             "code": "KOG-60",
-            "keyword": "Solves Word Problems/Fractions, Decimals",
-            "description": "Solves difficult word problems.",
+            "keyword": "Solves Word Problems with Fractions and Decimals",
+            "description": "Solves mathematical word problems involving fractions, decimals and negative numbers.",
             "zielformulierungen": [
               "I solve difficult word problems."
             ]
@@ -1695,8 +1695,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 61,
             "code": "KOG-61",
-            "keyword": "Same as B-33 (Solves Personal Problems)",
-            "description": "Solves problems through analysis.",
+            "keyword": "Solves Personal Problems (same as BEH-33)",
+            "description": "Solves personal problems through insight, analysis and generalization.",
             "zielformulierungen": [
               "I solve problems by thinking them through."
             ]
@@ -1704,8 +1704,8 @@ const ELDIB_DATA_EN = {
           {
             "nr": 62,
             "code": "KOG-62",
-            "keyword": "Uses Academic Tools/Citizen, Worker",
-            "description": "Uses knowledge in everyday life.",
+            "keyword": "Uses Academic Skills as Citizen and Worker",
+            "description": "Independently applies academic skills and knowledge in everyday activities as a student, citizen and worker.",
             "zielformulierungen": [
               "I use my knowledge in everyday life."
             ]
@@ -1829,54 +1829,54 @@ const INTERVENTIONEN_EN = {
     "Conduct reflective conversations"
   ],
   "V-23": [
-    "Set goals together",
-    "Visualize progress",
-    "Enable self-evaluation"
+    "Announce changes in routine in advance",
+    "Make changes visible (daily schedule, symbols)",
+    "Praise flexible responses specifically"
   ],
   "V-24": [
-    "Practice perspective-taking",
-    "Discuss consequences for others",
-    "Foster empathy"
+    "Discuss and prepare new situations in advance",
+    "Introduce new activities in small steps",
+    "Offer support from a familiar adult"
   ],
   "V-25": [
-    "Model constructive criticism",
-    "Introduce feedback rules",
-    "Practice ability to handle criticism"
+    "Practice alternative behaviors in role-play",
+    "Remind of agreed strategies (signal, cue card)",
+    "Give immediate feedback when they are applied successfully"
   ],
   "V-26": [
-    "Teach problem-solving strategies",
-    "Debrief conflict situations",
-    "Offer mediation"
+    "Practice strategies for provocations (saying stop, walking away)",
+    "Talk through provocative situations afterwards",
+    "Positively reinforce calm reactions"
   ],
   "V-27": [
-    "Foster independence",
-    "Delegate responsibility",
-    "Enable success experiences"
+    "Reflect together on own actions and their consequences",
+    "Agree on ways to make amends",
+    "Acknowledge taking responsibility"
   ],
   "V-28": [
-    "Use the child's strengths",
-    "Bring strengths into groups",
-    "Encourage peer learning"
+    "Teach the steps of conflict resolution",
+    "Ask for proposed solutions in group discussions",
+    "Let the student put own suggestions into practice"
   ],
   "V-29": [
-    "Structure group work",
-    "Assign roles",
-    "Use cooperative games"
+    "Practice work habits (punctuality, order) specifically",
+    "Link to the world of work (internship, company visit)",
+    "Record progress in a weekly plan"
   ],
   "V-30": [
-    "Develop leadership skills",
-    "Take responsibility for others",
-    "Strengthen role-model function"
+    "Assign responsible tasks within the group",
+    "Make the student's strengths visible",
+    "Acknowledge positive contributions to the group"
   ],
   "V-31": [
-    "Support complex projects",
-    "Support self-organization",
-    "Schedule reflection"
+    "Discuss rules, laws and their purpose",
+    "Discuss current cases from everyday life",
+    "Involve the student in drawing up class rules"
   ],
   "V-32": [
-    "Assign mentoring tasks",
-    "Delegate social responsibility",
-    "Acknowledge engagement"
+    "Set up a class council or student representation",
+    "Agree on common rules democratically",
+    "Share responsibility for group decisions"
   ],
   "V-33": [
     "Foster independent problem-solving",
@@ -1884,179 +1884,179 @@ const INTERVENTIONEN_EN = {
     "Practice transfer to new situations"
   ],
   "K-1": [
-    "Establish and maintain eye contact",
-    "Gain attention through voice",
-    "Spark interest in communication"
+    "Pick up and imitate the child's sounds",
+    "Offer sound games and songs",
+    "Respond immediately to vocalizations"
   ],
   "K-2": [
-    "Respond to communication attempts",
-    "Encourage vocalizations",
-    "Practice turn-taking"
+    "Seek eye contact when speaking",
+    "Say the child's name before speaking",
+    "Accompany speech with facial expressions and gestures"
   ],
   "K-3": [
-    "Model gestures",
-    "Observe body language",
-    "Reinforce nonverbal communication"
+    "Give short, clear instructions",
+    "Support instructions with gestures",
+    "Confirm correct responses immediately"
   ],
   "K-4": [
-    "Give simple instructions",
-    "Check understanding",
-    "Offer repetitions"
+    "Ask simple questions and allow time to answer",
+    "Pick up word approximations and repeat them correctly",
+    "Praise attempts to answer"
   ],
   "K-5": [
-    "Expand vocabulary",
-    "Introduce concepts in context",
-    "Play naming games"
+    "Create occasions to name or ask for something",
+    "Name objects and actions in everyday life",
+    "Pick up and expand spontaneous words"
   ],
   "K-6": [
-    "Model pronunciation",
-    "Give corrective feedback",
-    "Incorporate articulation exercises"
+    "Fulfil requests after a word (or attempt)",
+    "Build vocabulary for everyday needs",
+    "Respond immediately to verbal utterances"
   ],
   "K-7": [
-    "Model sentence structures",
-    "Expand sentences",
-    "Practice grammar playfully"
+    "Set up play situations with other children",
+    "Encourage the child to address other children directly",
+    "Offer suitable words for making contact"
   ],
   "K-8": [
-    "Encourage speaking",
-    "Create opportunities to speak",
-    "Give time to talk"
+    "Expand the child's utterances by one word",
+    "Model simple sentence patterns",
+    "Use songs and rhymes with repetition"
   ],
   "K-9": [
-    "Practice more complex instructions",
-    "Verbally narrate step sequences",
-    "Check comprehension"
+    "Ask open and closed questions",
+    "Allow enough time to answer",
+    "Confirm and expand understandable answers"
   ],
   "K-10": [
-    "Create opportunities for storytelling",
-    "Ask W-questions (who/what/where/when/why)",
-    "Encourage follow-up questions"
+    "Expand vocabulary with pictures and objects",
+    "Repeat new words in different situations",
+    "Read aloud and look at picture books together"
   ],
   "K-11": [
-    "Name feelings",
-    "Expand emotion vocabulary",
-    "Use emotion cards"
+    "Model polite requests and questions",
+    "Offer sentence starters (\"I would like …\")",
+    "Positively reinforce appropriate utterances"
   ],
   "K-12": [
-    "Practice verbally expressing needs",
-    "Model I-statements",
-    "Formulate requests"
+    "Plan regular talk times with adults",
+    "Encourage asking for help",
+    "Show interest in what the child tells"
   ],
   "K-13": [
-    "Hold group conversations",
-    "Introduce conversation rules",
-    "Practice active listening"
+    "Describe people and things together",
+    "Build vocabulary for characteristics",
+    "Use describing games (\"I spy with my little eye\")"
   ],
   "K-14": [
-    "Practice information exchange",
-    "Create reports",
-    "Communicate factually"
+    "Offer partner talks with a clear task",
+    "Introduce sharing rounds in small groups",
+    "Acknowledge successful exchanges"
   ],
   "K-15": [
-    "Encourage asking questions",
-    "Introduce categories of questions",
-    "Foster curiosity"
+    "Plan sharing circles",
+    "Prompt storytelling with questions",
+    "Support accounts of experiences with pictures or photos"
   ],
   "K-16": [
-    "Request explanations",
-    "Practice giving reasons",
-    "Foster argumentation"
+    "Name feelings and expand feeling vocabulary",
+    "Model appropriate expression of feelings",
+    "Use feeling cards or a feelings barometer"
   ],
   "K-17": [
-    "Practice leading conversations",
-    "Explore topics in depth",
-    "Teach dialogue structure"
+    "Introduce and display discussion rules",
+    "Use a talking stick or speaking card",
+    "Highlight constructive contributions"
   ],
   "K-18": [
-    "Exchange perspectives",
-    "Listen to other opinions",
-    "Moderate discussions"
+    "Look at and appreciate successful work together",
+    "Have the student describe what went well",
+    "Display work or let the student present it"
   ],
   "K-19": [
-    "Introduce abstract concepts",
-    "Foster symbol comprehension",
-    "Explain metaphors"
+    "Collect strengths and weaknesses together",
+    "Create self-descriptions (profile, \"all about me\" book)",
+    "Give realistic feedback"
   ],
   "K-20": [
-    "Introduce written language",
-    "Connect reading and writing",
-    "Foster text comprehension"
+    "Practice talking about others respectfully",
+    "Collect positive qualities of others",
+    "Discuss and rephrase hurtful descriptions"
   ],
   "K-21": [
-    "Work with complex texts",
-    "Practice summarizing",
-    "Draw conclusions"
+    "Recognize feelings from facial expressions and pictures",
+    "Discuss situations: how does the other person feel?",
+    "Acknowledge empathic remarks"
   ],
   "K-22": [
-    "Practice presentations",
-    "Speak in front of a group",
-    "Give and receive feedback"
+    "Celebrate group successes together",
+    "Present group results",
+    "Name each member's contribution"
   ],
   "K-23": [
-    "Argue persuasively",
-    "Practice rhetoric",
-    "Defend viewpoints"
+    "Offer creative means of expression (painting, music, dance, drama)",
+    "Talk about feelings linked to pictures or music",
+    "Value creative work"
   ],
   "K-24": [
-    "Practice negotiating",
-    "Find compromises",
-    "Communicate diplomatically"
+    "Document and show progress",
+    "Compare with earlier behavior",
+    "Conduct reflective conversations"
   ],
   "K-25": [
-    "Explain complex matters",
-    "Introduce technical vocabulary",
-    "Formulate precisely"
+    "Discuss cause and effect of behavior",
+    "Role-play with a change of perspective",
+    "Gather feedback from others"
   ],
   "K-26": [
-    "Foster creative writing",
-    "Get to know text types",
-    "Support the writing process"
+    "Practice I-messages",
+    "Have feelings named in group discussions",
+    "Acknowledge appropriate expression of feelings"
   ],
   "K-27": [
-    "Develop media literacy",
-    "Practice digital communication",
-    "Teach netiquette"
+    "Practice friendly ways of making contact in role-play",
+    "Create occasions for conversation with peers",
+    "Reinforce positive attempts at contact"
   ],
   "K-28": [
-    "Introduce foreign-language elements",
-    "Intercultural communication",
-    "Value multilingualism"
+    "Model praising and encouraging",
+    "Introduce feedback rounds with positive comments",
+    "Acknowledge helpfulness"
   ],
   "K-29": [
-    "Reflect on communication strategies",
-    "Clarify misunderstandings",
-    "Practice metacommunication"
+    "Discuss links between feelings and behavior",
+    "Analyze situations from stories and everyday life",
+    "Have the student form if-then sentences"
   ],
   "K-30": [
-    "Lead complex discussions",
-    "Structure debates",
-    "Stay factual"
+    "Offer discussions on demanding topics",
+    "Discuss idioms and figurative language",
+    "Practice giving reasons and arguing a point"
   ],
   "K-31": [
-    "Take communicative leadership",
-    "Practice moderation",
-    "Lead group processes"
+    "Practice de-escalating phrases",
+    "Practice mediating disputes in role-play",
+    "Acknowledge conciliatory responses"
   ],
   "K-32": [
-    "Communication in conflicts",
-    "Practice de-escalation",
-    "Take on a mediator role"
+    "Have others' contributions taken up (\"I like …'s idea because …\")",
+    "Organize teamwork with a shared result",
+    "Model appreciative feedback"
   ],
   "K-33": [
-    "Practice public speaking",
-    "Manage stage fright",
-    "Present with confidence"
+    "Discuss people's motives in stories and news",
+    "Collect different points of view",
+    "Practice taking other perspectives"
   ],
   "K-34": [
-    "Communicate expert knowledge",
-    "Simplify complexity",
-    "Speak appropriately for the target audience"
+    "Hold conversations about values and beliefs",
+    "Have the student justify own positions",
+    "Moderate discussions on questions of values"
   ],
   "K-35": [
-    "Communicative role-model function",
-    "Guide others",
-    "Shape a communication culture"
+    "Reflect on communication in relationships",
+    "Discuss handling conflicts in friendships",
+    "Support contact with friends and groups"
   ],
   "SOZ-1": [
     "Show the adult's presence",
@@ -2064,304 +2064,514 @@ const INTERVENTIONEN_EN = {
     "Provide security"
   ],
   "SOZ-2": [
-    "Respond to needs",
-    "Show reliability",
-    "Build attachment"
+    "Direct attention to others (\"Look what … is doing\")",
+    "Encourage watching together",
+    "Offer short interaction games"
   ],
   "SOZ-3": [
-    "Initiate positive interactions",
-    "Offer play activities",
-    "Joint activities"
+    "Address the child by name often",
+    "Use name songs and name games",
+    "Confirm responses to the name immediately"
   ],
   "SOZ-4": [
-    "Allow physical contact",
-    "Provide comfort",
-    "Give emotional safety"
+    "Offer simple, structured play materials",
+    "Allow time for playing alone",
+    "Acknowledge focused play"
   ],
   "SOZ-5": [
-    "Enable contact with peers",
-    "Foster parallel play",
-    "Closeness with other children"
+    "Take up pointing and gestures as communication",
+    "Offer picture cards or signs",
+    "Respond reliably to non-verbal signals"
   ],
   "SOZ-6": [
-    "Encourage joint play",
-    "Facilitate playmates",
-    "Initiate cooperation"
+    "Call the child by name with a gesture",
+    "Link coming with a pleasant experience",
+    "Praise coming immediately"
   ],
   "SOZ-7": [
-    "Practice sharing",
-    "Introduce taking turns",
-    "Address fairness"
+    "Give simple, direct requests",
+    "Support requests with gestures or pictures",
+    "Acknowledge compliance immediately"
   ],
   "SOZ-8": [
-    "Model helpfulness",
-    "Encourage support",
-    "Praise prosocial behavior"
+    "Fulfil requests after a word (or attempt)",
+    "Build vocabulary for everyday needs",
+    "Respond immediately to verbal utterances"
   ],
   "SOZ-9": [
-    "Support friendships",
-    "Enable maintaining contacts",
-    "Foster social networks"
+    "Use mirror games and photos of the child",
+    "Model \"I\", \"my\", \"me\"",
+    "Talk about the child and their preferences"
   ],
   "SOZ-10": [
-    "Introduce group rules",
-    "Develop shared norms",
-    "Strengthen belonging"
+    "Offer the same play materials side by side",
+    "Set up play areas close together",
+    "Accompany and name parallel play"
   ],
   "SOZ-11": [
-    "Develop empathy",
-    "Recognize others' feelings",
-    "Show compassion"
+    "Set up play situations with other children",
+    "Encourage the child to address other children directly",
+    "Offer suitable words for making contact"
   ],
   "SOZ-12": [
-    "Support conflicts",
-    "Practice conflict mediation",
-    "Find compromises"
+    "Provide a reliable key adult",
+    "Keep up greeting and goodbye rituals",
+    "Respond warmly when the child seeks contact"
   ],
   "SOZ-13": [
-    "Use cooperative games",
-    "Practice teamwork",
-    "Pursue common goals"
+    "Provide pretend-play materials (dress-up, play shop)",
+    "Encourage imaginative play and join in",
+    "Take up the child's ideas"
   ],
   "SOZ-14": [
-    "Explore social roles",
-    "Offer role-plays",
-    "Switch perspectives"
+    "Keep wait times short and increase them gradually",
+    "Introduce waiting games",
+    "Praise successful waiting immediately"
   ],
   "SOZ-15": [
-    "Observe group dynamics",
-    "Foster integration",
-    "Prevent exclusion"
+    "Practice making contact in role-play",
+    "Offer partner games",
+    "Reinforce appropriate attempts at contact"
   ],
   "SOZ-16": [
-    "Responsibility for others",
-    "Establish mentorships",
-    "Show caring"
+    "Plan activities with shared materials",
+    "Model and name sharing",
+    "Praise successful sharing"
   ],
   "SOZ-17": [
-    "Teach social norms",
-    "Practice politeness",
-    "Show respect"
+    "Offer simple rule games for two",
+    "Accompany play and mediate when needed",
+    "Give positive feedback on playing together"
   ],
   "SOZ-18": [
-    "Value diversity",
-    "Accept differences",
-    "Live inclusion"
+    "Partner work with clearly shared tasks",
+    "Use cooperative games",
+    "Acknowledge cooperation"
   ],
   "SOZ-19": [
-    "Strengthen group identity",
-    "Develop a sense of 'we'",
-    "Create shared experiences"
+    "Use turn orders and waiting symbols",
+    "Use turn-taking games",
+    "Acknowledge sharing and turn-taking without reminders"
   ],
   "SOZ-20": [
-    "Conflict resolution without adults",
-    "Foster independence",
-    "Hand over the mediator role"
+    "Highlight other children's positive behavior",
+    "Use role models in the group",
+    "Praise successful imitation"
   ],
   "SOZ-21": [
-    "Develop leadership qualities",
-    "Take responsibility",
-    "Guide others"
+    "Evaluate social situations together (right/wrong, fair/unfair)",
+    "Use stories that raise questions of values",
+    "Ask for reasons"
   ],
   "SOZ-22": [
-    "Practice democratic processes",
-    "Hold votes",
-    "Accept majority decisions"
+    "Let the child lead or demonstrate an activity",
+    "Give an expert role for a skill",
+    "Prepare and support leadership tasks"
   ],
   "SOZ-23": [
-    "Foster social engagement",
-    "Projects for others",
-    "Address the common good"
+    "Take up and try other children's suggestions",
+    "Practice joining in with others' ideas",
+    "Acknowledge flexible participation"
   ],
   "SOZ-24": [
-    "Intercultural competence",
-    "Explore cultural diversity",
-    "Reduce prejudice"
+    "Put experiences in order using pictures",
+    "Use time words (first, then, after that)",
+    "Support retelling with follow-up questions"
   ],
   "SOZ-25": [
-    "Build networks",
-    "Maintain relationships",
-    "Use social resources"
+    "Allow contact with preferred children",
+    "Plan joint activities with friends",
+    "Discuss friendship behavior"
   ],
   "SOZ-26": [
-    "Social responsibility",
-    "Ethical action",
-    "Consider consequences"
+    "Encourage asking other children for help",
+    "Introduce peer helper systems in class",
+    "Encourage mutual praise"
   ],
   "SOZ-27": [
-    "Societal participation",
-    "Civic engagement",
-    "Political awareness"
+    "Develop and display group rules together",
+    "Practice reminding others of rules kindly",
+    "Assign roles such as \"rule keeper\""
   ],
   "SOZ-28": [
-    "Complex group processes",
-    "Understand organizations",
-    "Recognize structures"
+    "Talk about role models and their qualities",
+    "Use biographies and stories",
+    "Link own goals to role models"
   ],
   "SOZ-29": [
-    "Social justice",
-    "Address inequality",
-    "Show solidarity"
+    "Reflect on group experiences together",
+    "Have experiences retold in the right order",
+    "Keep a group diary"
   ],
   "SOZ-30": [
-    "Social innovation",
-    "Identify problems",
-    "Develop solutions"
+    "Create opportunities for suggestions (class council)",
+    "Let the group vote on activities",
+    "Make it possible to carry out suggestions"
   ],
   "SOZ-31": [
-    "Take on mentoring",
-    "Pass on knowledge",
-    "Support younger ones"
+    "Discuss differences in behavior without judgment",
+    "Have the student compare own behavior with that of others",
+    "Gather feedback within the group"
   ],
   "SOZ-32": [
-    "Social leadership",
-    "Be a role model",
-    "Use influence positively"
+    "Introduce rules for respectful listening",
+    "Hold opinion rounds",
+    "Acknowledge respectful responses"
   ],
   "SOZ-33": [
-    "Societal responsibility",
-    "Think long-term",
-    "Live sustainability"
+    "Gather feedback from classmates in a structured way",
+    "Talk about the feedback received",
+    "Practice dealing with criticism"
   ],
   "SOZ-34": [
-    "Shape social networks",
-    "Build communities",
-    "Create connections"
+    "Hold problem-solving discussions in the group",
+    "Collect and evaluate proposed solutions",
+    "Acknowledge constructive suggestions"
   ],
   "SOZ-35": [
-    "Social movements",
-    "Initiate change",
-    "Support activism"
+    "Discuss conflicts of values in stories and everyday life",
+    "Name and compare opposing values",
+    "Have the student justify own position"
   ],
   "SOZ-36": [
-    "Global perspective",
-    "World citizenship",
-    "International solidarity"
+    "Analyze social situations together",
+    "Ask: \"What do we learn from this?\"",
+    "Encourage transfer to own situations"
   ],
   "SOZ-37": [
-    "Social entrepreneurship",
-    "Create impact",
-    "Solve social problems"
+    "Discuss other people's feelings and points of view",
+    "Practice taking other perspectives in role-play",
+    "Acknowledge empathic behavior"
   ],
   "SOZ-38": [
-    "Intergenerational",
-    "Exchange experiences",
-    "Build bridges"
+    "Let the student take on different roles in the group",
+    "Plan role changes in projects",
+    "Reflect on experiences in the roles"
   ],
   "SOZ-39": [
-    "Understand social systems",
-    "Recognize connections",
-    "Think systemically"
+    "Discuss decision-making situations",
+    "Clarify and name own values",
+    "Have decisions justified"
   ],
   "SOZ-40": [
-    "Social resilience",
-    "Manage crises",
-    "Strengthen community"
+    "Have strengths and weaknesses assessed realistically",
+    "Formulate personal goals",
+    "Compare self-assessment with assessment by others"
   ],
   "SOZ-41": [
-    "Social wisdom",
-    "Share experience",
-    "Be an advisor"
+    "Discuss how to maintain relationships (reliability, trust)",
+    "Clarify how to handle conflicts in friendships",
+    "Support contacts in groups and clubs"
   ],
   "KOG-1": [
-    "Enable sensory experiences",
-    "Let them explore materials",
-    "Engage the senses"
+    "Present stimuli slowly and clearly",
+    "Direct attention through sounds",
+    "Combine pointing and naming"
   ],
   "KOG-2": [
-    "Practice object permanence",
-    "Hide-and-seek games",
-    "Repetition and variation"
+    "Give short, clear instructions",
+    "Use interesting materials",
+    "Gradually increase attention span"
   ],
   "KOG-3": [
-    "Show cause and effect",
-    "Carry out experiments",
-    "Make connections clear"
+    "Name familiar people and objects",
+    "Use hide-and-find games",
+    "Confirm recognition with enthusiasm"
   ],
   "KOG-4": [
-    "Practice categorizing",
-    "Sort by attributes",
-    "Find commonalities"
+    "Offer more complex play opportunities",
+    "Support verbal prompts with gestures",
+    "Model the expected action"
   ],
   "KOG-5": [
-    "Form sequences",
-    "Practice sequences",
-    "Structure processes"
+    "Demonstrate simple actions slowly",
+    "Offer imitation games (clapping, waving)",
+    "Praise successful imitation"
   ],
   "KOG-6": [
-    "Recognize patterns",
-    "Find regularities",
-    "Make predictions"
+    "Offer materials for grasping, inserting and stacking",
+    "Create opportunities to move (crawling, climbing, walking)",
+    "Observe and record motor progress"
   ],
   "KOG-7": [
-    "Compare quantities",
-    "Understand more/less",
-    "Estimate quantities"
+    "Name objects in everyday life",
+    "Play \"Give me …\" and \"Show me …\" games",
+    "Confirm the correct choice"
   ],
   "KOG-8": [
-    "Build number sense",
-    "Practice counting",
-    "Consolidate the concept of number"
+    "Ask simple questions and allow time to answer",
+    "Pick up word approximations and repeat them correctly",
+    "Praise attempts to answer"
   ],
   "KOG-9": [
-    "Foster spatial thinking",
-    "Solve puzzles",
-    "Construction games"
+    "Create occasions to name or ask for something",
+    "Name objects and actions in everyday life",
+    "Pick up and expand spontaneous words"
   ],
   "KOG-10": [
-    "Develop a sense of time",
-    "Visualize the daily routine",
-    "Understand before/after"
+    "Offer shape sorters and inset puzzles",
+    "Feel and name shapes",
+    "Increase difficulty step by step"
   ],
   "KOG-11": [
-    "Foster symbol comprehension",
-    "Interpret signs",
-    "Introduce abstractions"
+    "Use songs and games about body parts",
+    "Point to body parts on the child and on a doll",
+    "Alternate pointing and naming"
   ],
   "KOG-12": [
-    "Train memory",
-    "Memory games",
-    "Use repetition"
+    "Look at picture books together",
+    "Ask about details (\"Where is …?\")",
+    "Offer seek-and-find pictures"
   ],
   "KOG-13": [
-    "Focus attention",
-    "Practice concentration",
-    "Reduce distractions"
+    "Sorting games with two categories",
+    "Name differences together",
+    "Gradually choose more similar materials"
   ],
   "KOG-14": [
-    "Guide problem-solving",
-    "Teach strategies",
-    "Explore solution paths"
+    "Use picture cards for naming",
+    "Look at picture books about everyday things",
+    "Confirm and expand naming"
   ],
   "KOG-15": [
-    "Practice planning",
-    "Think ahead about steps",
-    "Set goals"
+    "Use everyday objects in pretend play",
+    "Ask: \"What do we need … for?\"",
+    "Demonstrate how objects are used"
   ],
   "KOG-16": [
-    "Foster flexible thinking",
-    "Find alternative paths",
-    "Switch perspectives"
+    "Offer gross motor exercises (jumping, balancing)",
+    "Set up an obstacle course",
+    "Appreciate progress in movement"
   ],
   "KOG-17": [
-    "Encourage creativity",
-    "Set open-ended tasks",
-    "Encourage imagination"
+    "Memory and matching games with identical pictures",
+    "Have the child find identical pictures",
+    "Extend tasks step by step"
   ],
   "KOG-18": [
-    "Train logical thinking",
-    "Draw conclusions",
-    "If-then relationships"
+    "Offer threading, modeling and drawing",
+    "Prepare correct pencil grip",
+    "Use fine motor games regularly"
   ],
   "KOG-19": [
-    "Foster critical thinking",
-    "Encourage questioning",
-    "Require justifications"
+    "Offer \"odd one out\" games",
+    "Have differences named",
+    "Increase difficulty step by step"
   ],
   "KOG-20": [
-    "Practice transfer of learning",
-    "Apply what has been learned",
-    "Open up new contexts"
+    "Experience opposites with objects and movement (big/small)",
+    "Match picture pairs of opposites",
+    "Name opposites in everyday life"
+  ],
+  "KOG-21": [
+    "Sort pictures by category (animals, vehicles)",
+    "Name common features",
+    "Let the child find own sorting rules"
+  ],
+  "KOG-22": [
+    "Practice counting while pointing (one-to-one)",
+    "Use everyday counting opportunities",
+    "Have the child lay out quantities up to 4"
+  ],
+  "KOG-23": [
+    "Name colors and shapes in everyday life",
+    "Sorting and matching games",
+    "Practice pointing and naming alternately"
+  ],
+  "KOG-24": [
+    "Have the child look alternately for \"same\" and \"different\"",
+    "Give clear signals for switching",
+    "Praise correct switching"
+  ],
+  "KOG-25": [
+    "Use counting rhymes and songs",
+    "Practice counting to 10 while pointing",
+    "Have quantities counted in everyday life"
+  ],
+  "KOG-26": [
+    "Practice cutting, tracing and drawing",
+    "Offer ball and throwing games",
+    "Make exercises gradually harder"
+  ],
+  "KOG-27": [
+    "Have numerals, designs and letters sorted",
+    "Explore letter and number materials by touch",
+    "Name the differences"
+  ],
+  "KOG-28": [
+    "Movement games with jumping, balancing and catching",
+    "Set up an obstacle course",
+    "Practice coordination regularly"
+  ],
+  "KOG-29": [
+    "Use dice patterns and dot cards",
+    "Show small quantities briefly and have them named",
+    "Present quantities in a structured way"
+  ],
+  "KOG-30": [
+    "Repeat songs, rhymes and verses",
+    "Practice memorizing through play",
+    "Have learned material recited"
+  ],
+  "KOG-31": [
+    "Put picture stories in the right order",
+    "Use time words (first, then, finally)",
+    "Have the story told"
+  ],
+  "KOG-32": [
+    "Offer writing and cutting exercises",
+    "Use construction games",
+    "Give feedback on accuracy"
+  ],
+  "KOG-33": [
+    "Offer sports and movement games",
+    "Practice balance and coordination",
+    "Make progress visible"
+  ],
+  "KOG-34": [
+    "Practice basic sight words with word cards",
+    "Find the words again in short texts",
+    "Record reading successes"
+  ],
+  "KOG-35": [
+    "Link numerals with quantities",
+    "Practice writing numerals",
+    "Use number games"
+  ],
+  "KOG-36": [
+    "Practice writing basic words regularly",
+    "Use short dictations",
+    "Sort words by spelling patterns"
+  ],
+  "KOG-37": [
+    "Read stories aloud and ask questions about them",
+    "Have the plot retold with pictures",
+    "Discuss the order of events"
+  ],
+  "KOG-38": [
+    "Discuss the behavior of characters in stories",
+    "Ask \"why\" questions",
+    "Name causes and effects together"
+  ],
+  "KOG-39": [
+    "Read short sentences and draw or act them out",
+    "Ask questions about what was read",
+    "Teach reading strategies"
+  ],
+  "KOG-40": [
+    "Calculate with concrete materials",
+    "Practice number bonds up to 9",
+    "Use arithmetic games"
+  ],
+  "KOG-41": [
+    "Discuss nonsense pictures and stories",
+    "Ask: \"What is wrong here?\"",
+    "Ask for reasons"
+  ],
+  "KOG-42": [
+    "Have questions about stories answered in writing",
+    "Provide sentence starters",
+    "Check answers together"
+  ],
+  "KOG-43": [
+    "Offer sports games with rules",
+    "Practice basic skills (throwing, catching, running)",
+    "Appreciate participation and progress"
+  ],
+  "KOG-44": [
+    "Create writing prompts (pictures, experiences)",
+    "Offer sentence patterns",
+    "Value the student's own texts"
+  ],
+  "KOG-45": [
+    "Calculate with a clock and play money",
+    "Act out everyday situations (shopping)",
+    "Solve word problems with time and money"
+  ],
+  "KOG-46": [
+    "Measure and weigh in everyday life",
+    "Introduce units of measurement concretely",
+    "Estimate and compare quantities"
+  ],
+  "KOG-47": [
+    "Have texts read and retold",
+    "Ask questions about the main character and plot",
+    "Keep a reading journal"
+  ],
+  "KOG-48": [
+    "Show place value with materials",
+    "Practice written calculation methods",
+    "Consolidate multiplication tables"
+  ],
+  "KOG-49": [
+    "Have letters, messages or reports written",
+    "Encourage writing about feelings and experiences",
+    "Revise texts together"
+  ],
+  "KOG-50": [
+    "Practice times tables with materials and games",
+    "Use inverse operations",
+    "Practice briefly every day (automaticity)"
+  ],
+  "KOG-51": [
+    "Offer reading material matching interests",
+    "Have the student look for non-fiction texts on own questions",
+    "Visit the library"
+  ],
+  "KOG-52": [
+    "Calculate with play money",
+    "Act out shopping situations",
+    "Have change calculated"
+  ],
+  "KOG-53": [
+    "Discuss characters from books and films",
+    "Work out characters' motives",
+    "Justify own opinion about characters"
+  ],
+  "KOG-54": [
+    "Apply grammar rules to own texts",
+    "Revise texts (writing conference)",
+    "Use rule cards"
+  ],
+  "KOG-55": [
+    "Discuss conflicts of values in stories and everyday life",
+    "Name and compare opposing values",
+    "Have the student justify own position"
+  ],
+  "KOG-56": [
+    "Offer logic tasks and puzzles",
+    "Discuss solution strategies",
+    "Apply units of measurement in word problems"
+  ],
+  "KOG-57": [
+    "Discuss current topics and news",
+    "Have the student ask for others' opinions",
+    "Hold discussion rounds"
+  ],
+  "KOG-58": [
+    "Mark facts and opinions in texts",
+    "Check sources",
+    "Justify own assessment"
+  ],
+  "KOG-59": [
+    "Discuss inconsistent behavior in stories and everyday life",
+    "Have explanations found",
+    "Compare perspectives"
+  ],
+  "KOG-60": [
+    "Teach strategies for word problems",
+    "Everyday problems with fractions and decimals",
+    "Have solution methods explained"
+  ],
+  "KOG-61": [
+    "Foster independent problem-solving",
+    "Take on a consulting role",
+    "Practice transfer to new situations"
+  ],
+  "KOG-62": [
+    "Transfer learning to everyday situations (budget, forms)",
+    "Carry out projects linked to the community",
+    "Encourage independent application"
   ]
 };
 
@@ -3153,9 +3363,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "DM-5",
       "title": "Self-reflection",
       "stufen": {
-        "stufe1": "is still learning to reflect on own learning behavior",
-        "stufe2": "can reflect on own learning behavior with guidance",
-        "stufe3": "can reflect on own learning behavior"
+        "stufe1": "is still learning to reflect on their own learning behavior",
+        "stufe2": "can reflect on their own learning behavior with guidance",
+        "stufe3": "can reflect on their own learning behavior"
       },
       "intervention": [
         "Ask reflection questions in class",
@@ -3435,9 +3645,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "MA-10",
       "title": "Learning reflection",
       "stufen": {
-        "stufe1": "is still learning to reflect on own learning process",
+        "stufe1": "is still learning to reflect on their own learning process",
         "stufe2": "can reflect on the learning process with guidance",
-        "stufe3": "can reflect on and improve own learning process"
+        "stufe3": "can reflect on and improve their own learning process"
       },
       "intervention": [
         "Keep a learning journal",
@@ -3843,9 +4053,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AR-2",
       "title": "Setting boundaries",
       "stufen": {
-        "stufe1": "still has difficulty recognizing and communicating own boundaries",
-        "stufe2": "can communicate own boundaries with support",
-        "stufe3": "can recognize and communicate own boundaries"
+        "stufe1": "still has difficulty recognizing and communicating their own boundaries",
+        "stufe2": "can communicate their own boundaries with support",
+        "stufe3": "can recognize and communicate their own boundaries"
       },
       "intervention": [
         "Practice saying no",
@@ -4011,9 +4221,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AR-14",
       "title": "Taking responsibility",
       "stufen": {
-        "stufe1": "still has difficulty taking responsibility for own actions",
+        "stufe1": "still has difficulty taking responsibility for their own actions",
         "stufe2": "can take responsibility with support",
-        "stufe3": "takes responsibility for own actions"
+        "stufe3": "takes responsibility for their own actions"
       },
       "intervention": [
         "Bear consequences",
@@ -4067,9 +4277,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AR-18",
       "title": "Assertiveness",
       "stufen": {
-        "stufe1": "still has difficulty representing own opinion appropriately",
-        "stufe2": "can represent own opinion with support",
-        "stufe3": "can represent own opinion appropriately"
+        "stufe1": "still has difficulty representing their own opinion appropriately",
+        "stufe2": "can represent their own opinion with support",
+        "stufe3": "can represent their own opinion appropriately"
       },
       "intervention": [
         "Appear confident",
@@ -4097,7 +4307,7 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "stufen": {
         "stufe1": "still has difficulty appearing authentic",
         "stufe2": "can appear more authentic with encouragement",
-        "stufe3": "can be authentic at school and express own opinion honestly"
+        "stufe3": "can be authentic at school and express their own opinion honestly"
       },
       "intervention": [
         "Practice representing own opinion",
@@ -4109,9 +4319,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AR-21",
       "title": "Own role in conflicts",
       "stufen": {
-        "stufe1": "still has difficulty recognizing own role in conflicts",
-        "stufe2": "can recognize own role through reflection conversations",
-        "stufe3": "can recognize and accept own role in conflict situations"
+        "stufe1": "still has difficulty recognizing their own role in conflicts",
+        "stufe2": "can recognize their own role through reflection conversations",
+        "stufe3": "can recognize and accept their own role in conflict situations"
       },
       "intervention": [
         "Hold reflection conversations",
@@ -4321,9 +4531,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AA-1",
       "title": "Recognizing feelings",
       "stufen": {
-        "stufe1": "still has difficulty recognizing and naming own feelings",
-        "stufe2": "can recognize and name own feelings with support",
-        "stufe3": "can recognize and name own feelings"
+        "stufe1": "still has difficulty recognizing and naming their own feelings",
+        "stufe2": "can recognize and name their own feelings with support",
+        "stufe3": "can recognize and name their own feelings"
       },
       "intervention": [
         "Keep a feelings journal",
@@ -4461,9 +4671,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AA-11",
       "title": "Self-confidence",
       "stufen": {
-        "stufe1": "still has little confidence in own abilities",
-        "stufe2": "trusts own abilities more with encouragement",
-        "stufe3": "trusts in own abilities"
+        "stufe1": "still has little confidence in their own abilities",
+        "stufe2": "trusts their own abilities more with encouragement",
+        "stufe3": "trusts in their own abilities"
       },
       "intervention": [
         "Create experiences of success",
@@ -4643,9 +4853,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AA-24",
       "title": "Recognizing own progress",
       "stufen": {
-        "stufe1": "still has difficulty recognizing own progress",
-        "stufe2": "can recognize own progress with hints",
-        "stufe3": "recognizes own progress and development"
+        "stufe1": "still has difficulty recognizing their own progress",
+        "stufe2": "can recognize their own progress with hints",
+        "stufe3": "recognizes their own progress and development"
       },
       "intervention": [
         "Reflection conversations",
@@ -4657,7 +4867,7 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AA-25",
       "title": "Naming feelings in nuanced ways",
       "stufen": {
-        "stufe1": "still names feelings undifferentiated (only good/bad)",
+        "stufe1": "still names feelings in an undifferentiated way (only good/bad)",
         "stufe2": "can name feelings in more nuanced ways with help",
         "stufe3": "can verbalize emotional states in a nuanced way"
       },
@@ -4727,9 +4937,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "AA-30",
       "title": "Self- and other-perception",
       "stufen": {
-        "stufe1": "does not yet understand how own behavior affects others",
-        "stufe2": "understands the effects of own behavior when explained",
-        "stufe3": "understands that own behavior has effects on self and surroundings"
+        "stufe1": "does not yet understand how their own behavior affects others",
+        "stufe2": "understands the effects of their own behavior when explained",
+        "stufe3": "understands that their own behavior affects themselves and those around them"
       },
       "intervention": [
         "Reflect on consequences",
@@ -4955,7 +5165,7 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "stufen": {
         "stufe1": "still needs reminders for health care",
         "stufe2": "takes care of health with reminders",
-        "stufe3": "takes care of own health"
+        "stufe3": "takes care of their own health"
       },
       "intervention": [
         "Keep medical appointments",
@@ -5079,9 +5289,9 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "CE-20",
       "title": "Career orientation",
       "stufen": {
-        "stufe1": "does not yet know own career interests",
+        "stufe1": "does not yet know their own career interests",
         "stufe2": "explores career interests with support",
-        "stufe3": "knows own career interests and possibilities"
+        "stufe3": "knows their own career interests and possibilities"
       },
       "intervention": [
         "Explore strengths",
@@ -5219,7 +5429,7 @@ const ZUSAETZLICHE_ZIELE_EN = {
       "id": "CE-31",
       "title": "Good cognitive abilities",
       "stufen": {
-        "stufe1": "does not yet make full use of own cognitive abilities",
+        "stufe1": "does not yet make full use of their own cognitive abilities",
         "stufe2": "uses cognitive abilities better with support",
         "stufe3": "has good cognitive abilities and uses them"
       },

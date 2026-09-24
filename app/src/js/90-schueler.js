@@ -23,7 +23,7 @@ function smSaveListe(liste) {
         localStorage.setItem(SM_KEY, JSON.stringify(liste));
     } catch (e) {
         console.error('Fehler beim Speichern der Schülerliste:', e);
-        alert('Fehler beim Speichern! Möglicherweise ist der Speicher voll. Bitte exportieren Sie Ihre Daten als JSON-Backup.');
+        alert(t('speicherFehler'));
     }
 }
 
@@ -38,8 +38,8 @@ function smRenderListe() {
     if (liste.length === 0) {
         grid.innerHTML = `
             <div class="sm-empty">
-                <p>Noch keine Sch&uuml;ler angelegt</p>
-                <small>Klicken Sie auf &quot;+ Neuen Sch&uuml;ler anlegen&quot;, um zu beginnen.</small>
+                <p>${smEscapeHtml(t('smLeer'))}</p>
+                <small>${smEscapeHtml(t('smLeerHinweis'))}</small>
             </div>`;
         return;
     }
@@ -47,33 +47,38 @@ function smRenderListe() {
     grid.innerHTML = liste.map(s => {
         const hat1 = s.einschaetzung1 && Object.keys(s.einschaetzung1).length > 0;
         const hat2 = s.einschaetzung2 && Object.keys(s.einschaetzung2).length > 0;
-        const datum1 = hat1 && s.einschaetzung1.stammdaten?.einschaetzungsdatum
-            ? new Date(s.einschaetzung1.stammdaten.einschaetzungsdatum).toLocaleDateString('de-DE')
-            : '';
-        const datum2 = hat2 && s.einschaetzung2.stammdaten?.einschaetzungsdatum
-            ? new Date(s.einschaetzung2.stammdaten.einschaetzungsdatum).toLocaleDateString('de-DE')
-            : '';
+        const datum1 = hat1 ? eldibDatum(s.einschaetzung1.stammdaten?.einschaetzungsdatum) : '';
+        const datum2 = hat2 ? eldibDatum(s.einschaetzung2.stammdaten?.einschaetzungsdatum) : '';
         return `
         <div class="sm-card">
             <div class="sm-card-header">
                 <div>
                     <div class="sm-card-name">${smEscapeHtml(s.name)}</div>
-                    <div class="sm-card-klasse">${s.klasse ? 'Klasse ' + smEscapeHtml(s.klasse) : ''}${s.geburtsdatum ? (s.klasse ? ' · ' : '') + smBerechneAlter(s.geburtsdatum) + ' Jahre' : ''}</div>
+                    <div class="sm-card-klasse">${s.klasse ? t('smKlasse') + ' ' + smEscapeHtml(s.klasse) : ''}${s.geburtsdatum ? (s.klasse ? ' · ' : '') + alterText(smBerechneAlter(s.geburtsdatum)) : ''}</div>
                 </div>
-                <button class="sm-card-delete" onclick="smLoescheSchueler('${s.id}')" title="Sch&uuml;ler l&ouml;schen">&times;</button>
+                <button class="sm-card-delete" onclick="smLoescheSchueler('${s.id}')" title="${smEscapeHtml(t('smLoeschen'))}">&times;</button>
             </div>
             <div class="sm-card-buttons">
                 <button class="sm-einschaetzung-btn ${hat1 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 1)">
-                    <span class="btn-label">1. Einsch&auml;tzung</span>
-                    <span class="btn-status">${hat1 ? datum1 || 'Daten vorhanden' : 'Noch leer'}</span>
+                    <span class="btn-label">${smEscapeHtml(tf('einschaetzungNr', { n: 1 }))}</span>
+                    <span class="btn-status">${smEscapeHtml(hat1 ? datum1 || t('smDatenVorhanden') : t('smNochLeer'))}</span>
                 </button>
                 <button class="sm-einschaetzung-btn ${hat2 ? 'has-data' : ''}" onclick="smOeffneEinschaetzung('${s.id}', 2)">
-                    <span class="btn-label">2. Einsch&auml;tzung</span>
-                    <span class="btn-status">${hat2 ? datum2 || 'Daten vorhanden' : 'Noch leer'}</span>
+                    <span class="btn-label">${smEscapeHtml(tf('einschaetzungNr', { n: 2 }))}</span>
+                    <span class="btn-status">${smEscapeHtml(hat2 ? datum2 || t('smDatenVorhanden') : t('smNochLeer'))}</span>
                 </button>
             </div>
         </div>`;
     }).join('');
+}
+
+// Anzeige oben in der Mitte: "Name — 1. Einschätzung" in der aktuellen Sprache
+function smZeigeAktuelleInfo() {
+    const info = document.getElementById('smCurrentInfo');
+    if (!info || !smAktuellerSchueler) return;
+    const schueler = smGetListe().find(s => s.id === smAktuellerSchueler.id);
+    if (!schueler) return;
+    info.textContent = `${schueler.name} — ${tf('einschaetzungNr', { n: smAktuellerSchueler.einschaetzungNr })}`;
 }
 
 function smEscapeHtml(str) {
@@ -99,20 +104,20 @@ function smNeuerSchueler() {
     overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
     overlay.innerHTML = `
         <div class="sm-dialog">
-            <h3>Neuen Sch&uuml;ler anlegen</h3>
-            <label>Nachname <span style="color:#ff6b6b;">*</span></label>
-            <input type="text" id="sm-new-nachname" placeholder="Nachname" autofocus>
-            <label>Vorname <span style="color:#ff6b6b;">*</span></label>
-            <input type="text" id="sm-new-vorname" placeholder="Vorname">
-            <label>Geburtsdatum <span style="color:#ff6b6b;">*</span></label>
+            <h3>${smEscapeHtml(t('smDialogTitel'))}</h3>
+            <label>${smEscapeHtml(t('smNachname'))} <span style="color:#ff6b6b;">*</span></label>
+            <input type="text" id="sm-new-nachname" placeholder="${smEscapeHtml(t('smNachname'))}" autofocus>
+            <label>${smEscapeHtml(t('smVorname'))} <span style="color:#ff6b6b;">*</span></label>
+            <input type="text" id="sm-new-vorname" placeholder="${smEscapeHtml(t('smVorname'))}">
+            <label>${smEscapeHtml(t('geburtsdatum'))} <span style="color:#ff6b6b;">*</span></label>
             <input type="date" id="sm-new-geburtsdatum">
             <div id="sm-new-alter" style="margin: -8px 0 8px 0; font-size: 0.85rem; color: rgba(255,255,255,0.6);"></div>
-            <label>Klasse/Cycle</label>
-            <input type="text" id="sm-new-klasse" placeholder="z.B. C2.1">
-            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin: 4px 0 0 0;"><span style="color:#ff6b6b;">*</span> Pflichtfelder</p>
+            <label>${smEscapeHtml(t('klasse'))}</label>
+            <input type="text" id="sm-new-klasse" placeholder="${smEscapeHtml(t('klassePlaceholder'))}">
+            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin: 4px 0 0 0;"><span style="color:#ff6b6b;">*</span> ${smEscapeHtml(t('smPflichtfelder'))}</p>
             <div class="sm-dialog-actions">
-                <button class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">Abbrechen</button>
-                <button class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">Anlegen</button>
+                <button class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">${smEscapeHtml(t('smAbbrechen'))}</button>
+                <button class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">${smEscapeHtml(t('smAnlegen'))}</button>
             </div>
         </div>`;
     document.body.appendChild(overlay);
@@ -127,7 +132,7 @@ function smNeuerSchueler() {
         let alter = heute.getFullYear() - geb.getFullYear();
         const monatsDiff = heute.getMonth() - geb.getMonth();
         if (monatsDiff < 0 || (monatsDiff === 0 && heute.getDate() < geb.getDate())) alter--;
-        alterDiv.textContent = alter >= 0 ? `Alter: ${alter} Jahre` : '';
+        alterDiv.textContent = alter >= 0 ? tf('smAlter', { n: alterText(alter) }) : '';
     });
 }
 
@@ -138,12 +143,12 @@ function smSchuelerAnlegen() {
     const klasse = document.getElementById('sm-new-klasse')?.value?.trim();
 
     const fehlende = [];
-    if (!nachname) fehlende.push('Nachname');
-    if (!vorname) fehlende.push('Vorname');
-    if (!geburtsdatum) fehlende.push('Geburtsdatum');
+    if (!nachname) fehlende.push(t('smNachname'));
+    if (!vorname) fehlende.push(t('smVorname'));
+    if (!geburtsdatum) fehlende.push(t('geburtsdatum'));
 
     if (fehlende.length > 0) {
-        alert('Bitte folgende Pflichtfelder ausfüllen:\n- ' + fehlende.join('\n- '));
+        alert(t('smPflichtFehlt') + '\n- ' + fehlende.join('\n- '));
         return;
     }
 
@@ -166,7 +171,7 @@ function smLoescheSchueler(id) {
     const liste = smGetListe();
     const schueler = liste.find(s => s.id === id);
     if (!schueler) return;
-    if (!confirm(`"${schueler.name}" wirklich löschen?\n\nAlle Einschätzungen dieses Schülers werden unwiderruflich gelöscht!`)) return;
+    if (!confirm(tf('smLoeschenFrage', { name: schueler.name }))) return;
     smSaveListe(liste.filter(s => s.id !== id));
     smRenderListe();
 }
@@ -221,7 +226,7 @@ function smOeffneEinschaetzung(id, nr) {
     } else {
         // Neue Einschätzung: Stammdaten vorausfüllen
         const neueDaten = {
-            language: 'de',
+            language: state.language, // neue Einschätzung in der gewählten Oberflächensprache
             selections: {},
             zusaetzlicheZiele: {
                 demarches_mentales: {},
@@ -249,7 +254,7 @@ function smOeffneEinschaetzung(id, nr) {
 
     // Info-Badge anzeigen
     const info = document.getElementById('smCurrentInfo');
-    info.textContent = `${schueler.name} — ${nr}. Einschätzung`;
+    info.textContent = `${schueler.name} — ${tf('einschaetzungNr', { n: nr })}`;
     info.style.display = 'block';
 
     // Flag setzen um zu verhindern, dass beforeunload die vorbereiteten Daten überschreibt
@@ -323,7 +328,7 @@ function smManualSave() {
     const btn = document.getElementById('saveBtn');
     if (btn) {
         const origText = btn.innerHTML;
-        btn.innerHTML = '&#10003; Gespeichert!';
+        btn.textContent = t('gespeichert');
         btn.classList.add('saved');
         setTimeout(() => {
             btn.innerHTML = origText;
@@ -366,7 +371,7 @@ function smHandleImport(event) {
                 });
                 smSaveListe(liste);
                 smRenderListe();
-                showToast(`${data.length} Schüler importiert`);
+                showToast(tf('smImportiert', { n: data.length }));
             } else if (data.stammdaten) {
                 // Import einzelner Einschätzungs-Daten (altes Format)
                 const name = data.stammdaten.schueler_name || file.name.replace('.json', '');
@@ -381,12 +386,12 @@ function smHandleImport(event) {
                 });
                 smSaveListe(liste);
                 smRenderListe();
-                showToast(`"${name}" importiert`);
+                showToast(tf('smEinzelnImportiert', { name }));
             } else {
-                alert('Unbekanntes Dateiformat.');
+                alert(t('smFormatUnbekannt'));
             }
         } catch (err) {
-            alert('Fehler beim Import: ' + err.message);
+            alert(t('smImportFehler') + err.message);
         }
     };
     reader.readAsText(file);
@@ -396,7 +401,7 @@ function smHandleImport(event) {
 function smExportAlleJSON() {
     const liste = smGetListe();
     if (liste.length === 0) {
-        alert('Keine Schüler zum Exportieren vorhanden.');
+        alert(t('smKeineSchueler'));
         return;
     }
     const blob = new Blob([JSON.stringify(liste, null, 2)], { type: 'application/json' });
@@ -470,7 +475,7 @@ function smExportAlleJSON() {
                     } else {
                         // Leere Einschätzung: ALLE Profildaten als Stammdaten
                         const neueDaten = {
-                            language: 'de',
+                            language: gemerkteUiSprache(),
                             selections: {},
                             zusaetzlicheZiele: {
                                 demarches_mentales: {}, manieres_apprendre: {},
@@ -503,9 +508,8 @@ function smExportAlleJSON() {
                 document.getElementById('backToManagerBtn').style.display = 'block';
                 document.getElementById('saveBtn').style.display = 'block';
 
-                const info = document.getElementById('smCurrentInfo');
-                info.textContent = `${schueler.name} — ${smAktuellerSchueler.einschaetzungNr}. Einschätzung`;
-                info.style.display = 'block';
+                document.getElementById('smCurrentInfo').style.display = 'block';
+                smZeigeAktuelleInfo();
             } else {
                 // Schüler existiert nicht mehr in der Liste
                 // eldib-data behalten für Wiederherstellung, nur SM_AKTIV_KEY entfernen
@@ -628,7 +632,7 @@ smOeffneEinschaetzung = function(id, nr) {
     } else {
         // Neue Einschätzung: ALLE Profildaten als Stammdaten übernehmen
         const neueDaten = {
-            language: 'de',
+            language: state.language, // neue Einschätzung in der gewählten Oberflächensprache
             selections: {},
             zusaetzlicheZiele: {
                 demarches_mentales: {},

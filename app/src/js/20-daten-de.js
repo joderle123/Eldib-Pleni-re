@@ -1,3 +1,5 @@
+// Stufennamen und Bereichsziele in der vollständigen Fassung (wie in shell.html),
+// damit die Überschriften nach einem Sprachwechsel zurück auf Deutsch gleich bleiben.
 const ELDIB_DATA = {
     verhalten: {
         name: "Verhalten",
@@ -57,7 +59,7 @@ const ELDIB_DATA = {
                 ]
             },
             5: {
-                name: "Stufe V: Anwenden von Fähigkeiten in neuen Situationen",
+                name: "Stufe V: Anwenden von individuellen und gruppenbezogenen Fähigkeiten in neuen Situationen",
                 ziel: "Realen Lebenserfahrungen mit konstruktivem Verhalten begegnen",
                 items: [
                     { nr: 29, code: "V-29", keyword: "Gewohnheiten", description: "Entwickelt neue persönliche Gewohnheiten.", zielformulierungen: ["Ich entwickle Gewohnheiten, die mir im Berufsleben helfen werden."] },
@@ -74,7 +76,7 @@ const ELDIB_DATA = {
         code: "K",
         color: "#3498db",
         stufen: {
-            1: { name: "Stufe I", ziel: "Gebraucht Wörter, um Bedürfnisse zu befriedigen", items: [
+            1: { name: "Stufe I: Mit Freude auf die Umwelt reagieren", ziel: "Gebraucht Wörter, um Bedürfnisse zu befriedigen", items: [
                 { nr: 1, code: "K-1", keyword: "Laute", description: "Produziert Laute.", zielformulierungen: ["Ich produziere verschiedene Laute."] },
                 { nr: 2, code: "K-2", keyword: "Sprecher", description: "Richtet Aufmerksamkeit auf Sprechende.", zielformulierungen: ["Ich schaue die Person an, die spricht."] },
                 { nr: 3, code: "K-3", keyword: "verbaler Impuls", description: "Reagiert auf verbalen Impuls.", zielformulierungen: ["Wenn jemand etwas sagt, reagiere ich darauf."] },
@@ -84,7 +86,7 @@ const ELDIB_DATA = {
                 { nr: 7, code: "K-7", keyword: "Wörter Peer", description: "Produziert Wörter für Gleichaltrige.", zielformulierungen: ["Ich spreche mit dem anderen Kind, wenn ich etwas möchte."] },
                 { nr: 8, code: "K-8", keyword: "Wortreihung", description: "Produziert sinnvolle Wortsequenz.", zielformulierungen: ["Wenn ich etwas sagen will, mache ich einen ganzen Satz."] }
             ]},
-            2: { name: "Stufe II", ziel: "Gebraucht Wörter, um andere zu beeinflussen", items: [
+            2: { name: "Stufe II: Erfolgreich auf die Umwelt reagieren", ziel: "Gebraucht Wörter, um andere in konstruktiver Weise zu beeinflussen", items: [
                 { nr: 9, code: "K-9", keyword: "beantworten", description: "Beantwortet Fragen sinnvoll.", zielformulierungen: ["Ich antworte so, dass jeder meine Antwort verstehen kann."] },
                 { nr: 10, code: "K-10", keyword: "Vokabular", description: "Zeigt rezeptives Vokabular.", zielformulierungen: ["Ich höre zu, damit ich neue Wörter lerne."] },
                 { nr: 11, code: "K-11", keyword: "Wortsequenzen", description: "Verwendet angemessene Wortsequenzen.", zielformulierungen: ["Ich spreche freundlich, wenn ich etwas haben möchte."] },
@@ -92,7 +94,7 @@ const ELDIB_DATA = {
                 { nr: 13, code: "K-13", keyword: "Merkmale", description: "Beschreibt Merkmale von sich und anderen.", zielformulierungen: ["Ich sage, was ich gut kann und was andere gut können."] },
                 { nr: 14, code: "K-14", keyword: "Austausch - Kind", description: "Tauscht Informationen mit Kindern.", zielformulierungen: ["Ich erzähle den Kindern aus meiner Klasse etwas."] }
             ]},
-            3: { name: "Stufe III", ziel: "Gebraucht Wörter in der Gruppe", items: [
+            3: { name: "Stufe III: Erwerben von Fähigkeiten zur erfolgreichen Teilnahme in Gruppen", ziel: "Gebraucht Wörter, um sich auf konstruktive Weise innerhalb einer Gruppe zu äußern", items: [
                 { nr: 15, code: "K-15", keyword: "Persönliches", description: "Beschreibt eigene Erfahrungen.", zielformulierungen: ["Ich erzähle von Dingen, die ich erlebt habe."] },
                 { nr: 16, code: "K-16", keyword: "Gefühlsreaktionen", description: "Zeigt angemessene Gefühlsreaktionen.", zielformulierungen: ["Wenn ich wütend bin, sage ich was mich stört, ohne zu verletzen."] },
                 { nr: 17, code: "K-17", keyword: "Gespräche", description: "Beteiligt sich an Gruppengesprächen.", zielformulierungen: ["Ich beteilige mich vernünftig an Klassengesprächen."] },
@@ -102,7 +104,7 @@ const ELDIB_DATA = {
                 { nr: 21, code: "K-21", keyword: "Gefühle - du", description: "Erkennt Gefühle anderer.", zielformulierungen: ["Ich erkenne und beschreibe die Gefühle anderer."] },
                 { nr: 22, code: "K-22", keyword: "Stolz - wir", description: "Zeigt Stolz auf Gruppenleistungen.", zielformulierungen: ["Ich zeige Stolz auf unsere Gruppenleistung."] }
             ]},
-            4: { name: "Stufe IV", ziel: "Zeigt Verständnis von Gefühlen", items: [
+            4: { name: "Stufe IV: Sich einbringen in Gruppenprozesse", ziel: "Verwendet Wörter, um Verständnis von Gefühlen und Verhaltensweisen von sich und anderen zu zeigen", items: [
                 { nr: 23, code: "K-23", keyword: "Kreativität", description: "Drückt Gefühle kreativ aus.", zielformulierungen: ["Ich drücke meine Gefühle durch Kunst, Musik oder Tanz aus."] },
                 { nr: 24, code: "K-24", keyword: "Fortschritt", description: "Zeigt Bewusstsein für Fortschritt.", zielformulierungen: ["Ich erkenne meinen eigenen Fortschritt."] },
                 { nr: 25, code: "K-25", keyword: "Beeinflussung", description: "Erklärt Verhaltensbeeinflussung.", zielformulierungen: ["Ich erkläre, wie mein Verhalten andere beeinflusst."] },
@@ -111,7 +113,7 @@ const ELDIB_DATA = {
                 { nr: 28, code: "K-28", keyword: "unterstützen", description: "Lobt und unterstützt andere.", zielformulierungen: ["Ich lobe andere, wenn sie etwas gut gemacht haben."] },
                 { nr: 29, code: "K-29", keyword: "Relationen", description: "Beschreibt Ursache-Wirkung.", zielformulierungen: ["Ich beschreibe den Zusammenhang zwischen Gefühlen und Verhalten."] }
             ]},
-            5: { name: "Stufe V", ziel: "Pflegt Beziehungen", items: [
+            5: { name: "Stufe V: Anwenden von individuellen und gruppenbezogenen Fähigkeiten in neuen Situationen", ziel: "Verwendet Wörter, um Beziehungen auszubauen und zu pflegen", items: [
                 { nr: 30, code: "K-30", keyword: "komplexe Aussagen", description: "Formuliert komplexe Aussagen.", zielformulierungen: ["Ich drücke mich in komplexen Sätzen aus."] },
                 { nr: 31, code: "K-31", keyword: "Ausgleich", description: "Wählt versöhnliche Sprache.", zielformulierungen: ["Bei Provokationen versuche ich zu schlichten."] },
                 { nr: 32, code: "K-32", keyword: "Anerkennung", description: "Anerkennt Beiträge anderer.", zielformulierungen: ["Ich anerkenne die Beiträge anderer."] },
@@ -126,7 +128,7 @@ const ELDIB_DATA = {
         code: "SOZ",
         color: "#2ecc71",
         stufen: {
-            1: { name: "Stufe I", ziel: "Einem Erwachsenen vertrauen", items: [
+            1: { name: "Stufe I: Mit Freude auf die Umwelt reagieren", ziel: "Einem Erwachsenen genügend vertrauen, um auf ihn zu reagieren", items: [
                 { nr: 1, code: "SOZ-1", keyword: "Gegenwart", description: "Ist sich der Gegenwart anderer bewusst.", zielformulierungen: ["Wenn die/der Lehrer:in mich berührt, drehe ich mich um."] },
                 { nr: 2, code: "SOZ-2", keyword: "Gerichtetheit", description: "Richtet Aufmerksamkeit auf andere.", zielformulierungen: ["Wenn die/der Lehrer:in mir sagt, dass ich zuschauen soll, tue ich das."] },
                 { nr: 3, code: "SOZ-3", keyword: "Eigenname", description: "Reagiert auf eigenen Namen.", zielformulierungen: ["Wenn die/der Lehrer:in mich mit Namen ruft, schaue ich hin."] },
@@ -140,7 +142,7 @@ const ELDIB_DATA = {
                 { nr: 11, code: "SOZ-11", keyword: "Wörter - Peer", description: "Produziert Wörter für Gleichaltrige.", zielformulierungen: ["Ich spreche mit dem anderen Kind, wenn ich etwas möchte."] },
                 { nr: 12, code: "SOZ-12", keyword: "Kontaktsuche", description: "Sucht Kontakt mit Erwachsenen.", zielformulierungen: ["Wenn der Unterricht beginnt, begrüße ich die/den Lehrer:in."] }
             ]},
-            2: { name: "Stufe II", ziel: "Erfolgreich an Aktivitäten teilnehmen", items: [
+            2: { name: "Stufe II: Erfolgreich auf die Umwelt reagieren", ziel: "Sich erfolgreich an Aktivitäten beteiligen", items: [
                 { nr: 13, code: "SOZ-13", keyword: "Fantasie", description: "Beschäftigt sich mit Fantasiespielen.", zielformulierungen: ["Ich denke mir selber etwas zum Spielen aus."] },
                 { nr: 14, code: "SOZ-14", keyword: "warten", description: "Wartet ohne Hilfe.", zielformulierungen: ["Ich warte bis ich an der Reihe bin."] },
                 { nr: 15, code: "SOZ-15", keyword: "Kontakt", description: "Nimmt sozialen Kontakt auf.", zielformulierungen: ["Ich gehe freundlich auf meine Mitschüler:innen zu."] },
@@ -148,7 +150,7 @@ const ELDIB_DATA = {
                 { nr: 17, code: "SOZ-17", keyword: "Spiel interaktiv", description: "Beteiligt sich an interaktivem Spiel.", zielformulierungen: ["Ich spiele friedlich mit anderen Kindern zusammen."] },
                 { nr: 18, code: "SOZ-18", keyword: "Kooperation", description: "Kooperiert mit anderen Kindern.", zielformulierungen: ["Bei Partnerarbeiten arbeite ich mit einem anderen Kind zusammen."] }
             ]},
-            3: { name: "Stufe III", ziel: "Gruppenaktivitäten als befriedigend erleben", items: [
+            3: { name: "Stufe III: Erwerben von Fähigkeiten zur erfolgreichen Teilnahme in Gruppen", ziel: "Gruppenaktivitäten als befriedigend erleben", items: [
                 { nr: 19, code: "SOZ-19", keyword: "abwechseln", description: "Teilt und wechselt sich ab.", zielformulierungen: ["Ich teile und wechsele mich mit anderen Kindern ab."] },
                 { nr: 20, code: "SOZ-20", keyword: "nachahmen", description: "Ahmt gutes Verhalten nach.", zielformulierungen: ["Wenn andere sich gut verhalten, mache ich es auch."] },
                 { nr: 21, code: "SOZ-21", keyword: "werten", description: "Bewertet soziale Situationen.", zielformulierungen: ["Ich sage, ob ich etwas richtig oder falsch finde."] },
@@ -159,7 +161,7 @@ const ELDIB_DATA = {
                 { nr: 26, code: "SOZ-26", keyword: "Unterstützung", description: "Sucht Hilfe bei anderen Kindern.", zielformulierungen: ["Ich frage andere Kinder um Hilfe."] },
                 { nr: 27, code: "SOZ-27", keyword: "Gruppenregeln", description: "Hilft bei der Einhaltung von Regeln.", zielformulierungen: ["Ich erinnere andere freundlich an die Gruppenregeln."] }
             ]},
-            4: { name: "Stufe IV", ziel: "Erfolgreich als Gruppenmitglied teilnehmen", items: [
+            4: { name: "Stufe IV: Sich einbringen in Gruppenprozesse", ziel: "Nimmt von sich aus und erfolgreich als Gruppenmitglied an Aktivitäten teil", items: [
                 { nr: 28, code: "SOZ-28", keyword: "identifizieren", description: "Identifiziert sich mit Vorbildern.", zielformulierungen: ["Ich orientiere mich an positiven Vorbildern."] },
                 { nr: 29, code: "SOZ-29", keyword: "Gruppenerfahrung", description: "Beschreibt Gruppenerfahrungen.", zielformulierungen: ["Ich erzähle von Gruppenerlebnissen."] },
                 { nr: 30, code: "SOZ-30", keyword: "Gruppenaktivität", description: "Schlägt Gruppenaktivitäten vor.", zielformulierungen: ["Ich schlage der Gruppe Aktivitäten vor."] },
@@ -170,7 +172,7 @@ const ELDIB_DATA = {
                 { nr: 35, code: "SOZ-35", keyword: "Wertvorstellung", description: "Erkennt verschiedene Werte.", zielformulierungen: ["Ich unterscheide zwischen richtig und falsch."] },
                 { nr: 36, code: "SOZ-36", keyword: "Schlussfolgerungen", description: "Zieht Schlussfolgerungen.", zielformulierungen: ["Ich lerne aus sozialen Situationen."] }
             ]},
-            5: { name: "Stufe V", ziel: "Dauerhafte Beziehungen aufbauen", items: [
+            5: { name: "Stufe V: Anwenden von individuellen und gruppenbezogenen Fähigkeiten in neuen Situationen", ziel: "Beginnt und pflegt selbständig dauerhafte und tragfähige Beziehungen mit anderen", items: [
                 { nr: 37, code: "SOZ-37", keyword: "Empathie", description: "Versteht Gefühle anderer.", zielformulierungen: ["Ich verstehe, wie sich andere fühlen."] },
                 { nr: 38, code: "SOZ-38", keyword: "verschiedene Rollen", description: "Interagiert in verschiedenen Rollen.", zielformulierungen: ["Ich kann verschiedene Rollen in einer Gruppe übernehmen."] },
                 { nr: 39, code: "SOZ-39", keyword: "Prinzipien", description: "Entscheidet nach eigenen Werten.", zielformulierungen: ["Ich entscheide nach meinen eigenen Werten."] },
@@ -184,7 +186,7 @@ const ELDIB_DATA = {
         code: "KOG",
         color: "#f39c12",
         stufen: {
-            1: { name: "Stufe I", ziel: "Auf die Umgebung reagieren", items: [
+            1: { name: "Stufe I: Mit Freude auf die Umwelt reagieren", ziel: "Auf die Umgebung reagieren mit gezielten Körperbewegungen und elementaren mentalen Verarbeitungsprozessen", items: [
                 { nr: 1, code: "KOG-1", keyword: "Orientierung", description: "Reagiert auf sensorischen Reiz.", zielformulierungen: ["Ich wende mich Reizen zu, die mich interessieren."] },
                 { nr: 2, code: "KOG-2", keyword: "Aufmerksamkeit", description: "Zeigt kurze Aufmerksamkeit.", zielformulierungen: ["Ich bleibe kurz aufmerksam bei einer Sache."] },
                 { nr: 3, code: "KOG-3", keyword: "Kurzzeitgedächtnis", description: "Erkennt Personen/Objekte wieder.", zielformulierungen: ["Ich erkenne bekannte Personen und Dinge wieder."] },
@@ -200,7 +202,7 @@ const ELDIB_DATA = {
                 { nr: 13, code: "KOG-13", keyword: "sortieren", description: "Sortiert Objekte.", zielformulierungen: ["Ich sortiere Dinge nach Merkmalen."] },
                 { nr: 14, code: "KOG-14", keyword: "Bilder benennen", description: "Benennt Bilder.", zielformulierungen: ["Ich benenne Bilder mit den richtigen Wörtern."] }
             ]},
-            2: { name: "Stufe II", ziel: "An Aktivitäten teilnehmen", items: [
+            2: { name: "Stufe II: Erfolgreich auf die Umwelt reagieren", ziel: "Beteiligung an Aktivitäten, die Fähigkeiten der Selbsthilfe, motorischen Koordination, Sprache sowie mentale Prozesse erfordern", items: [
                 { nr: 15, code: "KOG-15", keyword: "Gebrauchswert", description: "Erkennt Gebrauchswert.", zielformulierungen: ["Ich weiß, wofür man Dinge benutzt."] },
                 { nr: 16, code: "KOG-16", keyword: "Körper - 3", description: "Motorik eines 3-Jährigen.", zielformulierungen: ["Ich bewege mich altersgemäß."] },
                 { nr: 17, code: "KOG-17", keyword: "Serie - identisch", description: "Ordnet identische Bilder zu.", zielformulierungen: ["Ich finde gleiche Bilder."] },
@@ -219,7 +221,7 @@ const ELDIB_DATA = {
                 { nr: 30, code: "KOG-30", keyword: "Gedächtnis", description: "Gibt Auswendiggelerntes wieder.", zielformulierungen: ["Ich kann Lieder und Reime auswendig."] },
                 { nr: 31, code: "KOG-31", keyword: "Bilderserie", description: "Ordnet Bilder in Reihenfolge.", zielformulierungen: ["Ich bringe Bilder in die richtige Reihenfolge."] }
             ]},
-            3: { name: "Stufe III", ziel: "Beteiligt sich in einer Lerngruppe", items: [
+            3: { name: "Stufe III: Erwerben von Fähigkeiten zur erfolgreichen Teilnahme in Gruppen", ziel: "Beteiligt sich erfolgreich in einer Lerngruppe und setzt dabei grundlegende Lernkompetenzen ein", items: [
                 { nr: 32, code: "KOG-32", keyword: "Auge-Hand-6", description: "Auge-Hand-Koordination 6 Jahre.", zielformulierungen: ["Ich kann präzise mit meinen Händen arbeiten."] },
                 { nr: 33, code: "KOG-33", keyword: "Körper - 6", description: "Motorik eines 6-Jährigen.", zielformulierungen: ["Ich kann mich gut bewegen."] },
                 { nr: 34, code: "KOG-34", keyword: "lesen - 50", description: "Liest 50 Grundwörter.", zielformulierungen: ["Ich lese einfache Wörter."] },
@@ -238,7 +240,7 @@ const ELDIB_DATA = {
                 { nr: 47, code: "KOG-47", keyword: "Sachverhalte", description: "Liest und erzählt Geschichten.", zielformulierungen: ["Ich lese Geschichten und erzähle sie nach."] },
                 { nr: 48, code: "KOG-48", keyword: "Operationen", description: "Rechnet mit größeren Zahlen.", zielformulierungen: ["Ich rechne mit größeren Zahlen."] }
             ]},
-            4: { name: "Stufe IV", ziel: "Nutzt kognitive Fähigkeiten für Gruppenerfahrungen", items: [
+            4: { name: "Stufe IV: Sich einbringen in Gruppenprozesse", ziel: "Gebraucht kognitive und schulische Fähigkeiten, um sich erfolgreich an sozialen Gruppenerfahrungen zu beteiligen", items: [
                 { nr: 49, code: "KOG-49", keyword: "Kommunikation", description: "Schreibt zum Mitteilen.", zielformulierungen: ["Ich schreibe, um mich mitzuteilen."] },
                 { nr: 50, code: "KOG-50", keyword: "Mult./Divis. 100", description: "Rechnet Mal/Geteilt bis 100.", zielformulierungen: ["Ich rechne Mal und Geteilt bis 100."] },
                 { nr: 51, code: "KOG-51", keyword: "Informationsgewinn", description: "Liest zum Lernen.", zielformulierungen: ["Ich lese gerne, um Neues zu lernen."] },
@@ -248,7 +250,7 @@ const ELDIB_DATA = {
                 { nr: 55, code: "KOG-55", keyword: "Wertvorstellungen", description: "Erkennt verschiedene Werte.", zielformulierungen: ["Ich erkenne verschiedene Werte."] },
                 { nr: 56, code: "KOG-56", keyword: "Konzepte", description: "Löst logische Probleme.", zielformulierungen: ["Ich löse Probleme mit Maßeinheiten."] }
             ]},
-            5: { name: "Stufe V", ziel: "Nutzt kognitive Fähigkeiten für persönliche Erfahrungen", items: [
+            5: { name: "Stufe V: Anwenden von individuellen und gruppenbezogenen Fähigkeiten in neuen Situationen", ziel: "Setzt erfolgreich kognitive Fähigkeiten zur Bereicherung persönlicher Erfahrungen ein", items: [
                 { nr: 57, code: "KOG-57", keyword: "Zeitgeschichte", description: "Interessiert sich für aktuelle Themen.", zielformulierungen: ["Ich interessiere mich für aktuelle Themen."] },
                 { nr: 58, code: "KOG-58", keyword: "Meinungen", description: "Unterscheidet Fakten/Meinungen.", zielformulierungen: ["Ich unterscheide Fakten von Meinungen."] },
                 { nr: 59, code: "KOG-59", keyword: "Inkonsistenz", description: "Erkennt widersprüchliches Verhalten.", zielformulierungen: ["Ich erkenne widersprüchliches Verhalten."] },

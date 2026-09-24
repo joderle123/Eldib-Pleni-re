@@ -31,13 +31,13 @@ function loadData(event) {
             // Save loaded data to localStorage before reload so it persists
             localStorage.setItem('eldib-data', JSON.stringify(data));
             location.reload();
-        } catch (err) { alert('Fehler: ' + err.message); }
+        } catch (err) { alert(t('fehler') + err.message); }
     };
     reader.readAsText(file);
 }
 
 function resetAllData() {
-    if (!confirm('Sind Sie sicher, dass Sie alle Daten löschen möchten?\n\nAlle Schülerdaten und Auswahlen werden unwiderruflich gelöscht!')) {
+    if (!confirm(t('resetFrage'))) {
         return;
     }
 
@@ -56,7 +56,7 @@ function resetAllData() {
     };
 
     // Show toast and reload
-    showToast('Alle Daten wurden gelöscht');
+    showToast(t('resetFertig'));
     setTimeout(() => location.reload(), 500);
 }
 
@@ -89,22 +89,23 @@ function setPeriodType(type) {
     const periodeSelect = document.getElementById('periode');
     const periodeLabel = document.getElementById('periode-label');
 
+    // Beschriftungen in der aktuellen Sprache (Trimestre/Semestre auf Französisch)
     if (type === 'trimester') {
         btnTrimester.classList.add('active');
         btnSemester.classList.remove('active');
-        periodeLabel.textContent = 'Trimester';
+        periodeLabel.textContent = t('trimester');
         periodeSelect.innerHTML = `
-            <option value="1">Trimester 1</option>
-            <option value="2">Trimester 2</option>
-            <option value="3">Trimester 3</option>
+            <option value="1">${t('trimester1')}</option>
+            <option value="2">${t('trimester2')}</option>
+            <option value="3">${t('trimester3')}</option>
         `;
     } else {
         btnSemester.classList.add('active');
         btnTrimester.classList.remove('active');
-        periodeLabel.textContent = 'Semester';
+        periodeLabel.textContent = t('semester');
         periodeSelect.innerHTML = `
-            <option value="1">Semester 1</option>
-            <option value="2">Semester 2</option>
+            <option value="1">${t('semester1')}</option>
+            <option value="2">${t('semester2')}</option>
         `;
     }
     if (!isLoadingData) saveToLocalStorage();

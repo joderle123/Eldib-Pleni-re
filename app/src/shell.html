@@ -11,6 +11,12 @@
 <body>
     <!-- SCHÜLER-MANAGER STARTSEITE -->
     <div id="schueler-manager">
+        <!-- Sprachwahl auch auf der Startseite (wird gemerkt) -->
+        <div class="sm-sprache">
+            <button onclick="switchLanguage('de')" id="sm-lang-btn-de" class="lang-btn active">DE</button>
+            <button onclick="switchLanguage('fr')" id="sm-lang-btn-fr" class="lang-btn">FR</button>
+            <button onclick="switchLanguage('en')" id="sm-lang-btn-en" class="lang-btn">EN</button>
+        </div>
         <div class="sm-header">
             <h1>ELDiB Generator</h1>
             <p>Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen</p>
@@ -30,7 +36,7 @@
 
     <div class="container" id="main-container" style="display:none;">
         <div class="header">
-            <div class="language-toggle" style="position: absolute; top: 15px; right: 20px; display: flex; gap: 4px; z-index: 100;">
+            <div class="language-toggle" style="position: absolute; top: 30px; right: 20px; display: flex; gap: 4px; z-index: 100;">
                 <button onclick="switchLanguage('de')" id="lang-btn-de" class="lang-btn active" style="padding: 6px 14px; border: 2px solid rgba(255,255,255,0.5); border-radius: 6px; background: rgba(255,255,255,0.3); color: white; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;">DE</button>
                 <button onclick="switchLanguage('fr')" id="lang-btn-fr" class="lang-btn" style="padding: 6px 14px; border: 2px solid rgba(255,255,255,0.2); border-radius: 6px; background: transparent; color: rgba(255,255,255,0.7); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;">FR</button>
                 <button onclick="switchLanguage('en')" id="lang-btn-en" class="lang-btn" style="padding: 6px 14px; border: 2px solid rgba(255,255,255,0.2); border-radius: 6px; background: transparent; color: rgba(255,255,255,0.7); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;">EN</button>

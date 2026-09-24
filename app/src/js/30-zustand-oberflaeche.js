@@ -64,7 +64,44 @@ const UI_STRINGS = {
         moeglicheUmsetzung: 'Mögliche Umsetzung',
         mitUnterstuetzung: 'Mit Unterstützung',
         trimester1: 'Trimester 1', trimester2: 'Trimester 2', trimester3: 'Trimester 3',
-        semester1: 'Semester 1', semester2: 'Semester 2'
+        semester1: 'Semester 1', semester2: 'Semester 2',
+        // Stammdaten-Gruppen, Alter
+        persoenlicheDaten: 'Persönliche Daten', schulinformationen: 'Schulinformationen', zeitraum: 'Einschätzungszeitraum',
+        jahr: 'Jahr', jahre: 'Jahre',
+        // "Weiter"-Knöpfe unter den Reitern
+        weiterKommunikation: 'Weiter zu Kommunikation', weiterSozialisation: 'Weiter zu Sozialisation',
+        weiterKognition: 'Weiter zu Kognition', weiterZusatz: 'Zu den zusätzlichen Zielen', weiterExport: 'Weiter zum Export',
+        // Zusätzliche Ziele
+        zusatzTitel: 'Zusätzliche Förderziele',
+        zusatzIntro: 'Wählen Sie zusätzliche Ziele aus den verschiedenen Kategorien. Diese werden automatisch in PEI und Complément eingefügt.',
+        katDemarches: 'Démarches mentales', katManieres: 'Manières d\'apprendre', katRelationnelles: 'Attitudes relationnelles',
+        katAffectives: 'Attitudes affectives', katCompetences: 'Compétences essentielles', katCulture: 'Culture et loisirs',
+        inArbeit: 'In Arbeit',
+        // Kopfleiste im Editor
+        zurueckUebersicht: '← Zurück zur Übersicht', speichern: '💾 Speichern', gespeichert: '✓ Gespeichert!',
+        einschaetzungNr: '{n}. Einschätzung',
+        // Export: Schüler-Übersicht
+        uebersichtTitle: 'Schüler-Übersicht',
+        uebersichtDesc: 'Zurück zur Übersicht aller Schüler.innen, um eine andere Einschätzung zu öffnen oder eine.n neue.n Schüler.in anzulegen.',
+        uebersichtBtn: 'Zur Schüler-Übersicht',
+        // Meldungen
+        stufeZurueckgesetzt: 'Stufe {n} zurückgesetzt', itemsErreicht: '{n} Items als erreicht markiert',
+        speicherFehler: 'Fehler beim Speichern! Möglicherweise ist der Speicher voll. Bitte exportieren Sie Ihre Daten als JSON-Backup.',
+        fehler: 'Fehler: ',
+        resetFrage: 'Sind Sie sicher, dass Sie alle Daten löschen möchten?\n\nAlle Schülerdaten und Auswahlen werden unwiderruflich gelöscht!',
+        resetFertig: 'Alle Daten wurden gelöscht',
+        keineErreichten: 'Keine erreichten Items',
+        // Schüler-Manager (Startseite)
+        smNeu: '+ Neuen Schüler anlegen', smLeer: 'Noch keine Schüler angelegt',
+        smLeerHinweis: 'Klicken Sie auf "+ Neuen Schüler anlegen", um zu beginnen.',
+        smKlasse: 'Klasse', smLoeschen: 'Schüler löschen', smDatenVorhanden: 'Daten vorhanden', smNochLeer: 'Noch leer',
+        smDialogTitel: 'Neuen Schüler anlegen', smNachname: 'Nachname', smVorname: 'Vorname',
+        smPflichtfelder: 'Pflichtfelder', smAbbrechen: 'Abbrechen', smAnlegen: 'Anlegen', smAlter: 'Alter: {n}',
+        smPflichtFehlt: 'Bitte folgende Pflichtfelder ausfüllen:',
+        smLoeschenFrage: '"{name}" wirklich löschen?\n\nAlle Einschätzungen dieses Schülers werden unwiderruflich gelöscht!',
+        smImportiert: '{n} Schüler importiert', smEinzelnImportiert: '"{name}" importiert',
+        smFormatUnbekannt: 'Unbekanntes Dateiformat.', smImportFehler: 'Fehler beim Import: ',
+        smKeineSchueler: 'Keine Schüler zum Exportieren vorhanden.'
     },
     fr: {
         subtitle: 'Fiche de diagnostic pour les objectifs éducatifs de la thérapie de développement',
@@ -114,22 +151,52 @@ const UI_STRINGS = {
         moeglicheUmsetzung: 'Mise en œuvre possible',
         mitUnterstuetzung: 'Avec soutien',
         trimester1: 'Trimestre 1', trimester2: 'Trimestre 2', trimester3: 'Trimestre 3',
-        semester1: 'Semestre 1', semester2: 'Semestre 2'
+        semester1: 'Semestre 1', semester2: 'Semestre 2',
+        persoenlicheDaten: 'Données personnelles', schulinformationen: 'Informations scolaires', zeitraum: 'Période d\'évaluation',
+        jahr: 'an', jahre: 'ans',
+        weiterKommunikation: 'Continuer vers Communication', weiterSozialisation: 'Continuer vers Socialisation',
+        weiterKognition: 'Continuer vers Cognition', weiterZusatz: 'Continuer vers les objectifs supplémentaires', weiterExport: 'Continuer vers l\'exportation',
+        zusatzTitel: 'Objectifs supplémentaires',
+        zusatzIntro: 'Choisissez des objectifs supplémentaires dans les différentes catégories. Ils sont insérés automatiquement dans le PEI et le Complément.',
+        katDemarches: 'Démarches mentales', katManieres: 'Manières d\'apprendre', katRelationnelles: 'Attitudes relationnelles',
+        katAffectives: 'Attitudes affectives', katCompetences: 'Compétences essentielles', katCulture: 'Culture et loisirs',
+        inArbeit: 'En cours',
+        zurueckUebersicht: '← Retour à la liste', speichern: '💾 Enregistrer', gespeichert: '✓ Enregistré !',
+        einschaetzungNr: 'Évaluation {n}',
+        uebersichtTitle: 'Liste des élèves',
+        uebersichtDesc: 'Retour à la liste de tous les élèves pour ouvrir une autre évaluation ou ajouter un nouvel élève.',
+        uebersichtBtn: 'Vers la liste des élèves',
+        stufeZurueckgesetzt: 'Stade {n} réinitialisé', itemsErreicht: '{n} items marqués comme atteints',
+        speicherFehler: 'Erreur lors de l\'enregistrement ! La mémoire est peut-être pleine. Veuillez exporter vos données en fichier JSON de sauvegarde.',
+        fehler: 'Erreur : ',
+        resetFrage: 'Voulez-vous vraiment supprimer toutes les données ?\n\nToutes les données de l\'élève et toutes les sélections seront définitivement supprimées !',
+        resetFertig: 'Toutes les données ont été supprimées',
+        keineErreichten: 'Aucun item atteint',
+        smNeu: '+ Ajouter un élève', smLeer: 'Aucun élève pour l\'instant',
+        smLeerHinweis: 'Cliquez sur « + Ajouter un élève » pour commencer.',
+        smKlasse: 'Classe', smLoeschen: 'Supprimer l\'élève', smDatenVorhanden: 'Données disponibles', smNochLeer: 'Pas encore commencée',
+        smDialogTitel: 'Ajouter un élève', smNachname: 'Nom', smVorname: 'Prénom',
+        smPflichtfelder: 'Champs obligatoires', smAbbrechen: 'Annuler', smAnlegen: 'Créer', smAlter: 'Âge : {n}',
+        smPflichtFehlt: 'Veuillez remplir les champs obligatoires suivants :',
+        smLoeschenFrage: 'Supprimer vraiment « {name} » ?\n\nToutes les évaluations de cet élève seront définitivement supprimées !',
+        smImportiert: '{n} élève(s) importé(s)', smEinzelnImportiert: '« {name} » importé',
+        smFormatUnbekannt: 'Format de fichier inconnu.', smImportFehler: 'Erreur lors de l\'importation : ',
+        smKeineSchueler: 'Aucun élève à exporter.'
     },
     en: {
-        subtitle: 'Developmental Therapy Objectives Rating Form (DTORF-R)',
+        subtitle: 'Developmental Teaching Objectives Rating Form – Revised (DTORF-R)',
         stammdaten: 'Student data', eldibBewertung: 'DTORF-R Assessment', export: 'Export',
         stammdatenTitle: 'Student data', stammdatenTooltip: 'Enter student data',
         eldibTooltip: 'Perform DTORF-R assessment', exportTooltip: 'Export documents',
         verhalten: 'Behavior', kommunikation: 'Communication', sozialisation: 'Socialization', kognition: 'Academics/Cognition',
         zusaetzlicheZiele: 'Additional goals',
-        schuelerInfo: 'Student information', nameLabel: 'Child / adolescent name', namePlaceholder: 'Last name, First name',
+        schuelerInfo: 'Student information', nameLabel: 'Name of the child/adolescent', namePlaceholder: 'Last name, First name',
         geburtsdatum: 'Date of birth', matricule: 'ID number',
         foerderort: 'School / placement', foerderortPlaceholder: 'School/Institution',
         klasse: 'Class/Cycle', klassePlaceholder: 'e.g. C2.1',
         schuljahr: 'School year', schuljahrPlaceholder: 'e.g. 2025/2026',
         periodentyp: 'Period type', trimester: 'Trimester', semester: 'Semester',
-        einschaetzungsdatum: 'Evaluation date',
+        einschaetzungsdatum: 'Assessment date',
         einschaetzende: 'Rater(s)', einschaetzendeName: 'Name and function',
         einschaetzendePlaceholder: 'Names and functions of the raters',
         kontaktdaten: 'Legal guardian contact details',
@@ -164,11 +231,74 @@ const UI_STRINGS = {
         moeglicheUmsetzung: 'Possible implementation',
         mitUnterstuetzung: 'With support',
         trimester1: 'Trimester 1', trimester2: 'Trimester 2', trimester3: 'Trimester 3',
-        semester1: 'Semester 1', semester2: 'Semester 2'
+        semester1: 'Semester 1', semester2: 'Semester 2',
+        persoenlicheDaten: 'Personal data', schulinformationen: 'School information', zeitraum: 'Assessment period',
+        jahr: 'year', jahre: 'years',
+        weiterKommunikation: 'Continue to Communication', weiterSozialisation: 'Continue to Socialization',
+        weiterKognition: 'Continue to Academics/Cognition', weiterZusatz: 'Continue to additional goals', weiterExport: 'Continue to export',
+        zusatzTitel: 'Additional goals',
+        zusatzIntro: 'Select additional goals from the different categories. They are automatically included in the IEP and the Complement.',
+        katDemarches: 'Cognitive strategies', katManieres: 'Learning approaches', katRelationnelles: 'Relational attitudes',
+        katAffectives: 'Emotional attitudes', katCompetences: 'Essential competencies', katCulture: 'Culture and leisure',
+        inArbeit: 'In progress',
+        zurueckUebersicht: '← Back to overview', speichern: '💾 Save', gespeichert: '✓ Saved!',
+        einschaetzungNr: 'Assessment {n}',
+        uebersichtTitle: 'Student overview',
+        uebersichtDesc: 'Back to the list of all students to open another assessment or to add a new student.',
+        uebersichtBtn: 'To the student overview',
+        stufeZurueckgesetzt: 'Stage {n} reset', itemsErreicht: '{n} items marked as mastered',
+        speicherFehler: 'Error while saving! The storage may be full. Please export your data as a JSON backup.',
+        fehler: 'Error: ',
+        resetFrage: 'Are you sure you want to delete all data?\n\nAll student data and selections will be permanently deleted!',
+        resetFertig: 'All data has been deleted',
+        keineErreichten: 'No mastered items',
+        smNeu: '+ Add new student', smLeer: 'No students yet',
+        smLeerHinweis: 'Click "+ Add new student" to get started.',
+        smKlasse: 'Class', smLoeschen: 'Delete student', smDatenVorhanden: 'Data available', smNochLeer: 'Not started yet',
+        smDialogTitel: 'Add new student', smNachname: 'Last name', smVorname: 'First name',
+        smPflichtfelder: 'Required fields', smAbbrechen: 'Cancel', smAnlegen: 'Create', smAlter: 'Age: {n}',
+        smPflichtFehlt: 'Please fill in the following required fields:',
+        smLoeschenFrage: 'Really delete "{name}"?\n\nAll assessments of this student will be permanently deleted!',
+        smImportiert: '{n} student(s) imported', smEinzelnImportiert: '"{name}" imported',
+        smFormatUnbekannt: 'Unknown file format.', smImportFehler: 'Import error: ',
+        smKeineSchueler: 'No students to export.'
     }
 };
 
 function t(key) { return UI_STRINGS[state.language][key] || UI_STRINGS.de[key] || key; }
+// Text mit Platzhaltern, z.B. tf('stufeZurueckgesetzt', { n: 2 })
+function tf(key, werte) {
+    let s = t(key);
+    for (const [k, v] of Object.entries(werte || {})) s = s.split('{' + k + '}').join(String(v));
+    return s;
+}
+// Alter mit Einheit in der aktuellen Sprache ("10 Jahre" / "10 ans" / "10 years")
+function alterText(alter) {
+    return alter + ' ' + (alter === 1 ? t('jahr') : t('jahre'));
+}
+
+// Datum aus dem Datumsfeld (JJJJ-MM-TT) für Anzeige und Dokumente formatieren:
+// DE TT.MM.JJJJ, FR und EN TT/MM/JJJJ. Andere Eingaben bleiben unverändert.
+function eldibDatum(wert, lang) {
+    if (!wert) return '';
+    const m = String(wert).trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return String(wert);
+    const sprache = lang || state.language;
+    return sprache === 'de' ? `${m[3]}.${m[2]}.${m[1]}` : `${m[3]}/${m[2]}/${m[1]}`;
+}
+
+// Gewählte Oberflächensprache für die Schülerübersicht und neue Einschätzungen merken
+// (eigener Schlüssel; die gespeicherten Einschätzungen bleiben unverändert)
+const UI_SPRACHE_KEY = 'eldib-ui-sprache';
+function merkeUiSprache(lang) {
+    try { localStorage.setItem(UI_SPRACHE_KEY, lang); } catch (e) { /* nicht kritisch */ }
+}
+function gemerkteUiSprache() {
+    try {
+        const l = localStorage.getItem(UI_SPRACHE_KEY);
+        return (l === 'fr' || l === 'en') ? l : 'de';
+    } catch (e) { return 'de'; }
+}
 
 // Mapping der deutschen Bereich-Codes auf die französischen / englischen Anzeige-Codes
 const BEREICH_CODE_FR_MAP = { 'V': 'COMP', 'K': 'COM', 'SOZ': 'SOC', 'KOG': 'COG' };
@@ -216,18 +346,27 @@ function getCurrentStufen() {
     return STUFEN_ALTER_MAPPING;
 }
 
+// Sprachknöpfe (Editor-Kopf und Schülerübersicht) hervorheben
+function markiereSprachKnoepfe(lang) {
+    ['de', 'fr', 'en'].forEach(l => {
+        ['lang-btn-' + l, 'sm-lang-btn-' + l].forEach(id => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            btn.classList.toggle('active', l === lang);
+            btn.style.background = (l === lang) ? 'rgba(255,255,255,0.3)' : 'transparent';
+            btn.style.color = (l === lang) ? 'white' : 'rgba(255,255,255,0.7)';
+            btn.style.borderColor = (l === lang) ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)';
+        });
+    });
+}
+
 function switchLanguage(lang) {
     if (state.language === lang) return;
     state.language = lang;
+    document.documentElement.lang = lang;
 
     // Update toggle buttons (de/fr/en)
-    ['de', 'fr', 'en'].forEach(l => {
-        const btn = document.getElementById('lang-btn-' + l);
-        if (!btn) return;
-        btn.style.background = (l === lang) ? 'rgba(255,255,255,0.3)' : 'transparent';
-        btn.style.color = (l === lang) ? 'white' : 'rgba(255,255,255,0.7)';
-        btn.style.borderColor = (l === lang) ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)';
-    });
+    markiereSprachKnoepfe(lang);
 
     // Update all UI text
     updateUILanguage();
@@ -241,11 +380,23 @@ function switchLanguage(lang) {
     // Restore selections for zusätzliche Ziele
     restoreZusatzSelections();
 
+    // Hinweise (title) der gesperrten Ziel-Knöpfe in der neuen Sprache
+    ['verhalten', 'kommunikation', 'sozialisation', 'kognition'].forEach(b => {
+        const erstes = ELDIB_DATA[b]?.stufen?.[1]?.items?.[0];
+        if (erstes) refreshBlockedButtonsInBereich(erstes.code);
+    });
+
+    // Schülerübersicht (Startseite) in der neuen Sprache
+    if (typeof smRenderListe === 'function' && document.getElementById('sm-schueler-grid')) smRenderListe();
+
     // DS-Assistent in der neuen Sprache zeigen
     if (typeof DsAssistent !== 'undefined') DsAssistent.sprachWechsel();
 
-    // Save language preference
-    if (!isLoadingData) saveToLocalStorage();
+    // Sprache für die Übersicht merken; Einschätzung nur speichern, wenn eine geöffnet ist
+    if (!isLoadingData) {
+        merkeUiSprache(lang);
+        if (typeof smAktuellerSchueler === 'undefined' || smAktuellerSchueler) saveToLocalStorage();
+    }
 }
 
 function updateUILanguage() {
@@ -253,6 +404,24 @@ function updateUILanguage() {
 
     // Header
     document.getElementById('header-subtitle').textContent = t('subtitle');
+
+    // Fortschrittspunkte im Kopf (Tooltips)
+    const dotTitel = { stammdaten: t('stammdaten'), eldib: t('eldibBewertung'), ds: 'DS', export: t('export') };
+    document.querySelectorAll('.progress-dot').forEach(dot => {
+        const titel = dotTitel[dot.dataset.section];
+        if (titel) dot.title = titel;
+    });
+
+    // Feste Knöpfe im Editor und Kopf der Schülerübersicht
+    const zurueckBtn = document.getElementById('backToManagerBtn');
+    if (zurueckBtn) zurueckBtn.textContent = t('zurueckUebersicht');
+    const speichernBtn = document.getElementById('saveBtn');
+    if (speichernBtn && !speichernBtn.classList.contains('saved')) speichernBtn.textContent = t('speichern');
+    if (typeof smZeigeAktuelleInfo === 'function') smZeigeAktuelleInfo();
+    const smUntertitel = document.querySelector('#schueler-manager .sm-header p');
+    if (smUntertitel) smUntertitel.textContent = t('subtitle');
+    const smNeuBtn = document.querySelector('#schueler-manager .sm-actions .sm-btn-primary');
+    if (smNeuBtn) smNeuBtn.textContent = t('smNeu');
 
     // Main nav
     const mainNavBtns = document.querySelectorAll('.main-nav .main-nav-item');
@@ -277,6 +446,13 @@ function updateUILanguage() {
         if (h3s[1]) h3s[1].textContent = t('einschaetzende');
         if (h3s[2]) h3s[2].textContent = t('kontaktdaten');
 
+        // Überschriften der Feldgruppen
+        const gruppen = { '.form-group-personal': 'persoenlicheDaten', '.form-group-school': 'schulinformationen', '.form-group-period': 'zeitraum' };
+        for (const [sel, key] of Object.entries(gruppen)) {
+            const el = stammdatenSection.querySelector(sel + ' .form-row-label');
+            if (el) el.textContent = t(key);
+        }
+
         // Labels
         const nameLabel = stammdatenSection.querySelector('label[for="schueler_name"]');
         if (nameLabel) nameLabel.textContent = t('nameLabel');
@@ -284,8 +460,16 @@ function updateUILanguage() {
         if (gebLabel) {
             const alterAnzeige = document.getElementById('alter-anzeige');
             gebLabel.textContent = t('geburtsdatum') + ' ';
-            if (alterAnzeige) gebLabel.appendChild(alterAnzeige);
+            if (alterAnzeige) {
+                gebLabel.appendChild(alterAnzeige);
+                const alter = getSchuelerAlter();
+                if (alter !== null) alterAnzeige.textContent = alterText(alter);
+            }
         }
+        const matLabel = stammdatenSection.querySelector('label[for="matricule"]');
+        if (matLabel) matLabel.textContent = t('matricule');
+        const matInput = document.getElementById('matricule');
+        if (matInput) matInput.placeholder = t('matricule');
         const foerderLabel = stammdatenSection.querySelector('label[for="foerderort"]');
         if (foerderLabel) foerderLabel.textContent = t('foerderort');
         const klasseLabel = stammdatenSection.querySelector('label[for="klasse"]');
@@ -316,20 +500,37 @@ function updateUILanguage() {
         document.getElementById('btn-trimester').textContent = t('trimester');
         document.getElementById('btn-semester').textContent = t('semester');
 
-        // Period select
+        // Period select (Trimester oder Semester, je nach Periodentyp)
+        const periodeLabel = document.getElementById('periode-label');
+        if (periodeLabel) periodeLabel.textContent = periodenTyp === 'semester' ? t('semester') : t('trimester');
         const periodeSelect = document.getElementById('periode');
         if (periodeSelect) {
-            const opts = periodeSelect.options;
-            if (opts.length >= 3) {
-                opts[0].textContent = t('trimester1');
-                opts[1].textContent = t('trimester2');
-                opts[2].textContent = t('trimester3');
-            }
+            const praefix = periodenTyp === 'semester' ? 'semester' : 'trimester';
+            Array.from(periodeSelect.options).forEach(opt => { opt.textContent = t(praefix + opt.value); });
         }
 
         // Weiter button
         const weiterBtn = stammdatenSection.querySelector('.btn-primary');
         if (weiterBtn) weiterBtn.innerHTML = t('weiter') + ' &rarr;';
+    }
+
+    // "Weiter"-Knöpfe unter den ELDiB-Reitern
+    const weiterKnoepfe = { verhalten: 'weiterKommunikation', kommunikation: 'weiterSozialisation', sozialisation: 'weiterKognition', kognition: 'weiterZusatz', zusaetzlich: 'weiterExport' };
+    for (const [tab, key] of Object.entries(weiterKnoepfe)) {
+        const btn = document.querySelector(`#${tab} > .button-group .btn-primary`);
+        if (btn) btn.textContent = t(key) + ' →';
+    }
+
+    // Reiter "Zusätzliche Ziele": Überschrift, Einleitung, Kategorien
+    const zusatzIntro = document.querySelector('#zusaetzlich .zusaetzlich-intro');
+    if (zusatzIntro) {
+        const h2 = zusatzIntro.querySelector('h2'); if (h2) h2.textContent = t('zusatzTitel');
+        const p = zusatzIntro.querySelector('p'); if (p) p.textContent = t('zusatzIntro');
+    }
+    const katTitel = { demarches_mentales: 'katDemarches', manieres_apprendre: 'katManieres', attitudes_relationnelles: 'katRelationnelles', attitudes_affectives: 'katAffectives', competences_essentielles: 'katCompetences', culture_loisirs: 'katCulture' };
+    for (const [kat, key] of Object.entries(katTitel)) {
+        const el = document.querySelector(`#section-${kat} .category-title`);
+        if (el) el.textContent = t(key);
     }
 
     // Bereich-Notizen Labels und Placeholders
@@ -380,6 +581,15 @@ function updateUILanguage() {
             const zumDs = document.getElementById('ds-zum-assistenten');
             if (zumDs) zumDs.textContent = t('dsZumAssistenten');
         }
+        // Section 4 = Zurück zur Schüler-Übersicht
+        if (sections[4]) {
+            const h3 = sections[4].querySelector('h3');
+            const p = sections[4].querySelector('p');
+            const btn = sections[4].querySelector('button');
+            if (h3) h3.textContent = t('uebersichtTitle');
+            if (p) p.textContent = t('uebersichtDesc');
+            if (btn) btn.textContent = t('uebersichtBtn');
+        }
     }
 
     // Disclaimer
@@ -418,6 +628,9 @@ function rerenderItems() {
     const domainWord = isEN ? 'Domain ' : (isFR ? 'Domaine ' : 'Bereich ');
     const toWord = isEN ? 'to' : (isFR ? 'à' : 'bis');
 
+    const texte = itemTexte();
+    const beispiele = getCurrentBeispiele();
+
     for (const [bereichKey, bereich] of Object.entries(data)) {
         // Update Bereich headers
         const header = document.querySelector(`#${bereichKey} .bereich-header h2`);
@@ -428,15 +641,20 @@ function rerenderItems() {
         else if (isEN) displayBereichCode = BEREICH_CODE_EN_MAP[bereich.code] || bereich.code;
         if (headerP) headerP.textContent = displayBereichCode + '-1 ' + toWord + ' ' + displayBereichCode + '-' + Object.values(bereich.stufen).reduce((sum, s) => sum + s.items.length, 0);
 
+        // Stufen-Blöcke dieses Bereichs (vor den Stufen steht das Notizfeld,
+        // deshalb nicht über :nth-child zählen, sonst verrutschen die Überschriften)
+        const stufenEls = document.querySelectorAll(`#${bereichKey}-content .stufe`);
+
         for (const [stufeNr, stufe] of Object.entries(bereich.stufen)) {
+            const stufeEl = stufenEls[parseInt(stufeNr, 10) - 1];
             // Update Stufe headers (name + Bereichsziel)
-            const stufeHeader = document.querySelector(`#${bereichKey}-content .stufe:nth-child(${stufeNr}) .stufe-header-text strong`);
+            const stufeHeader = stufeEl?.querySelector('.stufe-header-text strong');
             if (stufeHeader) stufeHeader.textContent = stufe.name;
-            const stufeZiel = document.querySelector(`#${bereichKey}-content .stufe:nth-child(${stufeNr}) .stufe-header-text em`);
-            if (stufeZiel && stufe.ziel) stufeZiel.textContent = btnLabels.bereichsziel + ': ' + stufe.ziel;
+            const stufeZiel = stufeEl?.querySelector('.stufe-header-text em');
+            if (stufeZiel && stufe.ziel) stufeZiel.textContent = btnLabels.bereichsziel + (isFR ? ' : ' : ': ') + stufe.ziel;
 
             // Update "Alle erreicht" labels
-            const alleLabel = document.querySelector(`#${bereichKey}-content .stufe:nth-child(${stufeNr}) .checkbox-label`);
+            const alleLabel = stufeEl?.querySelector('.checkbox-label');
             if (alleLabel) alleLabel.textContent = btnLabels.alleErreicht;
 
             // Update item contents (keyword, description, button labels) while preserving selection state
@@ -455,7 +673,22 @@ function rerenderItems() {
                             keywordSpan.textContent = item.keyword + ':';
                             // Replace the text node after the keyword span
                             const textNode = keywordSpan.nextSibling;
-                            if (textNode) textNode.textContent = ' ' + item.description;
+                            if (textNode) textNode.textContent = ' ' + item.description + ' ';
+                        }
+                        // Hinweis "identisch" (gleiches Item in einer anderen Stufe)
+                        const badge = descEl.querySelector('.duplicate-badge');
+                        if (badge) { badge.title = texte.duplicateTitle; badge.textContent = '↔ ' + texte.duplicateLabel; }
+                    }
+                    // Beobachtungsbeispiele in der aktuellen Sprache
+                    const details = itemEl.querySelector('.item-beispiele-details');
+                    const liste = beispiele[item.code] || [];
+                    if (details && liste.length > 0) {
+                        const summary = details.querySelector('summary');
+                        if (summary) summary.textContent = `${texte.beispiele} (${liste.length})`;
+                        const ul = details.querySelector('.item-beispiele-list');
+                        if (ul) {
+                            ul.innerHTML = '';
+                            liste.forEach(b => { const li = document.createElement('li'); li.textContent = b; ul.appendChild(li); });
                         }
                     }
                     // Update button labels
@@ -473,11 +706,13 @@ function rerenderItems() {
                     // Update ziel select options
                     const zielSelect = itemEl.querySelector('.ziel-select');
                     if (zielSelect && item.zielformulierungen) {
-                        const selectedIdx = zielSelect.selectedIndex;
+                        const sel = state.selections[item.code];
+                        // gespeicherte Auswahl hat Vorrang vor der bisherigen Anzeige
+                        const selectedIdx = (sel && typeof sel.zielIndex === 'number' && sel.zielIndex >= 0 && sel.zielIndex < item.zielformulierungen.length)
+                            ? sel.zielIndex : zielSelect.selectedIndex;
                         zielSelect.innerHTML = item.zielformulierungen.map((z, i) => `<option value="${i}">${z}</option>`).join('');
                         zielSelect.selectedIndex = selectedIdx;
                         // Also update custom textarea if a standard zielformulierung is selected
-                        const sel = state.selections[item.code];
                         if (sel && typeof sel.zielIndex === 'number' && sel.zielIndex >= 0 && item.zielformulierungen[sel.zielIndex]) {
                             const customTextarea = itemEl.querySelector('.ziel-custom');
                             if (customTextarea) customTextarea.value = item.zielformulierungen[sel.zielIndex];
@@ -492,17 +727,25 @@ function rerenderItems() {
     updateStats();
 }
 
+// Nach dem Neuaufbau (Sprachwechsel) die Auswahl der zusätzlichen Ziele wieder anzeigen
+// (gleiche Klassen wie selectZusatzStatus/loadFromLocalStorage: 'selected' und 'item-stufeN')
 function restoreZusatzSelections() {
     for (const [category, goals] of Object.entries(state.zusaetzlicheZiele)) {
-        for (const [goalId, status] of Object.entries(goals)) {
+        if (!goals || typeof goals !== 'object' || Array.isArray(goals)) continue;
+        for (const [goalId, gespeichert] of Object.entries(goals)) {
+            // Altdaten: 'erreicht' = stufe3, 'ziel' = stufe1
+            const status = gespeichert === 'erreicht' ? 'stufe3' : (gespeichert === 'ziel' ? 'stufe1' : gespeichert);
+            const item = document.getElementById(`zusatz-${goalId}`);
+            if (item) item.classList.add(`item-${status}`);
             const btn = document.getElementById(`btn-${status}-${goalId}`);
-            if (btn) btn.classList.add('active');
+            if (btn) btn.classList.add('selected');
             const descDiv = document.getElementById(`stufen-desc-${goalId}`);
             if (descDiv) {
                 const stufeText = descDiv.querySelector(`.${status}-text`);
                 if (stufeText) stufeText.style.display = 'block';
             }
         }
+        updateZusatzCount(category);
     }
 }
 
@@ -511,6 +754,18 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeItems();
     initializeZusaetzlicheZiele();
     loadFromLocalStorage();
+
+    // Schülerübersicht (keine Einschätzung geöffnet): zuletzt gewählte Sprache verwenden
+    if (typeof smAktuellerSchueler !== 'undefined' && !smAktuellerSchueler) {
+        const uiSprache = gemerkteUiSprache();
+        if (uiSprache !== state.language) {
+            isLoadingData = true;
+            try { switchLanguage(uiSprache); } finally { isLoadingData = false; }
+        }
+    }
+    markiereSprachKnoepfe(state.language);
+    document.documentElement.lang = state.language;
+    if (state.language === 'de') updateUILanguage(); // feste Texte einheitlich aus UI_STRINGS setzen
 
     // Aktualisiere Altersanzeige und blockierte Buttons nach dem Laden
     setTimeout(() => {
@@ -686,12 +941,12 @@ function initializeZusaetzlicheZiele() {
                                 <p class="stufe-text stufe2-text" style="display:none; margin: 4px 0; color: #3b82f6; font-style: italic; font-size: 0.9rem;">🤝 ${goal.stufen.stufe2}</p>
                                 <p class="stufe-text stufe3-text" style="display:none; margin: 4px 0; color: #10b981; font-style: italic; font-size: 0.9rem;">✓ ${goal.stufen.stufe3}</p>
                             </div>
-                            <p style="margin: 4px 0 0 0; color: var(--gray-500); font-size: 0.8rem;"><strong>Interventionen:</strong> ${goal.intervention.join(', ')}</p>
+                            <p style="margin: 4px 0 0 0; color: var(--gray-500); font-size: 0.8rem;"><strong>${t('interventionen')}:</strong> ${goal.intervention.join(', ')}</p>
                         </div>
                         <div class="zusatz-item-actions zusatz-3-buttons">
-                            <button class="zusatz-btn stufe1" id="btn-stufe1-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe1')" title="In Arbeit">⚡ Ziel</button>
-                            <button class="zusatz-btn stufe2" id="btn-stufe2-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe2')" title="Mit Unterstützung">🤝 Teilweise</button>
-                            <button class="zusatz-btn stufe3" id="btn-stufe3-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe3')" title="Erreicht">✓ Erreicht</button>
+                            <button class="zusatz-btn stufe1" id="btn-stufe1-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe1')" title="${t('inArbeit')}">${t('zielBtn')}</button>
+                            <button class="zusatz-btn stufe2" id="btn-stufe2-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe2')" title="${t('mitUnterstuetzung')}">${t('teilweiseBtn')}</button>
+                            <button class="zusatz-btn stufe3" id="btn-stufe3-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'stufe3')" title="${t('erreicht')}">${t('erreichtBtn')}</button>
                         </div>
                     </div>
                 </div>
@@ -804,8 +1059,10 @@ function getZusatzZielById(category, goalId) {
 // Get all goals for a specific level (stufe1, stufe2, stufe3)
 function getZusatzByStufe(category, stufe) {
     const goals = state.zusaetzlicheZiele[category] || {};
+    // Altdaten (2-Stufen-System): 'erreicht' zählt als stufe3, 'ziel' als stufe1
+    const alt = { stufe3: 'erreicht', stufe1: 'ziel' }[stufe];
     return Object.entries(goals)
-        .filter(([id, status]) => status === stufe)
+        .filter(([id, status]) => status === stufe || (alt && status === alt))
         .map(([id]) => getZusatzZielById(category, id))
         .filter(Boolean);
 }
@@ -851,33 +1108,41 @@ function createItemElement(item, bereichKey) {
     const beispieleHtml = beispieleArr.length > 0
         ? `<ul class="item-beispiele-list">${beispieleArr.map(b => `<li>${b}</li>`).join('')}</ul>`
         : '';
-    const lng = state.language;
-    const beispieleLabel = lng === 'fr' ? 'Exemples d\'observation' : (lng === 'en' ? 'Observation examples' : 'Beobachtungsbeispiele');
-    const zielformulierungLabel = lng === 'fr' ? 'Formulation de l\'objectif' : (lng === 'en' ? 'Goal formulation' : 'Zielformulierung');
-    const duplicateTitle = lng === 'fr' ? 'Item identique présent dans une autre étape' : (lng === 'en' ? 'Identical item present in another stage' : 'Identischer Item in einer anderen Stufe vorhanden');
-    const duplicateLabel = lng === 'fr' ? 'identique' : (lng === 'en' ? 'identical' : 'identisch');
+    const texte = itemTexte();
     const duplicateBadge = isDuplicateItem(item.code, bereichKey)
-        ? `<span class="duplicate-badge" title="${duplicateTitle}">↔ ${duplicateLabel}</span>`
+        ? `<span class="duplicate-badge" title="${texte.duplicateTitle}">↔ ${texte.duplicateLabel}</span>`
         : '';
-    const btnErreichtLabel = lng === 'fr' ? 'Atteint' : (lng === 'en' ? 'Mastered' : 'Erreicht');
-    const btnNichtErreichtLabel = lng === 'fr' ? 'Non atteint' : (lng === 'en' ? 'Not mastered' : 'Nicht erreicht');
-    const btnZielLabel = lng === 'fr' ? 'Objectif' : (lng === 'en' ? 'Goal' : 'Ziel');
-    const placeholderLabel = lng === 'fr' ? 'Ou formulation personnelle...' : (lng === 'en' ? 'Or custom formulation...' : 'Oder eigene Formulierung...');
     itemDiv.innerHTML = `
         <div class="item-code">${getDisplayCode(item.code)}</div>
         <div class="item-description" ondblclick="showItemModal('${item.code}')"><span class="item-keyword">${item.keyword}:</span> ${item.description} ${duplicateBadge}</div>
-        ${beispieleHtml ? `<details class="item-beispiele-details"><summary>${beispieleLabel} (${beispieleArr.length})</summary>${beispieleHtml}</details>` : ''}
+        ${beispieleHtml ? `<details class="item-beispiele-details"><summary>${texte.beispiele} (${beispieleArr.length})</summary>${beispieleHtml}</details>` : ''}
         <div class="item-options">
-            <button class="option-btn erreicht" onclick="selectOption('${item.code}', 'erreicht', this)">${btnErreichtLabel}</button>
-            <button class="option-btn nicht-erreicht" onclick="selectOption('${item.code}', 'nicht-erreicht', this)">${btnNichtErreichtLabel}</button>
-            <button class="option-btn ziel" onclick="selectOption('${item.code}', 'ziel', this)">${btnZielLabel}</button>
+            <button class="option-btn erreicht" onclick="selectOption('${item.code}', 'erreicht', this)">${texte.erreicht}</button>
+            <button class="option-btn nicht-erreicht" onclick="selectOption('${item.code}', 'nicht-erreicht', this)">${texte.nichtErreicht}</button>
+            <button class="option-btn ziel" onclick="selectOption('${item.code}', 'ziel', this)">${texte.ziel}</button>
         </div>
         <div class="ziel-box" id="ziel-box-${item.code}">
-            <h4>${zielformulierungLabel}:</h4>
+            <h4>${texte.zielformulierung}:</h4>
             <select class="ziel-select" id="ziel-select-${item.code}" onchange="updateZieltext('${item.code}')">${zielOptions}</select>
-            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="${placeholderLabel}" onchange="updateCustomZiel('${item.code}')"></textarea>
+            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="${texte.placeholder}" onchange="updateCustomZiel('${item.code}')"></textarea>
         </div>`;
     return itemDiv;
+}
+
+// Beschriftungen innerhalb eines Items (für Aufbau und Sprachwechsel)
+function itemTexte() {
+    const lng = state.language;
+    const tri = (de, fr, en) => lng === 'fr' ? fr : (lng === 'en' ? en : de);
+    return {
+        beispiele: tri('Beobachtungsbeispiele', 'Exemples d\'observation', 'Observation examples'),
+        zielformulierung: tri('Zielformulierung', 'Formulation de l\'objectif', 'Goal formulation'),
+        duplicateTitle: tri('Identisches Item in einer anderen Stufe vorhanden', 'Item identique présent dans un autre stade', 'Identical item present in another stage'),
+        duplicateLabel: tri('identisch', 'identique', 'identical'),
+        erreicht: tri('Erreicht', 'Atteint', 'Mastered'),
+        nichtErreicht: tri('Nicht erreicht', 'Non atteint', 'Not mastered'),
+        ziel: tri('Ziel', 'Objectif', 'Goal'),
+        placeholder: tri('Oder eigene Formulierung...', 'Ou formulation personnelle...', 'Or custom formulation...')
+    };
 }
 
 // Findet identische Items (gleiche Beschreibung oder gleiches Keyword) in anderen Stufen desselben Bereichs
@@ -1041,7 +1306,7 @@ function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
             }
         });
         saveToLocalStorage();
-        showToast(`Stufe ${stufeNr} zurückgesetzt`);
+        showToast(tf('stufeZurueckgesetzt', { n: stufeNr }));
     } else {
         // Check: Mark all items as "erreicht"
         checkboxElement.classList.add('checked');
@@ -1063,7 +1328,7 @@ function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
             }
         });
         saveToLocalStorage();
-        showToast(`${count} Items als erreicht markiert`);
+        showToast(tf('itemsErreicht', { n: count }));
     }
 }
 
@@ -1208,12 +1473,13 @@ function updateErreichteListe() {
             .sort((a, b) => a.nr - b.nr).slice(-4); // ascending, last 4
         const bereichDiv = document.createElement('div');
         bereichDiv.style.marginBottom = '15px';
-        bereichDiv.innerHTML = `<h4 style="color: ${ELDIB_DATA[bereich].color};">${ELDIB_DATA[bereich].name}</h4>`;
-        if (erreichte.length === 0) bereichDiv.innerHTML += '<p style="color:#888;font-size:0.9em;">Keine erreichten Items</p>';
+        const bereichAktuell = getCurrentEldibData()[bereich];
+        bereichDiv.innerHTML = `<h4 style="color: ${bereichAktuell.color};">${bereichAktuell.name}</h4>`;
+        if (erreichte.length === 0) bereichDiv.innerHTML += `<p style="color:#888;font-size:0.9em;">${t('keineErreichten')}</p>`;
         else erreichte.forEach(item => {
             const itemDiv = document.createElement('div');
             itemDiv.style.cssText = 'padding:5px 10px;background:#e8f5e9;border-radius:3px;margin-bottom:3px;font-size:0.9em;';
-            itemDiv.textContent = `${item.code}: ${item.keyword}`;
+            itemDiv.textContent = `${getDisplayCode(item.code)}: ${item.keyword}`;
             bereichDiv.appendChild(itemDiv);
         });
         container.appendChild(bereichDiv);
@@ -1239,7 +1505,7 @@ function saveToLocalStorage() {
         localStorage.setItem('eldib-data', JSON.stringify(data));
     } catch (e) {
         console.error('Fehler beim Speichern:', e);
-        alert('Fehler beim Speichern! Möglicherweise ist der Speicher voll. Bitte exportieren Sie Ihre Daten als JSON-Backup.');
+        alert(t('speicherFehler'));
     }
 }
 

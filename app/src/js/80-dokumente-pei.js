@@ -1,21 +1,328 @@
+// ==================== PEI (Plan éducatif individualisé) ====================
+// DE und FR füllen die offiziellen CDSE-Vorlagen (PEI_DE.docx / PEI_FR.docx).
+// EN: Es gibt keine englische Vorlage. Die deutsche Vorlage wird genommen und ihre
+// festen Texte werden zuerst ins Englische übersetzt (PEI_VORLAGE_EN). So hat das
+// englische IEP denselben Aufbau wie DE/FR: Deckblatt, Anwesenheitsliste, farbiges
+// DTORF-R-Raster, Bericht und Zielerfassung.
+
+// Feste Texte der deutschen Vorlage -> Englisch (ganzer Absatztext nach dem Entfernen
+// der rosa Kommentare, Leerzeichen am Rand werden ignoriert)
+const PEI_VORLAGE_EN = {
+    'Individueller Förderplan': 'Individualized Education Plan',
+    'PEI': 'IEP',
+    'Name des Schülers/ der Schülerin': 'Name of the student',
+    'Name des Schülers/ der Schülerin:': 'Name of the student:',
+    'Sozialversicherungsnummer': 'ID number (matricule)',
+    'Schule/Klasse': 'School/Class',
+    'In Zusammenarbeit mit': 'In collaboration with',
+    'Anwesenheitsliste': 'Attendance list',
+    'Unterschrift:en': 'Signature(s)',
+    'Entwicklung ELDiB': 'Development profile (DTORF-R)',
+    'Geburtsdatum:': 'Date of birth: ',
+    'V': 'BEH', 'K': 'COM', 'SOZ': 'SOC', 'KOG': 'COG',
+    'STUFE I': 'STAGE I', 'STUFE II': 'STAGE II', 'STUFE III': 'STAGE III', 'STUFE IV': 'STAGE IV', 'STUFE V': 'STAGE V',
+    'Datum:': 'Date:',
+    '© deutsche Ausgabe: Institut für Entwicklungstherapie/Entwicklungspädagogik e.V. (ETEP Europe) und Marita Bergsson, Düsseldorf, 2007':
+        '© German edition: Institut für Entwicklungstherapie/Entwicklungspädagogik e.V. (ETEP Europe) and Marita Bergsson, Düsseldorf, 2007',
+    'Legende: V-Verhalten; K-Kommunikation; SOZ-Sozialisation; KOG-Kognition':
+        'Legend: BEH-Behavior; COM-Communication; SOC-Socialization; COG-Academics/Cognition',
+    'grün-Lernziel erreicht; gelb-mögliches Lernziel': 'green-objective mastered; yellow-potential objective',
+    'Bericht': 'Report',
+    'Fortschritte des Schülers/ der Schülerin': 'Progress of the student',
+    'Datum': 'Date',
+    'Schüler:in': 'Student',
+    'Erziehungsberechtigte': 'Legal guardian(s)',
+    'Schule': 'School',
+    'Andere (CPI,CC ……. )': 'Other (CPI, CC …)',
+    'Andere (CPI, CC ……..)': 'Other (CPI, CC …)',
+    'Anzugehende Themen': 'Points to address',
+    'Zielerfassung und Umsetzung': 'Goals and implementation',
+    'CDSE/ ESEB (SePAS)/ Lehrperson (LP)': 'CDSE/ ESEB (SePAS)/ Teacher',
+    'Verhalten': 'Behavior',
+    'Kommunikation': 'Communication',
+    'Sozialisation': 'Socialization',
+    'Kognition': 'Academics/Cognition',
+    'Diese Ziele werden im Unterricht aufgegriffen und die Umsetzung sollte im Unterricht erfolgen.':
+        'These goals are addressed in class, and they should be implemented in class.',
+    'Andere ELDiB-unabhängige Ziele': 'Other goals (independent of the DTORF-R)'
+};
+
+// Deutsche Reste und Tippfehler in der französischen Vorlage
+const PEI_VORLAGE_FR_KORREKTUR = {
+    'Erziehungsberechtigte': 'Représentant légal',
+    'Schule': 'École',
+    'Andere (CPI,CC ……. )': 'Autres (CPI, CC …)',
+    'Andere (CPI, CC ……..)': 'Autres (CPI, CC …)',
+    'Nom de l‘élève': 'Nom de l’élève',
+    'Signature:s': 'Signature(s)',
+    'Autres objectifs, indépendants des objectis de l‘ELDiB': 'Autres objectifs, indépendants des objectifs de l’ELDiB',
+    // einheitlich mit Akzent auf dem Großbuchstaben (wie in der übrigen App)
+    'Ecole/Classe': 'École/Classe',
+    'Ecole': 'École',
+    'Elève': 'Élève',
+    'CDSE/ ESEB (SePAS)/ Ecole (titulaire/ autres intervenants)': 'CDSE/ ESEB (SePAS)/ École (titulaire/ autres intervenants)'
+};
+
+// Marken (Texte in der – ggf. übersetzten – Vorlage) und Beschriftungen je Sprache
+function peiSprachTexte(lang) {
+    if (lang === 'fr') {
+        return {
+            nameMarke: 'Nom de l', gebMarke: 'Date de naissance', datumMarke: 'Date:',
+            domaenen: ['Comportement', 'Communication', 'Socialisation', 'Cognition'],
+            andere: 'Autres objectifs', fortschritte: 'Progrès de l', themen: 'Points à développer', datumZeile: 'Date',
+            elternRolle: 'Représentant légal', zielformulierung: 'Formulation de l\'objectif : ', umsetzung: 'Mise en œuvre possible',
+            anf: ['« ', ' »'], wLang: 'fr-LU', datei: 'PEI'
+        };
+    }
+    if (lang === 'en') {
+        return {
+            nameMarke: 'Name of the student', gebMarke: 'Date of birth', datumMarke: 'Date:',
+            domaenen: ['Behavior', 'Communication', 'Socialization', 'Academics/Cognition'],
+            andere: 'Other goals (independent of the DTORF-R)', fortschritte: 'Progress of the student', themen: 'Points to address', datumZeile: 'Date',
+            elternRolle: 'Legal guardian', zielformulierung: 'Goal formulation: ', umsetzung: 'Possible implementation',
+            anf: ['“', '”'], wLang: 'en-US', datei: 'IEP'
+        };
+    }
+    return {
+        nameMarke: 'Name des Sch', gebMarke: 'Geburtsdatum', datumMarke: 'Datum:',
+        domaenen: ['Verhalten', 'Kommunikation', 'Sozialisation', 'Kognition'],
+        andere: 'Andere ELDiB-unabhängige Ziele', fortschritte: 'Fortschritte des Sch', themen: 'Anzugehende Themen', datumZeile: 'Datum',
+        elternRolle: 'Erziehungsberechtigte', zielformulierung: 'Zielformulierung: ', umsetzung: 'Mögliche Umsetzung',
+        anf: ['„', '“'], wLang: 'de-LU', datei: 'PEI'
+    };
+}
+
+// Ersetzt den Text ganzer Absätze (Text über alle Runs zusammengesetzt, Rand-Leerzeichen egal).
+// Der erste Run bekommt den neuen Text (Formatierung bleibt), die übrigen Runs werden geleert.
+function peiSetzeAbsatzTexte(xml, tabelle) {
+    const tRe = /(<w:t(?:\s[^>]*)?>)([^<]*)(<\/w:t>)/g;
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const ent = s => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, '\'').replace(/&amp;/g, '&');
+    return xml.replace(/<w:p[ >][\s\S]*?<\/w:p>/g, p => {
+        const runs = [...p.matchAll(tRe)];
+        if (runs.length === 0) return p;
+        const text = ent(runs.map(r => r[2]).join('')).trim();
+        if (!Object.prototype.hasOwnProperty.call(tabelle, text)) return p;
+        let i = 0;
+        return p.replace(tRe, (m, auf, inhalt, zu) => (i++ === 0 ? '<w:t xml:space="preserve">' + esc(tabelle[text]) + zu : auf + zu));
+    });
+}
+
+// Positionen aller Absätze, deren Text genau dem Suchtext entspricht (Rand-Leerzeichen egal).
+// Liefert jeweils die Stelle vor '</w:p>' zum Anhängen von Text.
+function peiFindeAbsaetze(xml, suchtext) {
+    const treffer = [];
+    const re = /<w:p[ >][\s\S]*?<\/w:p>/g;
+    let m;
+    while ((m = re.exec(xml)) !== null) {
+        const text = [...m[0].matchAll(/<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>/g)].map(x => x[1]).join('').trim();
+        if (text === suchtext) treffer.push(m.index + m[0].length - '</w:p>'.length);
+    }
+    return treffer;
+}
+
+// ---- Formulierungen der zusätzlichen Ziele für den Bericht (Fortschritte / anzugehende Punkte) ----
+// stufe3 = erreicht, stufe2 = mit Unterstützung (-> "zunehmend"), stufe1 = Ziel (-> Zielform)
+const PEI_FORMAT = (function () {
+    function satz(t) {
+        t = String(t || '').replace(/\s+/g, ' ').trim();
+        if (!t) return t;
+        t = t.charAt(0).toUpperCase() + t.slice(1);
+        if (!/[.!?]$/.test(t)) t += '.';
+        return t;
+    }
+
+    // ---------- Deutsch ----------
+    // Fortschritte (stufe3 - erreicht): Text unverändert als Satz.
+    // "selbstständig" wurde in den Daten bereits dort entfernt, wo es überflüssig war;
+    // bei MA-5, MA-24 und AR-30 gehört es zur Aussage und bleibt deshalb stehen.
+    function fortschrittDE(text) {
+        return satz(text);
+    }
+    // Fortschritte (stufe2 - teilweise): Hilfe-Angabe durch "zunehmend" ersetzen
+    function teilweiseDE(text) {
+        if (!text) return text;
+        let t = text;
+        const markers = ['wenigen Erinnerungen', 'anfänglicher Anleitung',
+            'Unterstützung', 'Anleitung', 'Anregung', 'Ermutigung', 'Erinnerung',
+            'Begleitung', 'Hinweisen', 'Übung', 'Vorbereitung', 'Vertrauensaufbau',
+            'Gesprächen', 'Erklärung', 'Reflexionsgesprächen', 'Förderung',
+            'Lernstrategien', 'Hilfe', 'Zeit', 'Moderation'];
+        for (const m of markers) {
+            if (t.includes('mit ' + m + ' ')) { t = t.replace('mit ' + m + ' ', 'zunehmend '); break; }
+            if (t.includes('mit ' + m)) { t = t.replace('mit ' + m, 'zunehmend'); break; }
+        }
+        return satz(t);
+    }
+    // Anzugehende Themen (stufe1 - Ziel): in Zielform (Infinitiv) bringen
+    function themaDE(text) {
+        if (!text) return text;
+        let t = text;
+        let m;
+        if ((m = t.match(/^lernt noch, (.+) zu (\w+)$/))) {
+            t = m[1] + ' ' + m[2];
+        } else if ((m = t.match(/^lernt noch, (.+?) (\w+zu\w+)$/))) {
+            t = m[1] + ' ' + m[2].replace('zu', '');
+        } else if ((m = t.match(/^hat noch Schwierigkeiten, (.+) zu (\w+)$/))) {
+            t = m[1] + ' ' + m[2];
+        } else if ((m = t.match(/^hat noch Schwierigkeiten, (.+?) (\w+zu\w+)$/))) {
+            t = m[1] + ' ' + m[2].replace('zu', '');
+        } else if ((m = t.match(/^hat noch Schwierigkeiten mit (.+)$/))) {
+            t = 'an ' + m[1] + ' weiterarbeiten';
+        } else if ((m = t.match(/^hat noch Schwierigkeiten, (.+)$/))) {
+            t = m[1];
+        } else if ((m = t.match(/^zeigt noch wenig (.+)$/))) {
+            t = m[1] + ' weiterentwickeln';
+        } else if ((m = t.match(/^hat noch keine?n? (.+)$/))) {
+            t = m[1];
+        } else if (t.includes(' noch nicht ')) {
+            t = t.replace(' noch nicht ', ' ');
+        } else if (t.includes(' noch ')) {
+            t = t.replace(' noch ', ' ');
+        }
+        // "zu erkennen und kommunizieren" -> "erkennen und kommunizieren"; "und zu Y" -> "und Y"
+        t = t.replace(/ zu (\w+en)\b(?= und )/g, ' $1');
+        t = t.replace(/ und zu (\w+)\b/g, ' und $1');
+        return satz(t);
+    }
+
+    // ---------- Französisch ----------
+    // Hilfe-Angaben in den stufe2-Texten ("avec soutien", "avec des indices" ...)
+    const FR_HILFE = /\bavec (?:peu de rappels|des indications|des indices|des discussions|des entretiens de réflexion|des stratégies d'apprentissage|guidance initiale|la construction de la confiance|le temps|soutien|stimulation|guidance|rappel|encouragement|explication|médiation|aide|accompagnement|préparation|entraînement)\b/i;
+    function fortschrittFR(text) {
+        return satz(text);
+    }
+    function teilweiseFR(text) {
+        if (!text) return text;
+        let t = text;
+        if (FR_HILFE.test(t)) {
+            t = t.replace(FR_HILFE, 'de plus en plus');
+            t = t.replace(/de plus en plus plus /g, 'de plus en plus ')
+                .replace(/de plus en plus davantage/g, 'de plus en plus')
+                .replace(/de plus en plus mieux/g, 'de mieux en mieux')
+                .replace(/de plus en plus de l'/g, 'de plus en plus d\'')
+                .replace(/de plus en plus (?:de la|du|des) /g, 'de plus en plus de ')
+                .replace(/de plus en plus de (?=[aeiouyéèêâîôûh])/gi, 'de plus en plus d\'');
+            // "de plus en plus ... de manière plus autonome" -> doppeltes "plus" vermeiden
+            t = t.replace(/(de plus en plus .*?)\bde manière plus /, '$1de manière ');
+        }
+        return satz(t);
+    }
+    function themaFR(text) {
+        if (!text) return text;
+        let t = text;
+        let m;
+        if ((m = t.match(/^apprend encore à (.+)$/i))) { t = m[1]; }
+        else if ((m = t.match(/^a encore des difficultés à (.+)$/i))) { t = m[1]; }
+        else if ((m = t.match(/^a encore des difficultés avec (.+)$/i))) { t = 'travailler sur ' + m[1]; }
+        else if ((m = t.match(/^a encore des difficultés (.+)$/i))) { t = m[1]; }
+        else if ((m = t.match(/^est encore en train de (.+)$/i))) { t = m[1]; }
+        else if ((m = t.match(/^montre encore peu (de |d')(.+)$/i))) { t = 'développer davantage ' + m[1] + m[2]; }
+        // "ne ... pas encore": Verneinung weglassen – außer bei "n'a pas encore" und "pas encore (…) de/d'"
+        // (dort bliebe ein fehlerhafter Satz stehen), dann den Satz unverändert übernehmen
+        else if ((m = t.match(/^(?:ne |n')(\S+) pas encore (.+)$/i)) && m[1] !== 'a' && !/^(\S+ment )?(de |d')/.test(m[2])) { t = m[1] + ' ' + m[2]; }
+        else if (!/pas encore/.test(t) && t.includes(' encore ')) { t = t.replace(' encore ', ' '); }
+        // "être patient et à attendre" -> "être patient et attendre"
+        t = t.replace(/ et à (?=\S)/, ' et ');
+        return satz(t);
+    }
+
+    // ---------- Englisch ----------
+    const EN_HILFE = / (?:with (?:few reminders|initial guidance|learning strategies|support|guidance|prompting|reminders|encouragement|hints|accompaniment|practice|mediation|help|preparation)|when explained|when reminded|through (?:reflection )?conversations?|over time|as trust is built)\b/;
+    const EN_GERUNDIUM = {
+        accepting: 'accept', acknowledging: 'acknowledge', adjusting: 'adjust', allowing: 'allow', apologizing: 'apologize',
+        appearing: 'appear', applying: 'apply', approaching: 'approach', attending: 'attend', avoiding: 'avoid', being: 'be',
+        budgeting: 'budget', building: 'build', carrying: 'carry', communicating: 'communicate', concentrating: 'concentrate',
+        controlling: 'control', coping: 'cope', dealing: 'deal', developing: 'develop', engaging: 'engage', expressing: 'express',
+        feeling: 'feel', following: 'follow', handling: 'handle', having: 'have', keeping: 'keep', learning: 'learn',
+        letting: 'let', listening: 'listen', maintaining: 'maintain', making: 'make', motivating: 'motivate',
+        navigating: 'navigate', organizing: 'organize', participating: 'participate', persevering: 'persevere', playing: 'play',
+        presenting: 'present', preventing: 'prevent', putting: 'put', recognizing: 'recognize', reflecting: 'reflect',
+        regulating: 'regulate', representing: 'represent', resolving: 'resolve', respecting: 'respect', staying: 'stay',
+        storing: 'store', structuring: 'structure', taking: 'take', thinking: 'think', using: 'use', verbalizing: 'verbalize',
+        working: 'work', doing: 'do', managing: 'manage', planning: 'plan', sharing: 'share', showing: 'show',
+        enjoying: 'enjoy', processing: 'process', naming: 'name', waiting: 'wait', looking: 'look'
+    };
+    // "X and Y-ing" -> "X and Y" (zweites Verb einer Aufzählung ebenfalls in die Grundform)
+    const enGrundformRest = rest => rest.replace(/\b(and|or) (\w+ing)\b/, (m, und, v) => und + ' ' + (EN_GERUNDIUM[v] || v));
+    function fortschrittEN(text) {
+        return satz(text);
+    }
+    function teilweiseEN(text) {
+        if (!text) return text;
+        let t = text;
+        if (EN_HILFE.test(t)) {
+            t = t.replace(EN_HILFE, '');
+            // "increasingly" nach "can", sonst an den Anfang – aber nicht, wenn der Satz schon
+            // einen Fortschritt ausdrückt ("more", "better" ...) oder mit "has"/"is" beginnt
+            if (/\b(more|better|faster|calmer)\b/.test(t) || /^(has|is) /.test(t)) { /* bleibt ohne Zusatz */ }
+            else if (/^can /.test(t)) t = t.replace(/^can /, 'can increasingly ');
+            else t = 'increasingly ' + t;
+        }
+        return satz(t);
+    }
+    function themaEN(text) {
+        if (!text) return text;
+        let t = text;
+        let m;
+        if ((m = t.match(/^is still learning to (.+)$/))) { t = m[1]; }
+        else if ((m = t.match(/^still has difficulty (?:with )?(\w+)(.*)$/)) && EN_GERUNDIUM[m[1]]) { t = EN_GERUNDIUM[m[1]] + enGrundformRest(m[2]); }
+        else if ((m = t.match(/^still has difficulty (\w+ly) (\w+)(.*)$/)) && EN_GERUNDIUM[m[2]]) { t = m[1] + ' ' + EN_GERUNDIUM[m[2]] + enGrundformRest(m[3]); } // "actively approaching" -> "actively approach"
+        else if ((m = t.match(/^still has difficulty with (.+)$/))) { t = 'keep working on ' + m[1]; }
+        else if ((m = t.match(/^is still (\w+ing) (.+)$/)) && EN_GERUNDIUM[m[1]]) { t = EN_GERUNDIUM[m[1]] + ' ' + m[2]; }
+        else if ((m = t.match(/^is not yet (.+)$/))) { t = 'become ' + m[1]; }
+        else if ((m = t.match(/^(?:still )?shows little (.+)$/))) { t = 'develop more ' + m[1]; }
+        else if ((m = t.match(/^does not (?:yet |always )(.+?)(?: yet)?$/))) { t = m[1]; }
+        else if ((m = t.match(/^has no experience with (.+?)(?: yet)?$/))) { t = 'gain experience with ' + m[1]; }
+        else { t = t.replace(/^still /, '').replace(/ still /, ' ').replace(/ yet$/, ''); }
+        return satz(t);
+    }
+
+    return {
+        de: { fortschritt: fortschrittDE, teilweise: teilweiseDE, thema: themaDE },
+        fr: { fortschritt: fortschrittFR, teilweise: teilweiseFR, thema: themaFR },
+        en: { fortschritt: fortschrittEN, teilweise: teilweiseEN, thema: themaEN }
+    };
+})();
+
+// Fortschritte und anzugehende Punkte aus den zusätzlichen Zielen einer Einschätzung
+function peiBerichtListen(zusaetzlicheZiele, lang) {
+    const kategorien = ['demarches_mentales', 'manieres_apprendre', 'attitudes_relationnelles',
+        'attitudes_affectives', 'competences_essentielles', 'culture_loisirs'];
+    const f = PEI_FORMAT[lang] || PEI_FORMAT.de;
+    const daten = getCurrentZusaetzlicheZiele();
+    // Altdaten (2-Stufen-System): 'erreicht' = stufe3, 'ziel' = stufe1
+    const norm = s => (s === 'erreicht' ? 'stufe3' : (s === 'ziel' ? 'stufe1' : s));
+    const holen = (kat, stufe) => Object.entries((zusaetzlicheZiele || {})[kat] || {})
+        .filter(([id, status]) => norm(status) === stufe)
+        .map(([id]) => (daten[kat] || []).find(g => g.id === id))
+        .filter(Boolean);
+    const fortschritte = [], themen = [];
+    for (const kat of kategorien) {
+        for (const g of holen(kat, 'stufe3')) fortschritte.push(f.fortschritt(g.stufen?.stufe3 || g.title));
+        for (const g of holen(kat, 'stufe2')) fortschritte.push(f.teilweise(g.stufen?.stufe2 || g.title));
+        for (const g of holen(kat, 'stufe1')) themen.push(f.thema(g.stufen?.stufe1 || g.title));
+    }
+    return { fortschritte, themen };
+}
+
 async function generatePEI() {
     // Sicherstellen, dass alle aktuellen Daten gespeichert sind
     saveToLocalStorage();
 
-    // Englisch: es gibt kein englisches Word-Template -> von Grund auf mit docx.js bauen
-    if (state.language === 'en') {
-        return generateEnglishPEI();
-    }
+    const lang = (state.language === 'fr' || state.language === 'en') ? state.language : 'de';
+    const L = peiSprachTexte(lang);
 
     // --- 1. Load the DOCX template (embedded as base64) ---
-    const isFR = state.language === 'fr' && typeof TEMPLATE_FR_PEI_CDSE_BASE64 !== 'undefined';
+    // FR: französische Vorlage; DE und EN: deutsche Vorlage (EN wird übersetzt, siehe PEI_VORLAGE_EN)
+    const isFR = lang === 'fr' && typeof TEMPLATE_FR_PEI_CDSE_BASE64 !== 'undefined';
     const templateBase64 = isFR ? TEMPLATE_FR_PEI_CDSE_BASE64 : TEMPLATE_DE_CDSE_BASE64;
     const zip = await JSZip.loadAsync(templateBase64, {base64: true});
     let docXml = await zip.file('word/document.xml').async('string');
 
     // --- 2. Gather all data ---
     const stammdaten = getStammdaten();
-    const eldibData = getCurrentEldibData();
+    const datum = iso => eldibDatum(iso, lang);
 
     // --- 2a. Check for dual assessment (Schüler-Manager) ---
     let einschaetzung1 = null;
@@ -41,21 +348,11 @@ async function generatePEI() {
         return 'FFFFFF';
     }
 
-    // Helper: extract Zusatz data from saved assessment
-    function getZusatzFromSaved(zusaetzlicheZiele, category, stufe) {
-        const goals = zusaetzlicheZiele?.[category] || {};
-        const data = getCurrentZusaetzlicheZiele();
-        return Object.entries(goals)
-            .filter(([id, status]) => status === stufe)
-            .map(([id]) => data[category]?.find(g => g.id === id))
-            .filter(Boolean);
-    }
-
     // Use 2nd assessment goals for Zielerfassung (or current if no dual)
     const zieleSelections = hatZweiEinschaetzungen ? einschaetzung2.selections : state.selections;
     const ziele = { verhalten: [], kommunikation: [], sozialisation: [], kognition: [] };
 
-    for (const [code, selection] of Object.entries(zieleSelections)) {
+    for (const [code, selection] of Object.entries(zieleSelections || {})) {
         const bereich = findBereichByCode(code);
         const item = findItemByCode(code);
         if (bereich && item && selection.status === 'ziel') {
@@ -71,14 +368,10 @@ async function generatePEI() {
     function escapeXml(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
+    // Sprache der eingefügten Texte (für die Rechtschreibprüfung in Word)
+    const langRpr = '<w:lang w:val="' + L.wLang + '"/>';
     function makeRun(text, bold, italic) {
-        let rPr = '';
-        if (bold || italic) {
-            rPr = '<w:rPr>';
-            if (bold) rPr += '<w:b/>';
-            if (italic) rPr += '<w:i/>';
-            rPr += '</w:rPr>';
-        }
+        const rPr = '<w:rPr>' + (bold ? '<w:b/>' : '') + (italic ? '<w:i/>' : '') + langRpr + '</w:rPr>';
         return '<w:r>' + rPr + '<w:t xml:space="preserve">' + escapeXml(text) + '</w:t></w:r>';
     }
     function makePara(runs) {
@@ -89,178 +382,6 @@ async function generatePEI() {
     }
     function makeSubBulletPara(runs) {
         return '<w:p><w:pPr><w:numPr><w:ilvl w:val="1"/><w:numId w:val="3"/></w:numPr></w:pPr>' + runs + '</w:p>';
-    }
-
-    // --- Text transformation for professional PEI formulations ---
-    // Helper: try to conjugate infinitive verb to 3rd person for observational style
-    function tryConjugatePhrase(phrase) {
-        if (!phrase || phrase.includes(' und ') || phrase.includes(' oder ')) return null;
-        const words = phrase.trim().split(/\s+/);
-        if (words.length < 2) return null;
-        const verb = words[words.length - 1];
-        const rest = words.slice(0, -1).join(' ');
-        // -ieren verbs: always regular (regulieren → Reguliert)
-        if (verb.endsWith('ieren')) {
-            return verb.charAt(0).toUpperCase() + verb.slice(1, -2) + 't ' + rest;
-        }
-        // Known verb conjugations (3rd person singular)
-        const map = {
-            'zerlegen':'Zerlegt','finden':'Findet','treffen':'Trifft',
-            'ziehen':'Zieht','betrachten':'Betrachtet','hinterfragen':'Hinterfragt',
-            'übertragen':'Überträgt','unterscheiden':'Unterscheidet',
-            'bewältigen':'Bewältigt','lösen':'Löst','pflegen':'Pflegt',
-            'vertreten':'Vertritt','nutzen':'Nutzt','erkennen':'Erkennt',
-            'benennen':'Benennt','bewahren':'Bewahrt','verarbeiten':'Verarbeitet',
-            'verkraften':'Verkraftet','wahren':'Wahrt','leisten':'Leistet',
-            'arbeiten':'Arbeitet','geben':'Gibt','machen':'Macht',
-            'warten':'Wartet','bleiben':'Bleibt','verwalten':'Verwaltet',
-            'vermeiden':'Vermeidet','befolgen':'Befolgt','gestalten':'Gestaltet',
-            'entwickeln':'Entwickelt','lesen':'Liest','schreiben':'Schreibt',
-            'erledigen':'Erledigt','verfassen':'Verfasst','begegnen':'Begegnet',
-            'bewegen':'Bewegt','kochen':'Kocht','spielen':'Spielt',
-            'verarbeiten':'Verarbeitet','genießen':'Genießt',
-        };
-        if (map[verb]) return map[verb] + ' ' + rest;
-        return null;
-    }
-    // French text formatting functions
-    function formatFortschrittFR(text) {
-        if (!text) return text;
-        let t = text;
-        t = t.replace(/peut de manière autonome /gi, 'Peut ');
-        t = t.replace(/peut? de manière autonome/gi, 'Peut');
-        t = t.replace(/  +/g, ' ').trim();
-        t = t.charAt(0).toUpperCase() + t.slice(1);
-        if (!t.endsWith('.')) t += '.';
-        return t;
-    }
-    function formatTeilweiseFR(text) {
-        if (!text) return text;
-        let t = text;
-        const markers = ['avec soutien', 'avec aide', 'avec encouragement', 'avec rappel',
-            'avec accompagnement', 'avec guidance', 'avec anleitung', 'avec des indications'];
-        for (const m of markers) {
-            if (t.toLowerCase().includes(m + ' ')) { t = t.replace(new RegExp(m + ' ', 'i'), 'de plus en plus '); break; }
-            if (t.toLowerCase().includes(m)) { t = t.replace(new RegExp(m, 'i'), 'de plus en plus'); break; }
-        }
-        t = t.replace(/  +/g, ' ').trim();
-        t = t.charAt(0).toUpperCase() + t.slice(1);
-        if (!t.endsWith('.')) t += '.';
-        return t;
-    }
-    function formatAnzugehendesThemaFR(text) {
-        if (!text) return text;
-        let t = text;
-        let m;
-        if ((m = t.match(/^apprend encore à (.+)/i))) { t = m[1]; }
-        else if ((m = t.match(/^a encore des difficultés à (.+)/i))) { t = m[1]; }
-        else if ((m = t.match(/^a encore des difficultés (.+)/i))) { t = m[1]; }
-        else if (t.includes(' encore ')) { t = t.replace(' encore ', ' '); }
-        t = t.replace(/  +/g, ' ').trim();
-        t = t.charAt(0).toUpperCase() + t.slice(1);
-        if (!t.endsWith('.')) t += '.';
-        return t;
-    }
-
-    // Fortschritte (stufe3 - erreicht): Conjugate verbs for variety, remove "selbstständig"
-    function formatFortschritt(text) {
-        if (!text) return text;
-        let t = text;
-        if (t.startsWith('kann selbstständig ') || t.startsWith('kann sich selbstständig ')) {
-            let rest, hasSich = false;
-            if (t.startsWith('kann sich selbstständig ')) {
-                rest = t.substring('kann sich selbstständig '.length);
-                hasSich = true;
-            } else {
-                rest = t.substring('kann selbstständig '.length);
-            }
-            const conj = tryConjugatePhrase(rest);
-            if (conj) {
-                // Conjugated form: "Zerlegt ein Problem..." / "Reguliert sich..."
-                if (hasSich) {
-                    const parts = conj.split(' ');
-                    t = parts[0] + ' sich ' + parts.slice(1).join(' ');
-                } else {
-                    t = conj;
-                }
-            } else {
-                t = hasSich ? ('Kann sich ' + rest) : ('Kann ' + rest);
-            }
-        } else {
-            t = t.replace(/ selbstständig /g, ' ').replace(/ selbstständig,/g, ',').replace(/ selbstständig$/g, '');
-        }
-        t = t.replace(/  +/g, ' ').trim();
-        t = t.charAt(0).toUpperCase() + t.slice(1);
-        if (!t.endsWith('.')) t += '.';
-        return t;
-    }
-    // Fortschritte (stufe2 - teilweise): Replace support qualifier with "zunehmend"
-    function formatTeilweise(text) {
-        if (!text) return text;
-        let t = text;
-        const markers = ['wenigen Erinnerungen', 'anfänglicher Anleitung',
-            'Unterstützung', 'Anleitung', 'Anregung', 'Ermutigung', 'Erinnerung',
-            'Begleitung', 'Hinweisen', 'Übung', 'Vorbereitung', 'Vertrauensaufbau',
-            'Gesprächen', 'Erklärung', 'Reflexionsgesprächen', 'Förderung',
-            'Lernstrategien', 'Hilfe', 'Zeit', 'Moderation'];
-        for (const m of markers) {
-            if (t.includes('mit ' + m + ' ')) { t = t.replace('mit ' + m + ' ', 'zunehmend '); break; }
-            if (t.includes('mit ' + m)) { t = t.replace('mit ' + m, 'zunehmend'); break; }
-        }
-        t = t.replace(/  +/g, ' ').trim();
-        t = t.charAt(0).toUpperCase() + t.slice(1);
-        if (!t.endsWith('.')) t += '.';
-        return t;
-    }
-    // Anzugehende Themen (stufe1 - Ziel): Transform to infinitive/goal form
-    function formatAnzugehendesThema(text) {
-        if (!text) return text;
-        let t = text;
-        let m;
-        // "lernt noch, X zu Y" → "X Y."
-        if ((m = t.match(/^lernt noch, (.+) zu (\w+)$/))) {
-            t = m[1] + ' ' + m[2];
-        } else if ((m = t.match(/^lernt noch, (.+?) (\w+zu\w+)$/))) {
-            t = m[1] + ' ' + m[2].replace('zu', '');
-        }
-        // "hat noch Schwierigkeiten, X zu Y" → "X Y."
-        else if ((m = t.match(/^hat noch Schwierigkeiten, (.+) zu (\w+)$/))) {
-            t = m[1] + ' ' + m[2];
-        } else if ((m = t.match(/^hat noch Schwierigkeiten, (.+?) (\w+zu\w+)$/))) {
-            t = m[1] + ' ' + m[2].replace('zu', '');
-        }
-        // "hat noch Schwierigkeiten mit X" → "An X weiterarbeiten."
-        else if ((m = t.match(/^hat noch Schwierigkeiten mit (.+)$/))) {
-            t = 'an ' + m[1] + ' weiterarbeiten';
-        }
-        // "hat noch Schwierigkeiten, X" (no "zu")
-        else if ((m = t.match(/^hat noch Schwierigkeiten, (.+)$/))) {
-            t = m[1];
-        }
-        // "zeigt noch wenig X" → "X weiterentwickeln."
-        else if ((m = t.match(/^zeigt noch wenig (.+)$/))) {
-            t = m[1] + ' weiterentwickeln';
-        }
-        // "hat noch keine/keinen X" → "X entwickeln."
-        else if ((m = t.match(/^hat noch keine?n? (.+)$/))) {
-            t = m[1];
-        }
-        // Patterns with "noch nicht" → remove negation
-        else if (t.includes(' noch nicht ')) {
-            t = t.replace(' noch nicht ', ' ');
-        }
-        // Patterns with "noch " → remove "noch"
-        else if (t.includes(' noch ')) {
-            t = t.replace(' noch ', ' ');
-        }
-        // Clean up compound infinitives: "zu erkennen und kommunizieren" → "erkennen und kommunizieren"
-        t = t.replace(/ zu (\w+en)\b(?= und )/g, ' $1');
-        // Clean up "und zu Y" → "und Y"
-        t = t.replace(/ und zu (\w+)\b/g, ' und $1');
-        t = t.replace(/  +/g, ' ').trim();
-        t = t.charAt(0).toUpperCase() + t.slice(1);
-        if (!t.endsWith('.')) t += '.';
-        return t;
     }
 
     // --- 3. Remove pink instructional comments (color FF6699) ---
@@ -282,6 +403,10 @@ async function generatePEI() {
         return xml;
     }
     docXml = removePinkRuns(docXml);
+
+    // --- 3a. Feste Vorlagentexte: EN übersetzen, FR von deutschen Resten befreien ---
+    if (lang === 'en') docXml = peiSetzeAbsatzTexte(docXml, PEI_VORLAGE_EN);
+    if (isFR) docXml = peiSetzeAbsatzTexte(docXml, PEI_VORLAGE_FR_KORREKTUR);
 
     // --- 4. Fill shaded boxes on title page ---
     // Shaded boxes are paragraphs with w:fill="F2F2F2"
@@ -305,50 +430,37 @@ async function generatePEI() {
     // Box 3 (In Zusammenarbeit mit) - leave empty
 
     // --- 5. Fill Anwesenheitsliste with available data ---
-    if (stammdaten.schueler_name) {
-        docXml = docXml.replace('>MUSTERMANN Jacques<', '>' + escapeXml(stammdaten.schueler_name) + '<');
-        // French template might use different placeholder
-        docXml = docXml.replace('>NOM Pr', '>' + escapeXml(stammdaten.schueler_name) + '<'.slice(0,-1));
-    }
-    if (stammdaten.eltern1_name) {
-        docXml = docXml.replace('>HIRSCH Madeleine; Erziehungsberechtigte<', '>' + escapeXml(stammdaten.eltern1_name) + (isFR ? '; Responsable légal' : '; Erziehungsberechtigte') + '<');
-        docXml = docXml.replace('>HIRSCH Madeleine; Responsable<', '>' + escapeXml(stammdaten.eltern1_name) + '; Responsable légal<');
-    } else {
-        docXml = docXml.replace('>HIRSCH Madeleine; Erziehungsberechtigte<', '><');
-        docXml = docXml.replace('>HIRSCH Madeleine; Responsable<', '><');
-    }
-    if (stammdaten.einschaetzende) {
-        docXml = docXml.replace('>SCHILTZ Micheline; LP<', '>' + escapeXml(stammdaten.einschaetzende) + '; CDSE<');
-    } else {
-        docXml = docXml.replace('>SCHILTZ Micheline; LP<', '><');
-    }
+    // Beispielnamen der Vorlage immer ersetzen (sonst stehen sie im fertigen Dokument)
+    docXml = docXml.replace('>MUSTERMANN Jacques<', '>' + escapeXml(stammdaten.schueler_name || '') + '<');
+    docXml = docXml.replace('>HIRSCH Madeleine; Erziehungsberechtigte<',
+        '>' + (stammdaten.eltern1_name ? escapeXml(stammdaten.eltern1_name) + '; ' + L.elternRolle : '') + '<');
+    docXml = docXml.replace('>SCHILTZ Micheline; LP<',
+        '>' + (stammdaten.einschaetzende ? escapeXml(stammdaten.einschaetzende) + '; CDSE' : '') + '<');
     docXml = docXml.replace('>LAMBERTY Georgius; ESEB<', '><');
 
     // --- 6. Fill ELDiB page name and birthdate ---
     // Find name label paragraph on ELDiB page and append name
     {
-        const nameLabel = isFR ? 'Nom de l' : 'Name des Sch';
         // Find the second occurrence (first is on title page, second on ELDiB page)
-        let firstOcc = docXml.indexOf(nameLabel);
-        if (firstOcc >= 0) {
-            let secondOcc = docXml.indexOf(nameLabel, firstOcc + 1);
+        const firstOcc = docXml.indexOf(L.nameMarke);
+        if (firstOcc >= 0 && stammdaten.schueler_name) {
+            const secondOcc = docXml.indexOf(L.nameMarke, firstOcc + 1);
             if (secondOcc >= 0) {
                 const pEnd = docXml.indexOf('</w:p>', secondOcc);
-                if (pEnd >= 0 && stammdaten.schueler_name) {
-                    const nameRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/><w:lang w:val="de-LU"/></w:rPr><w:t xml:space="preserve"> ' + escapeXml(stammdaten.schueler_name) + '</w:t></w:r>';
+                if (pEnd >= 0) {
+                    const nameRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/>' + langRpr + '</w:rPr><w:t xml:space="preserve"> ' + escapeXml(stammdaten.schueler_name) + '</w:t></w:r>';
                     docXml = docXml.substring(0, pEnd) + nameRun + docXml.substring(pEnd);
                 }
             }
         }
     }
-    // Fill Geburtsdatum / Date de naissance
+    // Fill Geburtsdatum / Date de naissance / Date of birth (Datum im Format der Sprache)
     {
-        const gebLabel = isFR ? 'Date de naissance' : 'Geburtsdatum: ';
-        const gebPos = docXml.indexOf(gebLabel);
+        const gebPos = docXml.indexOf(L.gebMarke);
         if (gebPos >= 0 && stammdaten.geburtsdatum) {
             const pEnd = docXml.indexOf('</w:p>', gebPos);
             if (pEnd >= 0) {
-                const dateRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/><w:lang w:val="de-LU"/></w:rPr><w:t xml:space="preserve">' + escapeXml(stammdaten.geburtsdatum) + '</w:t></w:r>';
+                const dateRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/>' + langRpr + '</w:rPr><w:t xml:space="preserve">' + escapeXml(datum(stammdaten.geburtsdatum)) + '</w:t></w:r>';
                 docXml = docXml.substring(0, pEnd) + dateRun + docXml.substring(pEnd);
             }
         }
@@ -528,62 +640,28 @@ async function generatePEI() {
         }
     }
 
-    // --- 8. Fill Datum fields in ELDiB grid ---
+    // --- 8./9. Datum im Raster (links/rechts) und bei der Zielerfassung ---
+    // Die Vorlagen haben drei Absätze "Datum:" / "Date:" (in FR über mehrere Runs verteilt):
+    // [0] Raster links (1. bzw. aktuelle Einschätzung), [1] Raster rechts (2. Einschätzung),
+    // [2] Zielerfassung. Von hinten nach vorne einfügen, damit die Positionen stimmen.
     {
-        const datumMarker = '>Datum:<';
-        // Left grid Datum (1st assessment or current)
-        const leftDatum = hatZweiEinschaetzungen
-            ? einschaetzung1.stammdaten?.einschaetzungsdatum
-            : stammdaten.einschaetzungsdatum;
-        if (leftDatum) {
-            const datumPos = docXml.indexOf(datumMarker);
-            if (datumPos >= 0) {
-                const pEnd = docXml.indexOf('</w:p>', datumPos);
-                if (pEnd >= 0) {
-                    const dateRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/><w:sz w:val="14"/><w:szCs w:val="14"/></w:rPr><w:t xml:space="preserve"> ' + escapeXml(leftDatum) + '</w:t></w:r>';
-                    docXml = docXml.substring(0, pEnd) + dateRun + docXml.substring(pEnd);
-                }
-            }
+        const stellen = peiFindeAbsaetze(docXml, L.datumMarke);
+        const datumLinks = hatZweiEinschaetzungen ? einschaetzung1.stammdaten?.einschaetzungsdatum : stammdaten.einschaetzungsdatum;
+        const datumRechts = hatZweiEinschaetzungen ? einschaetzung2.stammdaten?.einschaetzungsdatum : '';
+        const datumZiele = hatZweiEinschaetzungen ? einschaetzung2.stammdaten?.einschaetzungsdatum : stammdaten.einschaetzungsdatum;
+        const rasterRun = d => '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/><w:sz w:val="14"/><w:szCs w:val="14"/></w:rPr><w:t xml:space="preserve"> ' + escapeXml(datum(d)) + '</w:t></w:r>';
+        const zielRun = d => '<w:r><w:t xml:space="preserve"> ' + escapeXml(datum(d)) + '</w:t></w:r>';
+        const einfuegen = [];
+        if (stellen.length >= 3) {
+            if (datumLinks) einfuegen.push([stellen[0], rasterRun(datumLinks)]);
+            if (datumRechts) einfuegen.push([stellen[1], rasterRun(datumRechts)]);
+            if (datumZiele) einfuegen.push([stellen[stellen.length - 1], zielRun(datumZiele)]);
+        } else if (stellen.length > 0 && datumLinks) {
+            einfuegen.push([stellen[0], rasterRun(datumLinks)]);
         }
-        // Right grid Datum (2nd assessment)
-        if (hatZweiEinschaetzungen) {
-            const rightDatum = einschaetzung2.stammdaten?.einschaetzungsdatum;
-            if (rightDatum) {
-                // Find the second "Datum:" occurrence (right grid) - search after the first
-                const firstPos = docXml.indexOf(datumMarker);
-                if (firstPos >= 0) {
-                    const secondPos = docXml.indexOf(datumMarker, firstPos + datumMarker.length);
-                    if (secondPos >= 0) {
-                        const pEnd = docXml.indexOf('</w:p>', secondPos);
-                        if (pEnd >= 0) {
-                            const dateRun = '<w:r><w:rPr><w:rFonts w:cstheme="minorHAnsi"/><w:sz w:val="14"/><w:szCs w:val="14"/></w:rPr><w:t xml:space="preserve"> ' + escapeXml(rightDatum) + '</w:t></w:r>';
-                            docXml = docXml.substring(0, pEnd) + dateRun + docXml.substring(pEnd);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // --- 9. Fill Zielerfassung und Umsetzung section ---
-    // Fill "Datum:" in the Zielerfassung section
-    {
-        const zielDatumMarker = '>Datum:<';
-        // Use 2nd assessment date when available, otherwise current
-        const zielDatum = hatZweiEinschaetzungen
-            ? einschaetzung2.stammdaten?.einschaetzungsdatum
-            : stammdaten.einschaetzungsdatum;
-        const zielerfassungPos = docXml.indexOf('Zielerfassung');
-        if (zielerfassungPos >= 0 && zielDatum) {
-            const datumPos = docXml.indexOf(zielDatumMarker, zielerfassungPos);
-            if (datumPos >= 0) {
-                const pEnd = docXml.indexOf('</w:p>', datumPos);
-                if (pEnd >= 0) {
-                    const dateRun = '<w:r><w:t xml:space="preserve"> ' + escapeXml(zielDatum) + '</w:t></w:r>';
-                    docXml = docXml.substring(0, pEnd) + dateRun + docXml.substring(pEnd);
-                }
-            }
-        }
+        einfuegen.sort((a, b) => b[0] - a[0]).forEach(([pos, run]) => {
+            docXml = docXml.substring(0, pos) + run + docXml.substring(pos);
+        });
     }
 
     // Fill each domain in the Zielerfassung table
@@ -591,16 +669,14 @@ async function generatePEI() {
         let content = '';
         if (domainGoals && domainGoals.length > 0) {
             for (const goal of domainGoals) {
-                // V-25 Keyword: Description
-                content += makePara(makeRun(goal.code + ' ' + goal.keyword + ': ', true) + makeRun(goal.description));
+                // COMP-25 Keyword: Description (Code in der Anzeigeform der Sprache)
+                content += makePara(makeRun(getDisplayCode(goal.code, lang) + ' ' + goal.keyword + ': ', true) + makeRun(goal.description));
                 content += makePara('');
-                // Zielformulierung: "quoted text"
-                const zfLabel = isFR ? 'Formulation de l\'objectif : ' : 'Zielformulierung: ';
-                content += makePara(makeRun(zfLabel, true) + makeRun('\u201E' + goal.zieltext + '\u201C'));
+                // Zielformulierung in den Anführungszeichen der Sprache
+                content += makePara(makeRun(L.zielformulierung, true) + makeRun(L.anf[0] + goal.zieltext + L.anf[1]));
                 content += makePara('');
                 // Mögliche Umsetzung with sub-bullets
-                const muLabel = isFR ? 'Mise en œuvre possible' : 'Mögliche Umsetzung';
-                content += makePara(makeRun(muLabel, true));
+                content += makePara(makeRun(L.umsetzung, true));
                 const interventions = getInterventionen(goal.code);
                 for (const interv of interventions) {
                     content += makeSubBulletPara(makeRun(interv));
@@ -672,14 +748,11 @@ async function generatePEI() {
     }
 
     // Find the Zielerfassung table (identified by domain label with btLr text direction)
-    const domainLabels = isFR
-        ? ['Comportement', 'Communication', 'Socialisation', 'Cognition']
-        : ['Verhalten', 'Kommunikation', 'Sozialisation', 'Kognition'];
     const domainMapping = [
-        { label: domainLabels[0], goals: ziele.verhalten },
-        { label: domainLabels[1], goals: ziele.kommunikation },
-        { label: domainLabels[2], goals: ziele.sozialisation },
-        { label: domainLabels[3], goals: ziele.kognition }
+        { label: L.domaenen[0], goals: ziele.verhalten },
+        { label: L.domaenen[1], goals: ziele.kommunikation },
+        { label: L.domaenen[2], goals: ziele.sozialisation },
+        { label: L.domaenen[3], goals: ziele.kognition }
     ];
 
     for (const domain of domainMapping) {
@@ -688,24 +761,16 @@ async function generatePEI() {
     }
 
     // "Andere ELDiB-unabhängige Ziele" cell - left empty (zusätzliche Ziele go to Bericht only)
-    const andereLabel = isFR ? 'Autres objectifs' : 'Andere ELDiB-unabhängige Ziele';
-    docXml = replaceDomainCell(docXml, andereLabel, makePara(''));
+    docXml = replaceDomainCell(docXml, L.andere, makePara(''));
 
     // --- 10. Fill Bericht section ---
-    // When dual assessments exist:
-    //   Fortschritte table = 1st assessment data (zusätzliche Ziele stufe3 + stufe2)
-    //   Anzugehende Themen table = 2nd assessment data (zusätzliche Ziele stufe1)
-    // When single assessment:
-    //   Fortschritte = current stufe3 + stufe2
-    //   Anzugehende Themen = current stufe1
+    // Fortschritte (zusätzliche Ziele stufe3 + stufe2) und anzugehende Themen (stufe1):
+    //   zwei Einschätzungen: linke Spalte = 1., rechte Spalte = 2. Einschätzung
+    //   eine Einschätzung:   linke Spalte = aktuelle Einschätzung
+    // Die Zeile "Datum" bekommt das Datum der jeweiligen Einschätzung.
     {
-        const categories = [
-            'demarches_mentales', 'manieres_apprendre', 'attitudes_relationnelles',
-            'attitudes_affectives', 'competences_essentielles', 'culture_loisirs'
-        ];
-
         // Fill a specific cell (cellIndex: 1=left/2nd cell, 2=right/3rd cell) in a Bericht row
-        function fillBerichtCell(xml, tableLabel, rowLabel, items, cellIndex) {
+        function fillBerichtCell(xml, tableLabel, rowLabel, items, cellIndex, alsListe = true) {
             // Find table label (direct or concatenated text search)
             let tableLabelPos = xml.indexOf(tableLabel);
             if (tableLabelPos < 0) {
@@ -769,7 +834,8 @@ async function generatePEI() {
             const targetCell = rowContent.substring(cellPositions[targetIdx].start, cellPositions[targetIdx].end);
             let paras = '';
             for (const item of items) {
-                paras += makeBulletPara(makeRun(item));
+                // Aufzählung für Fortschritte/Themen, einfacher Absatz für das Datum
+                paras += alsListe ? makeBulletPara(makeRun(item)) : makePara(makeRun(item));
             }
             if (!paras) paras = makePara('');
             const tcPrEnd = targetCell.indexOf('</w:tcPr>');
@@ -783,104 +849,46 @@ async function generatePEI() {
             return xml.substring(0, trStart) + newRow + xml.substring(trEnd + 7);
         }
 
-        // Legacy wrapper: fill left cell (2nd cell, index 1)
-        function fillBerichtRow(xml, tableLabel, rowLabel, items) {
-            return fillBerichtCell(xml, tableLabel, rowLabel, items, 1);
-        }
+        // Spalten: [Spalte, Einschätzungsdaten]
+        const spalten = hatZweiEinschaetzungen
+            ? [[1, einschaetzung1.zusaetzlicheZiele, einschaetzung1.stammdaten?.einschaetzungsdatum],
+               [2, einschaetzung2.zusaetzlicheZiele, einschaetzung2.stammdaten?.einschaetzungsdatum]]
+            : [[1, state.zusaetzlicheZiele, stammdaten.einschaetzungsdatum]];
 
-        if (hatZweiEinschaetzungen) {
-            // === DUAL ASSESSMENT: Fill both left and right columns ===
-            const zusatz1 = einschaetzung1.zusaetzlicheZiele || {};
-            const zusatz2 = einschaetzung2.zusaetzlicheZiele || {};
-
-            // --- Fortschritte-Tabelle (within the big ELDiB grid table) ---
-            let fortschritte1 = []; // 1st assessment → left column
-            let fortschritte2 = []; // 2nd assessment → right column
-            let themen1 = [];       // 1st assessment → left column
-            let themen2 = [];       // 2nd assessment → right column
-
-            for (const cat of categories) {
-                // 1st assessment data
-                const erreicht1 = getZusatzFromSaved(zusatz1, cat, 'stufe3');
-                const teilweise1 = getZusatzFromSaved(zusatz1, cat, 'stufe2');
-                const ziel1 = getZusatzFromSaved(zusatz1, cat, 'stufe1');
-                for (const g of erreicht1) fortschritte1.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
-                for (const g of teilweise1) fortschritte1.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
-                for (const g of ziel1) themen1.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
-
-                // 2nd assessment data
-                const erreicht2 = getZusatzFromSaved(zusatz2, cat, 'stufe3');
-                const teilweise2 = getZusatzFromSaved(zusatz2, cat, 'stufe2');
-                const ziel2 = getZusatzFromSaved(zusatz2, cat, 'stufe1');
-                for (const g of erreicht2) fortschritte2.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
-                for (const g of teilweise2) fortschritte2.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
-                for (const g of ziel2) themen2.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
+        for (const [spalte, zusatz, spaltenDatum] of spalten) {
+            const listen = peiBerichtListen(zusatz, lang);
+            if (listen.fortschritte.length > 0) {
+                docXml = fillBerichtCell(docXml, L.fortschritte, 'CDSE', listen.fortschritte, spalte);
             }
-
-            // Fortschritte table: left = 1st, right = 2nd
-            const fortLabel = isFR ? 'Progr' : 'Fortschritte des Sch';
-            if (fortschritte1.length > 0) {
-                docXml = fillBerichtCell(docXml, fortLabel, 'CDSE', fortschritte1, 1);
+            if (listen.themen.length > 0) {
+                docXml = fillBerichtCell(docXml, L.themen, 'CDSE', listen.themen, spalte);
             }
-            if (fortschritte2.length > 0) {
-                docXml = fillBerichtCell(docXml, fortLabel, 'CDSE', fortschritte2, 2);
+            // Datum nur eintragen, wenn die Spalte auch Inhalte hat
+            if (spaltenDatum && listen.fortschritte.length > 0) {
+                docXml = fillBerichtCell(docXml, L.fortschritte, L.datumZeile, [datum(spaltenDatum)], spalte, false);
             }
-            // Fortschritte Datum: left = 1st date, right = 2nd date
-            const datum1 = einschaetzung1.stammdaten?.einschaetzungsdatum || '';
-            const datum2 = einschaetzung2.stammdaten?.einschaetzungsdatum || '';
-            if (datum1) {
-                docXml = fillBerichtCell(docXml, fortLabel, isFR ? 'Date' : 'Datum', [datum1], 1);
-            }
-            if (datum2) {
-                docXml = fillBerichtCell(docXml, fortLabel, isFR ? 'Date' : 'Datum', [datum2], 2);
-            }
-
-            // Anzugehende Themen table: left = 1st, right = 2nd
-            const themenLabel = isFR ? 'Points' : 'Anzugehende Themen';
-            if (themen1.length > 0) {
-                docXml = fillBerichtCell(docXml, themenLabel, 'CDSE', themen1, 1);
-            }
-            if (themen2.length > 0) {
-                docXml = fillBerichtCell(docXml, themenLabel, 'CDSE', themen2, 2);
-            }
-            // Anzugehende Themen Datum
-            if (datum1) {
-                docXml = fillBerichtCell(docXml, themenLabel, isFR ? 'Date' : 'Datum', [datum1], 1);
-            }
-            if (datum2) {
-                docXml = fillBerichtCell(docXml, themenLabel, isFR ? 'Date' : 'Datum', [datum2], 2);
-            }
-        } else {
-            // === SINGLE ASSESSMENT: Fill left column only ===
-            let fortschritte = [];
-            let themen = [];
-            for (const cat of categories) {
-                const erreicht = getZusatzErreicht(cat);
-                const teilweise = getZusatzTeilweise(cat);
-                const ziel = getZusatzZiele(cat);
-                for (const g of erreicht) fortschritte.push(isFR ? formatFortschrittFR(g.stufen?.stufe3 || g.title) : formatFortschritt(g.stufen?.stufe3 || g.title));
-                for (const g of teilweise) fortschritte.push(isFR ? formatTeilweiseFR(g.stufen?.stufe2 || g.title) : formatTeilweise(g.stufen?.stufe2 || g.title));
-                for (const g of ziel) themen.push(isFR ? formatAnzugehendesThemaFR(g.stufen?.stufe1 || g.title) : formatAnzugehendesThema(g.stufen?.stufe1 || g.title));
-            }
-
-            if (fortschritte.length > 0) {
-                const fortLabel = isFR ? 'Progr' : 'Fortschritte des Sch';
-                docXml = fillBerichtRow(docXml, fortLabel, 'CDSE', fortschritte);
-            }
-            if (themen.length > 0) {
-                const themenLabel = isFR ? 'Points' : 'Anzugehende Themen';
-                docXml = fillBerichtRow(docXml, themenLabel, 'CDSE', themen);
+            if (spaltenDatum && listen.themen.length > 0) {
+                docXml = fillBerichtCell(docXml, L.themen, L.datumZeile, [datum(spaltenDatum)], spalte, false);
             }
         }
     }
 
     // --- 11. Write back and download ---
     zip.file('word/document.xml', docXml);
+    if (lang === 'en') {
+        // Englisches Dokument: Standardsprache für die Rechtschreibprüfung auf Englisch stellen
+        const stylesDatei = zip.file('word/styles.xml');
+        if (stylesDatei) {
+            const styles = await stylesDatei.async('string');
+            zip.file('word/styles.xml', styles.replace(/<w:lang w:val="(?:de-LU|de-DE|lb-LU)"/g, '<w:lang w:val="en-US"'));
+        }
+        zip.file('word/document.xml', docXml.replace(/<w:lang w:val="(?:de-LU|de-DE|lb-LU)"/g, '<w:lang w:val="en-US"'));
+    }
     const blob = await zip.generateAsync({
         type: 'blob',
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     });
-    saveAs(blob, buildFilename('PEI'));
+    saveAs(blob, buildFilename(L.datei));
 }
 
 
@@ -918,7 +926,7 @@ async function generateComplement() {
     const splitNames = splitSchuelerName(stammdaten.schueler_name || '');
     const nom = splitNames.nachname || '';
     const prenom = splitNames.vorname || '';
-    const vorname = prenom || nom || tri('The student', 'L\'élève', 'Der Schüler'); // Vorname für die Formulierungen
+    const vorname = prenom || nom || tri('The student', 'L\'élève', 'Die/Der Schüler:in'); // Vorname für die Formulierungen
 
     const cellBorders = { top: {style: BorderStyle.SINGLE, size: 1}, bottom: {style: BorderStyle.SINGLE, size: 1}, left: {style: BorderStyle.SINGLE, size: 1}, right: {style: BorderStyle.SINGLE, size: 1} };
     const noBorders = { top: {style: BorderStyle.NONE}, bottom: {style: BorderStyle.NONE}, left: {style: BorderStyle.NONE}, right: {style: BorderStyle.NONE} };
@@ -983,8 +991,8 @@ async function generateComplement() {
         rows: [
             new TableRow({
                 children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('LAST NAME', 'NOM', 'NOM'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('First name', 'Prénom', 'Prénom'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('LAST NAME', 'NOM', 'NAME'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('First name', 'Prénom', 'Vorname'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} })
                 ]
             }),
             new TableRow({
@@ -1000,13 +1008,13 @@ async function generateComplement() {
     children.push(new Paragraph({ spacing: { after: 100 } }));
 
     // Geburtsdatum and Matricule
-    const gebFormatted = stammdaten.geburtsdatum ? new Date(stammdaten.geburtsdatum).toLocaleDateString(tri('en-GB', 'fr-LU', 'de-LU')) : '';
+    const gebFormatted = eldibDatum(stammdaten.geburtsdatum); // DE TT.MM.JJJJ, FR/EN TT/MM/JJJJ
     children.push(new Table({
         rows: [
             new TableRow({
                 children: [
                     new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Date of birth', 'Date de naissance', 'Geburtsdatum'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: 'Matricule', bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('ID number (matricule)', 'Matricule', 'Matricule'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} })
                 ]
             }),
             new TableRow({
@@ -1032,7 +1040,7 @@ async function generateComplement() {
         rows: [
             new TableRow({
                 children: [
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('School / Class', 'Lycée / Classe', 'Schule / Klasse'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} }),
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('School / Class', 'École / Classe', 'Schule / Klasse'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} }),
                     new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('School year / Period', 'Année scolaire / Période', 'Schuljahr / Periode'), bold: true, size: 22})]})], borders: noBorders, width: {size: 50, type: WidthType.PERCENTAGE} })
                 ]
             }),
@@ -1060,7 +1068,7 @@ async function generateComplement() {
             new TableRow({
                 children: [
                     new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Competency areas to assess', 'Domaines de compétences à évaluer', 'Zu bewertende Kompetenzbereiche'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Commented evaluation of performance and progress', 'Evaluation commentée des performances et des progrès', 'Kommentierte Bewertung der Leistungen und Fortschritte'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Commented evaluation of performance and progress', 'Évaluation commentée des performances et des progrès', 'Kommentierte Bewertung der Leistungen und Fortschritte'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
                 ]
             }),
             createDomainRow(tri('Behavior', 'Comportement', 'Verhalten'), erreichte.verhalten, true),
@@ -1164,7 +1172,8 @@ async function generateComplement() {
                 children: [new TextRun({text: '• ' + g.title, bold: true, size: 22})],
                 spacing: { before: 40, after: 20 }
             }));
-            const zielMitVorname = replaceIchWithVorname(getGoalTextComplement(g, g.stufe));
+            let zielMitVorname = replaceIchWithVorname(getGoalTextComplement(g, g.stufe));
+            if (zielMitVorname && !/[.!?]$/.test(zielMitVorname)) zielMitVorname += '.'; // ganzer Satz
             evaluationParagraphs.push(new Paragraph({
                 children: [new TextRun({text: '  ' + zielMitVorname, size: 22})],
                 spacing: { after: 80 }
@@ -1191,9 +1200,15 @@ async function generateComplement() {
         });
     }
 
+    // Kästchen eines Abschnitts: angekreuzt, sobald eine seiner Kategorien Einträge hat
+    function abschnittBox(kategorien) {
+        return kategorien.some(k => getZusatzErreicht(k).length + getZusatzTeilweise(k).length > 0) ? '☑' : '☐';
+    }
+
     // Section: Autres domaines
     children.push(new Paragraph({
-        children: [new TextRun({ text: tri('☐ Other competency areas:', '☐ Autres domaines de compétences:', '☐ Weitere Kompetenzbereiche:'), bold: true, size: 24 })],
+        children: [new TextRun({ text: abschnittBox(['demarches_mentales', 'manieres_apprendre', 'attitudes_relationnelles', 'attitudes_affectives'])
+            + tri(' Other competency areas:', ' Autres domaines de compétences :', ' Weitere Kompetenzbereiche:'), bold: true, size: 24 })],
         spacing: { after: 100 }
     }));
 
@@ -1202,7 +1217,7 @@ async function generateComplement() {
             new TableRow({
                 children: [
                     new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Competency areas to assess', 'Domaines de compétences à évaluer', 'Zu bewertende Kompetenzbereiche'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Commented evaluation of performance and progress', 'Evaluation commentée des performances et des progrès', 'Kommentierte Bewertung der Leistungen und Fortschritte'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Commented evaluation of performance and progress', 'Évaluation commentée des performances et des progrès', 'Kommentierte Bewertung der Leistungen und Fortschritte'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
                 ]
             }),
             createZusatzRowComplement(tri('Cognitive strategies', 'Démarches mentales', 'Denkweisen'), 'demarches_mentales'),
@@ -1217,7 +1232,8 @@ async function generateComplement() {
 
     // Section: Compétences essentielles
     children.push(new Paragraph({
-        children: [new TextRun({ text: tri('☐ Essential competencies for independent living and maximum participation', '☐ Compétences essentielles à la vie autonome et la participation maximale', '☐ Wesentliche Kompetenzen für ein selbstständiges Leben und maximale Teilhabe'), bold: true, size: 24 })],
+        children: [new TextRun({ text: abschnittBox(['culture_loisirs', 'competences_essentielles'])
+            + tri(' Essential competencies for independent living and maximum participation', ' Compétences essentielles à la vie autonome et à la participation maximale', ' Wesentliche Kompetenzen für ein selbstständiges Leben und maximale Teilhabe'), bold: true, size: 24 })],
         spacing: { after: 100 }
     }));
 
@@ -1226,7 +1242,7 @@ async function generateComplement() {
             new TableRow({
                 children: [
                     new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Competency areas to assess', 'Domaines de compétences à évaluer', 'Zu bewertende Kompetenzbereiche'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 35, type: WidthType.PERCENTAGE} }),
-                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Commented evaluation of performance and progress', 'Evaluation commentée des performances et des progrès', 'Kommentierte Bewertung der Leistungen und Fortschritte'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
+                    new TableCell({ children: [new Paragraph({children: [new TextRun({text: tri('Commented evaluation of performance and progress', 'Évaluation commentée des performances et des progrès', 'Kommentierte Bewertung der Leistungen und Fortschritte'), bold: true, size: 22})]})], borders: cellBorders, shading: {fill: 'D9D9D9'}, width: {size: 65, type: WidthType.PERCENTAGE} })
                 ]
             }),
             createZusatzRowComplement(tri('Culture and leisure', 'Culture et loisirs', 'Kultur und Freizeit'), 'culture_loisirs'),
@@ -1313,9 +1329,9 @@ async function generateSchlankPEI() {
         spacing: { after: 200 }
     }));
 
-    // Header: Name + Datum
-    const localeStr = isEN ? 'en-US' : (isFR ? 'fr-FR' : 'de-DE');
-    const heute = new Date().toLocaleDateString(localeStr);
+    // Header: Name + Datum (DE TT.MM.JJJJ, FR/EN TT/MM/JJJJ)
+    const jetzt = new Date();
+    const heute = eldibDatum(`${jetzt.getFullYear()}-${String(jetzt.getMonth() + 1).padStart(2, '0')}-${String(jetzt.getDate()).padStart(2, '0')}`);
     const studentLabel = isEN ? 'Student: ' : (isFR ? 'Élève : ' : 'Schüler:in: ');
     const dateLabel    = isEN ? 'Date: '    : (isFR ? 'Date : '   : 'Datum: ');
     const classLabel   = isEN ? 'Class: '   : (isFR ? 'Classe : ' : 'Klasse: ');
@@ -1326,7 +1342,7 @@ async function generateSchlankPEI() {
             new TextRun({ text: fullName, size: 22 }),
             new TextRun({ text: '    ', size: 22 }),
             new TextRun({ text: dateLabel, bold: true, size: 22 }),
-            new TextRun({ text: stammdaten.einschaetzungsdatum || heute, size: 22 })
+            new TextRun({ text: eldibDatum(stammdaten.einschaetzungsdatum) || heute, size: 22 })
         ],
         spacing: { after: 100 }
     }));
@@ -1383,17 +1399,17 @@ async function generateSchlankPEI() {
                     shading: { fill: 'E0E7FF' }
                 }),
                 new TableCell({
-                    children: [new Paragraph({ children: [new TextRun({ text: isFR ? 'Compétence' : 'Kompetenz', bold: true, size: 20 })] })],
+                    children: [new Paragraph({ children: [new TextRun({ text: isEN ? 'Competency' : (isFR ? 'Compétence' : 'Kompetenz'), bold: true, size: 20 })] })],
                     borders: cellBorders, width: { size: 22, type: WidthType.PERCENTAGE },
                     shading: { fill: 'E0E7FF' }
                 }),
                 new TableCell({
-                    children: [new Paragraph({ children: [new TextRun({ text: isFR ? 'Description' : 'Beschreibung', bold: true, size: 20 })] })],
+                    children: [new Paragraph({ children: [new TextRun({ text: isEN ? 'Description' : (isFR ? 'Description' : 'Beschreibung'), bold: true, size: 20 })] })],
                     borders: cellBorders, width: { size: 33, type: WidthType.PERCENTAGE },
                     shading: { fill: 'E0E7FF' }
                 }),
                 new TableCell({
-                    children: [new Paragraph({ children: [new TextRun({ text: isFR ? 'Formulation de l\'objectif' : 'Zielformulierung', bold: true, size: 20 })] })],
+                    children: [new Paragraph({ children: [new TextRun({ text: isEN ? 'Goal formulation' : (isFR ? 'Formulation de l\'objectif' : 'Zielformulierung'), bold: true, size: 20 })] })],
                     borders: cellBorders, width: { size: 33, type: WidthType.PERCENTAGE },
                     shading: { fill: 'E0E7FF' }
                 })
@@ -1403,7 +1419,7 @@ async function generateSchlankPEI() {
         const dataRows = ziele.map(z => new TableRow({
             children: [
                 new TableCell({
-                    children: [new Paragraph({ children: [new TextRun({ text: getDisplayCode(z.code), bold: true, size: 20 })] })],
+                    children: [new Paragraph({ children: [new TextRun({ text: getDisplayCode(z.code, state.language), bold: true, size: 20 })] })],
                     borders: cellBorders
                 }),
                 new TableCell({
@@ -1430,9 +1446,11 @@ async function generateSchlankPEI() {
     if (!hatZiele) {
         children.push(new Paragraph({
             children: [new TextRun({
-                text: isFR
-                    ? 'Aucun objectif n\'a encore été sélectionné. Marquez les items souhaités comme « Objectif » dans l\'évaluation ELDiB.'
-                    : 'Es wurden noch keine Ziele ausgewählt. Markieren Sie die gewünschten Items in der ELDiB-Auswertung als "Ziel".',
+                text: isEN
+                    ? 'No goals have been selected yet. Mark the desired items as "Goal" in the DTORF-R assessment.'
+                    : (isFR
+                        ? 'Aucun objectif n\'a encore été sélectionné. Marquez les items souhaités comme « Objectif » dans l\'évaluation ELDiB.'
+                        : 'Es wurden noch keine Ziele ausgewählt. Markieren Sie die gewünschten Items in der ELDiB-Auswertung als "Ziel".'),
                 italics: true, color: '888888', size: 22
             })],
             spacing: { before: 200 }
@@ -1441,7 +1459,9 @@ async function generateSchlankPEI() {
 
     const doc = new Document({
         creator: 'ELDiB Generator',
-        title: 'PEI – ELDiB-Tabellen',
+        title: titleText,
+        // gleiche Schrift wie im Complement
+        styles: { default: { document: { run: { font: 'Calibri', size: 22 } } } },
         sections: [{
             properties: { page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } } },
             children
@@ -1449,194 +1469,8 @@ async function generateSchlankPEI() {
     });
 
     const blob = await Packer.toBlob(doc);
-    saveAs(blob, buildFilename('PEI-schlank'));
-}
-
-// ==================== ENGLISH FULL IEP (PEI) ====================
-// Baut das vollstaendige PEI ("Individualized Education Plan") auf Englisch
-// von Grund auf mit docx.js (kein englisches Word-Template vorhanden).
-// Enthaelt: Kopfdaten, Foerderziele je Bereich mit Formulierung + moeglicher
-// Umsetzung (Interventionen), sowie die zusaetzlichen Ziele (Fortschritte /
-// anzugehende Punkte).
-async function generateEnglishPEI() {
-    saveToLocalStorage();
-    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle } = docx;
-
-    const stammdaten = getStammdaten();
-
-    // Foerderziele je Bereich sammeln
-    const ziele = { verhalten: [], kommunikation: [], sozialisation: [], kognition: [] };
-    for (const [code, selection] of Object.entries(state.selections)) {
-        if (selection?.status !== 'ziel') continue;
-        const bereich = findBereichByCode(code);
-        const item = findItemByCode(code);
-        if (bereich && item && ziele[bereich]) {
-            ziele[bereich].push({
-                code, keyword: item.keyword, description: item.description,
-                zieltext: resolveZieltext(code, selection),
-                nr: parseInt(code.split('-').pop()) || 0
-            });
-        }
-    }
-    for (const b of Object.keys(ziele)) ziele[b].sort((a, c) => a.nr - c.nr);
-
-    const split = splitSchuelerName(stammdaten.schueler_name || '');
-    const nom = split.nachname || '';
-    const prenom = split.vorname || '';
-
-    const cellB = {
-        top: { style: BorderStyle.SINGLE, size: 4, color: '666666' },
-        bottom: { style: BorderStyle.SINGLE, size: 4, color: '666666' },
-        left: { style: BorderStyle.SINGLE, size: 4, color: '666666' },
-        right: { style: BorderStyle.SINGLE, size: 4, color: '666666' }
-    };
-    const noB = { top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.NONE }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE } };
-
-    function headerRow(labelL, valL, labelR, valR) {
-        return [
-            new TableRow({ children: [
-                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: labelL, bold: true, size: 22 })] })], borders: noB, width: { size: 50, type: WidthType.PERCENTAGE } }),
-                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: labelR, bold: true, size: 22 })] })], borders: noB, width: { size: 50, type: WidthType.PERCENTAGE } })
-            ] }),
-            new TableRow({ children: [
-                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: valL, size: 22 })] })], borders: cellB }),
-                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: valR, size: 22 })] })], borders: cellB })
-            ] })
-        ];
-    }
-
-    const children = [];
-
-    // Title
-    children.push(new Paragraph({
-        children: [new TextRun({ text: 'Individualized Education Plan (IEP)', bold: true, size: 32 })],
-        spacing: { after: 200 }
-    }));
-
-    // Header data
-    const gebFormatted = stammdaten.geburtsdatum ? new Date(stammdaten.geburtsdatum).toLocaleDateString('en-GB') : '';
-    const periodeLabel = stammdaten.periodenTyp === 'semester' ? 'Semester' : 'Trimester';
-    const periodeText = stammdaten.periode ? `${periodeLabel} ${stammdaten.periode}` : '';
-    const schuljahrPeriode = [stammdaten.schuljahr, periodeText].filter(Boolean).join(' — ');
-
-    children.push(new Table({ rows: headerRow('Last name', nom, 'First name', prenom), width: { size: 100, type: WidthType.PERCENTAGE } }));
-    children.push(new Paragraph({ spacing: { after: 80 } }));
-    children.push(new Table({ rows: headerRow('Date of birth', gebFormatted, 'ID number', stammdaten.matricule || ''), width: { size: 100, type: WidthType.PERCENTAGE } }));
-    children.push(new Paragraph({ spacing: { after: 80 } }));
-    children.push(new Table({ rows: headerRow('School / Class', `${stammdaten.foerderort || ''} / ${stammdaten.klasse || ''}`, 'School year / Period', schuljahrPeriode), width: { size: 100, type: WidthType.PERCENTAGE } }));
-    children.push(new Paragraph({ spacing: { after: 80 } }));
-    children.push(new Table({ rows: headerRow('Evaluation date', stammdaten.einschaetzungsdatum || '', 'Rater(s)', stammdaten.einschaetzende || ''), width: { size: 100, type: WidthType.PERCENTAGE } }));
-    children.push(new Paragraph({ spacing: { after: 300 } }));
-
-    // Goal capture section
-    children.push(new Paragraph({
-        children: [new TextRun({ text: 'Goal capture (according to DTORF-R)', bold: true, size: 26, color: '4F46E5' })],
-        spacing: { after: 120 }
-    }));
-
-    const domains = [
-        { key: 'verhalten', name: 'Behavior' },
-        { key: 'kommunikation', name: 'Communication' },
-        { key: 'sozialisation', name: 'Socialization' },
-        { key: 'kognition', name: 'Academics/Cognition' }
-    ];
-
-    let anyGoal = false;
-    for (const d of domains) {
-        const goals = ziele[d.key];
-        const contentParas = [];
-        if (goals && goals.length > 0) {
-            anyGoal = true;
-            for (const g of goals) {
-                contentParas.push(new Paragraph({
-                    children: [new TextRun({ text: `${getDisplayCode(g.code)} - ${g.keyword}: `, bold: true, size: 22 }), new TextRun({ text: g.description || '', size: 22 })],
-                    spacing: { before: 80, after: 40 }
-                }));
-                if (g.zieltext) {
-                    contentParas.push(new Paragraph({
-                        children: [new TextRun({ text: 'Goal formulation: ', bold: true, size: 22 }), new TextRun({ text: '“' + g.zieltext + '”', size: 22 })],
-                        spacing: { after: 40 }
-                    }));
-                }
-                const interventions = getInterventionen(g.code);
-                if (interventions && interventions.length > 0) {
-                    contentParas.push(new Paragraph({ children: [new TextRun({ text: 'Possible implementation:', bold: true, size: 22 })], spacing: { after: 20 } }));
-                    for (const iv of interventions) {
-                        contentParas.push(new Paragraph({ children: [new TextRun({ text: iv, size: 20 })], bullet: { level: 0 }, spacing: { after: 20 } }));
-                    }
-                }
-                contentParas.push(new Paragraph({ spacing: { after: 80 } }));
-            }
-        } else {
-            contentParas.push(new Paragraph({ children: [new TextRun({ text: '—', size: 22 })] }));
-        }
-
-        children.push(new Table({
-            rows: [new TableRow({ children: [
-                new TableCell({
-                    children: [
-                        new Paragraph({ children: [new TextRun({ text: d.name, bold: true, size: 22 })] }),
-                        new Paragraph({ children: [new TextRun({ text: '(per DTORF-R)', italics: true, size: 18 })] })
-                    ],
-                    borders: cellB, width: { size: 30, type: WidthType.PERCENTAGE }, shading: { fill: 'EEF2FF' }
-                }),
-                new TableCell({ children: contentParas, borders: cellB, width: { size: 70, type: WidthType.PERCENTAGE } })
-            ] })],
-            width: { size: 100, type: WidthType.PERCENTAGE }
-        }));
-        children.push(new Paragraph({ spacing: { after: 120 } }));
-    }
-
-    // Additional goals (report section): Progress + Points to address
-    const categories = [
-        { key: 'demarches_mentales', name: 'Cognitive strategies' },
-        { key: 'manieres_apprendre', name: 'Learning approaches' },
-        { key: 'attitudes_relationnelles', name: 'Relational attitudes' },
-        { key: 'attitudes_affectives', name: 'Emotional attitudes' },
-        { key: 'competences_essentielles', name: 'Essential competencies' },
-        { key: 'culture_loisirs', name: 'Culture and leisure' }
-    ];
-    const progress = [];
-    const toAddress = [];
-    for (const cat of categories) {
-        for (const g of getZusatzErreicht(cat.key)) progress.push(g.stufen?.stufe3 || g.title);
-        for (const g of getZusatzTeilweise(cat.key)) progress.push(g.stufen?.stufe2 || g.title);
-        for (const g of getZusatzZiele(cat.key)) toAddress.push(g.stufen?.stufe1 || g.title);
-    }
-
-    if (progress.length > 0 || toAddress.length > 0) {
-        children.push(new Paragraph({
-            children: [new TextRun({ text: 'Additional goals', bold: true, size: 26, color: '4F46E5' })],
-            spacing: { before: 200, after: 120 }
-        }));
-        const listBlock = (title, items) => {
-            const paras = [new Paragraph({ children: [new TextRun({ text: title, bold: true, size: 22 })], spacing: { after: 40 } })];
-            if (items.length > 0) {
-                for (const it of items) paras.push(new Paragraph({ children: [new TextRun({ text: it, size: 22 })], bullet: { level: 0 }, spacing: { after: 20 } }));
-            } else {
-                paras.push(new Paragraph({ children: [new TextRun({ text: '—', size: 22 })] }));
-            }
-            return paras;
-        };
-        listBlock('Progress', progress).forEach(p => children.push(p));
-        children.push(new Paragraph({ spacing: { after: 100 } }));
-        listBlock('Points to address', toAddress).forEach(p => children.push(p));
-    }
-
-    if (!anyGoal && progress.length === 0 && toAddress.length === 0) {
-        children.push(new Paragraph({
-            children: [new TextRun({ text: 'No goals selected yet. Mark the desired items as "Goal" in the DTORF-R assessment.', italics: true, color: '888888', size: 22 })],
-            spacing: { before: 200 }
-        }));
-    }
-
-    const doc = new Document({
-        styles: { default: { document: { run: { font: 'Calibri', size: 22 }, paragraph: { spacing: { line: 276 } } } } },
-        sections: [{ properties: { page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } } }, children }]
-    });
-
-    const blob = await Packer.toBlob(doc);
-    saveAs(blob, buildFilename('IEP'));
+    // Dateiname in der Sprache des Dokuments
+    saveAs(blob, buildFilename(isEN ? 'IEP-lean' : (isFR ? 'PEI-allege' : 'PEI-schlank')));
 }
 
 function downloadAsWord(html, filename) {
