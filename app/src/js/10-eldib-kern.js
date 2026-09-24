@@ -51,7 +51,9 @@ function getItemInfoFromCode(code) {
         'KOG': 'kognition',
         // Französische Code-Präfixe (display-only) auf die internen Schlüssel mappen
         'COMP': 'verhalten',
-        'COM': 'kommunikation',
+        'COMM': 'kommunikation',
+        'COM': 'kommunikation',   // ältere Anzeige (vor COMM) und Englisch
+        'BEH': 'verhalten',
         'SOC': 'sozialisation',
         'COG': 'kognition'
     };

@@ -301,7 +301,8 @@ function gemerkteUiSprache() {
 }
 
 // Mapping der deutschen Bereich-Codes auf die französischen / englischen Anzeige-Codes
-const BEREICH_CODE_FR_MAP = { 'V': 'COMP', 'K': 'COM', 'SOZ': 'SOC', 'KOG': 'COG' };
+// Französische Kürzel wie in den offiziellen CNI-Vorlagen (PEI/DS): COMP, COMM, SOC, COG
+const BEREICH_CODE_FR_MAP = { 'V': 'COMP', 'K': 'COMM', 'SOZ': 'SOC', 'KOG': 'COG' };
 const BEREICH_CODE_EN_MAP = { 'V': 'BEH',  'K': 'COM', 'SOZ': 'SOC', 'KOG': 'COG' };
 
 // Wandelt einen Item-Code je nach UI-Sprache in die Anzeigeform um.
