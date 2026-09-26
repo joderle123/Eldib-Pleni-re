@@ -337,7 +337,9 @@ function smZurueckZurListe() {
 }
 
 function smSaveAktuelleEinschaetzung() {
-    if (!smAktuellerSchueler) return;
+    // nur mit geladener Einschätzung und nicht während des Neuladens: sonst schreibt die Übersicht
+    // (z. B. beim Doppelklick auf „1. Einschätzung“) ihr leeres Formular in die Schülerliste
+    if (!smAktuellerSchueler || !einschaetzungGeladen || smIsReloading) return;
 
     const data = {
         language: state.language,
@@ -394,8 +396,11 @@ function smManualSave() {
 }
 
 // Auto-Save in Schüler-Liste (überschreibt bestehende saveToLocalStorage)
+// Während eines geplanten Neuladens nicht mehr speichern: die für die nächste Seite vorbereiteten
+// Daten (eldib-data) würden sonst von verzögerten Speicherungen dieser Seite überschrieben.
 const _originalSaveToLocalStorage = saveToLocalStorage;
 saveToLocalStorage = function() {
+    if (smIsReloading) return;
     _originalSaveToLocalStorage();
     smSaveAktuelleEinschaetzung();
 };

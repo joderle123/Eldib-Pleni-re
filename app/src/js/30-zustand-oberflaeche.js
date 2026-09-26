@@ -13,6 +13,9 @@ const state = {
         culture_loisirs: {}
     }
 };
+// Ist eine Einschätzung geladen (loadFromLocalStorage)? In der Schülerübersicht nicht – dann wird
+// nie gespeichert, sonst überschreibt das leere Formular eine gespeicherte Einschätzung.
+let einschaetzungGeladen = false;
 
 // UI Translation strings
 const UI_STRINGS = {
@@ -1546,6 +1549,7 @@ function updateErreichteListe() {
 }
 
 function saveToLocalStorage() {
+    if (!einschaetzungGeladen) return;   // Schülerübersicht: nichts speichern (siehe einschaetzungGeladen)
     const data = {
         language: state.language,
         selections: state.selections,
@@ -1573,6 +1577,7 @@ function loadFromLocalStorage() {
     try {
     const saved = localStorage.getItem('eldib-data');
     if (saved) {
+        einschaetzungGeladen = true;
         const data = JSON.parse(saved);
         if (data.language && data.language !== 'de') {
             state.language = 'de'; // Reset to default so switchLanguage guard doesn't block
