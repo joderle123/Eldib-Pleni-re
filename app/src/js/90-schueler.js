@@ -136,15 +136,22 @@ function smNeuerSchueler() {
                     <div id="sm-new-alter" class="sm-alter"></div></div>
                 <div class="sm-feld"><label for="sm-new-klasse">${smEscapeHtml(t('klasse'))}</label>
                     <input type="text" id="sm-new-klasse" placeholder="${smEscapeHtml(t('klassePlaceholder'))}"></div>
+                <div class="sm-feld"><label for="sm-new-geschlecht">${smEscapeHtml(t('smGeschlecht'))}</label>
+                    <select id="sm-new-geschlecht"><option value="">${smEscapeHtml(t('smGeschlechtLeer'))}</option><option value="m">${smEscapeHtml(t('smJunge'))}</option><option value="w">${smEscapeHtml(t('smMaedchen'))}</option></select></div>
             </div>
+            <p class="sm-dialog-fehler" id="sm-dialog-fehler" role="alert" hidden></p>
             <p class="sm-pflicht-hinweis"><b class="sm-pflicht">*</b> ${smEscapeHtml(t('smPflichtfelder'))}</p>
             <div class="sm-dialog-actions">
-                <button type="button" class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">${smEscapeHtml(t('smAbbrechen'))}</button>
+                <button type="button" class="sm-btn sm-btn-secondary" onclick="smDialogSchliessen()">${smEscapeHtml(t('smAbbrechen'))}</button>
                 <button type="button" class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">${smEscapeHtml(t('smAnlegen'))}</button>
             </div>
         </div>`;
     document.body.appendChild(overlay);
     setTimeout(() => document.getElementById('sm-new-nachname')?.focus(), 100);
+    // Enter in einem Eingabefeld legt an (Esc schließt: siehe unten)
+    overlay.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); smSchuelerAnlegen(); }
+    });
 
     // Alter berechnen bei Geburtsdatum-Eingabe
     document.getElementById('sm-new-geburtsdatum')?.addEventListener('change', function() {
@@ -159,35 +166,61 @@ function smNeuerSchueler() {
     });
 }
 
+// Dialog schließen; der Fokus geht zurück auf „Neuen Schüler anlegen“
+function smDialogSchliessen() {
+    document.getElementById('sm-dialog-overlay')?.remove();
+    document.querySelector('[onclick="smNeuerSchueler()"]')?.focus();
+}
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('sm-dialog-overlay')) { e.preventDefault(); smDialogSchliessen(); }
+});
+
 function smSchuelerAnlegen() {
     const nachname = document.getElementById('sm-new-nachname')?.value?.trim();
     const vorname = document.getElementById('sm-new-vorname')?.value?.trim();
     const geburtsdatum = document.getElementById('sm-new-geburtsdatum')?.value;
     const klasse = document.getElementById('sm-new-klasse')?.value?.trim();
+    const geschlecht = document.getElementById('sm-new-geschlecht')?.value || '';
 
     const fehlende = [];
     if (!nachname) fehlende.push(t('smNachname'));
     if (!vorname) fehlende.push(t('smVorname'));
     if (!geburtsdatum) fehlende.push(t('geburtsdatum'));
 
+    // Pflichtfelder: Hinweis im Dialog (statt alert), Felder markieren, Fokus ins erste fehlende Feld
+    [['sm-new-nachname', nachname], ['sm-new-vorname', vorname], ['sm-new-geburtsdatum', geburtsdatum]].forEach(([id, wert]) => {
+        document.getElementById(id)?.setAttribute('aria-invalid', wert ? 'false' : 'true');
+    });
     if (fehlende.length > 0) {
-        alert(t('smPflichtFehlt') + '\n- ' + fehlende.join('\n- '));
+        const fehler = document.getElementById('sm-dialog-fehler');
+        if (fehler) { fehler.textContent = t('smPflichtFehlt') + ' ' + fehlende.join(', '); fehler.hidden = false; }
+        document.getElementById(!nachname ? 'sm-new-nachname' : (!vorname ? 'sm-new-vorname' : 'sm-new-geburtsdatum'))?.focus();
         return;
     }
 
     const name = nachname + ', ' + vorname;
     const liste = smGetListe();
-    liste.push({
+    const neu = {
         id: smGenerateId(),
         name: name,
         klasse: klasse || '',
         geburtsdatum: geburtsdatum,
         einschaetzung1: null,
         einschaetzung2: null
-    });
+    };
+    if (geschlecht) neu.geschlecht = geschlecht; // optional; wird in den DS neuer Einschätzungen übernommen
+    liste.push(neu);
     smSaveListe(liste);
-    document.getElementById('sm-dialog-overlay')?.remove();
+    smDialogSchliessen();
     smRenderListe();
+}
+
+// DS einer neuen Einschätzung: Geschlecht aus „Neuen Schüler anlegen“ übernehmen (für die Grammatik im Bericht).
+// Nur für leere bzw. aktuelle DS-Daten (v: 2); ein früheres DS-Format bleibt unverändert.
+function smDsMitGeschlecht(ds, schueler) {
+    const d = ds && typeof ds === 'object' ? ds : {};
+    if (!schueler.geschlecht || d.geschlecht || (Object.keys(d).length && d.v !== 2)) return d;
+    return Object.assign({ v: 2 }, d, { geschlecht: schueler.geschlecht });
 }
 
 function smLoescheSchueler(id) {
@@ -492,7 +525,7 @@ function smExportAlleJSON() {
                                 eltern1_tel: basisStammdaten.eltern1_tel || '',
                                 eltern1_email: basisStammdaten.eltern1_email || ''
                             },
-                            dsData: JSON.parse(JSON.stringify(basis.dsData || {}))
+                            dsData: smDsMitGeschlecht(JSON.parse(JSON.stringify(basis.dsData || {})), schueler)
                         };
                         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
                     } else {
@@ -520,7 +553,7 @@ function smExportAlleJSON() {
                                 eltern1_tel: '',
                                 eltern1_email: ''
                             },
-                            dsData: {}
+                            dsData: smDsMitGeschlecht({}, schueler)
                         };
                         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
                     }
@@ -649,7 +682,7 @@ smOeffneEinschaetzung = function(id, nr) {
                 eltern1_tel: basisStammdaten.eltern1_tel || '',
                 eltern1_email: basisStammdaten.eltern1_email || ''
             },
-            dsData: JSON.parse(JSON.stringify(basis.dsData || {}))
+            dsData: smDsMitGeschlecht(JSON.parse(JSON.stringify(basis.dsData || {})), schueler)
         };
         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
     } else {
@@ -680,7 +713,7 @@ smOeffneEinschaetzung = function(id, nr) {
                 eltern1_tel: '',
                 eltern1_email: ''
             },
-            dsData: {}
+            dsData: smDsMitGeschlecht({}, schueler)
         };
         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
     }

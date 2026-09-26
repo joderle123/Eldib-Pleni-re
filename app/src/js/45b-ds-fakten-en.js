@@ -251,7 +251,12 @@ DS_TEXTE.en.fakten = (function () {
       const v = h.chips(ds, 'verfahren').filter(function (k) { return k !== 'andere' && h.chipText(c, 'verfahren', k); }).map(function (k) { return h.chipText(c, 'verfahren', k); });
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
-      const s = [h.satz(h.fuelle('This assessment is based on {liste}, on classroom observations and on interviews with {QSd}, {Qd} and {Name} {himself}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', '{QSd}'], ['eltern', '{Qd}'], ['kind', '{Name} {himself}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['on {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('on classroom observations'); }
+      if (gespr.length) { teile.push('on interviews with ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('on interviews'); }
+      const s = [h.satz(h.fuelle('This assessment is based ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' and ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(h.satz(h.fuelle('Observations and interviews took place in {ort}.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -328,8 +333,11 @@ DS_TEXTE.en.fakten = (function () {
         t = 'Based on the available test results, observations and case history information, specific support needs were identified. In discussions with ' + wer + ', recommendations were developed to further support ' + ihre + ' individual development. Some of the proposed measures were, however, questioned or not fully endorsed by ' + (mitKind ? '{Qd} and/or by {Name}' : '{Qd}') + '.';
       } else if (f.abgestimmt === 'nein') {
         t = 'Based on the available test results, observations and case history information, specific support needs were identified and recommendations formulated. It has not yet been possible to agree on these recommendations with ' + wer + '.';
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = 'Based on the test results, observations and case history information gathered, specific support needs were identified in close consultation with ' + wer + '. On this basis, recommendations were jointly formulated to support ' + ihre + ' individual development effectively.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Based on the test results, observations and case history information gathered, specific support needs were identified. On this basis, recommendations were formulated to support {Name}’s individual development effectively.';
       }
       return [h.block(h.satz(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },

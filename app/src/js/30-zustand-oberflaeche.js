@@ -98,6 +98,9 @@ const UI_STRINGS = {
         smDialogTitel: 'Neuen Schüler anlegen', smNachname: 'Nachname', smVorname: 'Vorname',
         smPflichtfelder: 'Pflichtfelder', smAbbrechen: 'Abbrechen', smAnlegen: 'Anlegen', smAlter: 'Alter: {n}',
         smPflichtFehlt: 'Bitte folgende Pflichtfelder ausfüllen:',
+        smGeschlecht: 'Geschlecht (für den DS-Bericht)', smGeschlechtLeer: '– keine Angabe –', smJunge: 'Junge', smMaedchen: 'Mädchen',
+        stufeUeberschreibenFrage: 'In Stufe {n} gibt es abweichende Einschätzungen: {liste}.\n\nTrotzdem alle Items als „Erreicht“ markieren? Diese Einschätzungen werden überschrieben.',
+        stufeLoeschenFrage: 'Alle Einschätzungen der Stufe {n} löschen?\n\nDas lässt sich nicht rückgängig machen.',
         smLoeschenFrage: '"{name}" wirklich löschen?\n\nAlle Einschätzungen dieses Schülers werden unwiderruflich gelöscht!',
         smImportiert: '{n} Schüler importiert', smEinzelnImportiert: '"{name}" importiert',
         smFormatUnbekannt: 'Unbekanntes Dateiformat.', smImportFehler: 'Fehler beim Import: ',
@@ -178,6 +181,9 @@ const UI_STRINGS = {
         smDialogTitel: 'Ajouter un élève', smNachname: 'Nom', smVorname: 'Prénom',
         smPflichtfelder: 'Champs obligatoires', smAbbrechen: 'Annuler', smAnlegen: 'Créer', smAlter: 'Âge : {n}',
         smPflichtFehlt: 'Veuillez remplir les champs obligatoires suivants :',
+        smGeschlecht: 'Sexe (pour le rapport DS)', smGeschlechtLeer: '– non précisé –', smJunge: 'garçon', smMaedchen: 'fille',
+        stufeUeberschreibenFrage: 'Le stade {n} contient des évaluations différentes : {liste}.\n\nMarquer quand même tous les items comme « Atteint » ? Ces évaluations seront remplacées.',
+        stufeLoeschenFrage: 'Supprimer toutes les évaluations du stade {n} ?\n\nCette action est irréversible.',
         smLoeschenFrage: 'Supprimer vraiment « {name} » ?\n\nToutes les évaluations de cet élève seront définitivement supprimées !',
         smImportiert: '{n} élève(s) importé(s)', smEinzelnImportiert: '« {name} » importé',
         smFormatUnbekannt: 'Format de fichier inconnu.', smImportFehler: 'Erreur lors de l\'importation : ',
@@ -258,6 +264,9 @@ const UI_STRINGS = {
         smDialogTitel: 'Add new student', smNachname: 'Last name', smVorname: 'First name',
         smPflichtfelder: 'Required fields', smAbbrechen: 'Cancel', smAnlegen: 'Create', smAlter: 'Age: {n}',
         smPflichtFehlt: 'Please fill in the following required fields:',
+        smGeschlecht: 'Gender (for the DS report)', smGeschlechtLeer: '– not specified –', smJunge: 'boy', smMaedchen: 'girl',
+        stufeUeberschreibenFrage: 'Stage {n} contains different ratings: {liste}.\n\nMark all items as “Mastered” anyway? These ratings will be overwritten.',
+        stufeLoeschenFrage: 'Delete all ratings of stage {n}?\n\nThis cannot be undone.',
         smLoeschenFrage: 'Really delete "{name}"?\n\nAll assessments of this student will be permanently deleted!',
         smImportiert: '{n} student(s) imported', smEinzelnImportiert: '"{name}" imported',
         smFormatUnbekannt: 'Unknown file format.', smImportFehler: 'Import error: ',
@@ -666,6 +675,7 @@ function rerenderItems() {
                     if (keywordEl) keywordEl.textContent = item.keyword + ':';
                     const descEl = itemEl.querySelector('.item-description');
                     if (descEl) {
+                        descEl.title = texte.details;
                         // Preserve the keyword span, update the text after it
                         const keywordSpan = descEl.querySelector('.item-keyword');
                         if (keywordSpan) {
@@ -908,8 +918,19 @@ function showToast(message) {
 }
 
 function toggleBereich(contentId) {
-    document.getElementById(contentId).classList.toggle('hidden');
+    const zu = document.getElementById(contentId).classList.toggle('hidden');
+    document.querySelector(`[aria-controls="${contentId}"]`)?.setAttribute('aria-expanded', String(!zu));
 }
+
+// Tastatur: „Alle erreicht“, Bereichs- und Kategorie-Köpfe und Item-Beschreibung (Details) mit Enter oder Leertaste
+document.addEventListener('keydown', function (ev) {
+    if ((ev.key !== 'Enter' && ev.key !== ' ') || ev.altKey || ev.ctrlKey || ev.metaKey) return;
+    const el = ev.target;
+    if (!el || !el.matches || !el.matches('.stufe-erreicht-checkbox, .bereich-header, .category-header, .item-description')) return;
+    ev.preventDefault();
+    if (el.classList.contains('item-description')) showItemModal(el.closest('.item').id.slice('item-'.length));
+    else el.click();
+});
 
 function initializeItems() {
     const data = getCurrentEldibData();
@@ -961,7 +982,8 @@ function initializeZusaetzlicheZiele() {
 function toggleCategory(category) {
     const section = document.getElementById(`section-${category}`);
     if (section) {
-        section.classList.toggle('expanded');
+        const auf = section.classList.toggle('expanded');
+        section.querySelector('.category-header')?.setAttribute('aria-expanded', String(auf));
     }
 }
 
@@ -1117,7 +1139,7 @@ function createItemElement(item, bereichKey) {
         : '';
     itemDiv.innerHTML = `
         <div class="item-code">${getDisplayCode(item.code)}</div>
-        <div class="item-description" ondblclick="showItemModal('${item.code}')"><span class="item-keyword">${item.keyword}:</span> ${item.description} ${duplicateBadge}</div>
+        <div class="item-description" ondblclick="showItemModal('${item.code}')" tabindex="0" role="button" title="${texte.details}"><span class="item-keyword">${item.keyword}:</span> ${item.description} ${duplicateBadge}</div>
         ${beispieleHtml ? `<details class="item-beispiele-details"><summary>${texte.beispiele} (${beispieleArr.length})</summary>${beispieleHtml}</details>` : ''}
         <div class="item-options">
             <button class="option-btn erreicht" onclick="selectOption('${item.code}', 'erreicht', this)">${texte.erreicht}</button>
@@ -1127,7 +1149,7 @@ function createItemElement(item, bereichKey) {
         <div class="ziel-box" id="ziel-box-${item.code}">
             <h4>${texte.zielformulierung}:</h4>
             <select class="ziel-select" id="ziel-select-${item.code}" onchange="updateZieltext('${item.code}')">${zielOptions}</select>
-            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="${texte.placeholder}" onchange="updateCustomZiel('${item.code}')"></textarea>
+            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="${texte.placeholder}" oninput="updateCustomZielBald('${item.code}')" onchange="updateCustomZiel('${item.code}')"></textarea>
         </div>`;
     return itemDiv;
 }
@@ -1144,7 +1166,8 @@ function itemTexte() {
         erreicht: tri('Erreicht', 'Atteint', 'Mastered'),
         nichtErreicht: tri('Nicht erreicht', 'Non atteint', 'Not mastered'),
         ziel: tri('Ziel', 'Objectif', 'Goal'),
-        placeholder: tri('Oder eigene Formulierung...', 'Ou formulation personnelle...', 'Or custom formulation...')
+        placeholder: tri('Oder eigene Formulierung...', 'Ou formulation personnelle...', 'Or custom formulation...'),
+        details: tri('Details: Doppelklick oder Enter', 'Détails : double-clic ou Entrée', 'Details: double-click or Enter')
     };
 }
 
@@ -1184,6 +1207,7 @@ function selectOption(code, status, button) {
         const zielBox = document.getElementById(`ziel-box-${code}`);
         if (zielBox) zielBox.classList.remove('visible');
         saveToLocalStorage();
+        stufenHakenAktualisieren();
 
         // Wenn "nicht erreicht" oder "ziel" aufgehoben wurde, aktualisiere alle Blockaden im Bereich
         if (previousStatus === 'nicht-erreicht' || previousStatus === 'ziel') {
@@ -1212,6 +1236,7 @@ function selectOption(code, status, button) {
     if (status === 'ziel') { zielBox.classList.add('visible'); updateZieltext(code); }
     else zielBox.classList.remove('visible');
     saveToLocalStorage();
+    stufenHakenAktualisieren();
 
     // Wenn "nicht erreicht" gewählt wurde, aktualisiere die UI für nachfolgende Items
     if (status === 'nicht-erreicht') {
@@ -1288,7 +1313,9 @@ function updateBlockedZielButtons(blockedCode) {
     }
 }
 
-// Toggle all items in a Stufe as "erreicht" with checkbox animation
+// Toggle all items in a Stufe as "erreicht" with checkbox animation.
+// Abweichende Einschätzungen (Ziel, Nicht erreicht) werden nur nach Rückfrage überschrieben, Löschen nur
+// nach Rückfrage; der Haken selbst folgt den gespeicherten Daten (stufenHakenAktualisieren).
 function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
     const stufe = ELDIB_DATA[bereich]?.stufen[stufeNr];
     if (!stufe) return;
@@ -1296,8 +1323,8 @@ function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
     const isChecked = checkboxElement.classList.contains('checked');
 
     if (isChecked) {
+        if (!confirm(tf('stufeLoeschenFrage', { n: stufeNr }))) return;
         // Uncheck: Remove "erreicht" from all items
-        checkboxElement.classList.remove('checked');
         stufe.items.forEach(item => {
             const code = item.code;
             const itemDiv = document.getElementById(`item-${code}`);
@@ -1311,8 +1338,10 @@ function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
         saveToLocalStorage();
         showToast(tf('stufeZurueckgesetzt', { n: stufeNr }));
     } else {
+        const anders = stufe.items.filter(item => { const st = state.selections[item.code]?.status; return st && st !== 'erreicht'; });
+        const statusText = st => ({ ziel: t('ziel'), 'nicht-erreicht': t('nichtErreicht') })[st] || st;
+        if (anders.length && !confirm(tf('stufeUeberschreibenFrage', { n: stufeNr, liste: anders.map(item => getDisplayCode(item.code) + ' (' + statusText(state.selections[item.code].status) + ')').join(', ') }))) return;
         // Check: Mark all items as "erreicht"
-        checkboxElement.classList.add('checked');
         let count = 0;
         stufe.items.forEach(item => {
             const code = item.code;
@@ -1333,6 +1362,20 @@ function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
         saveToLocalStorage();
         showToast(tf('itemsErreicht', { n: count }));
     }
+    stufenHakenAktualisieren();
+    // überschriebene „Nicht erreicht“/Ziele geben Ziel-Knöpfe wieder frei
+    refreshBlockedButtonsInBereich(stufe.items[0].code);
+}
+
+// „Alle erreicht“ folgt den gespeicherten Einschätzungen: angehakt, wenn jedes Item der Stufe erreicht ist
+// (auch nach dem Neuladen und wenn einzelne Items geändert werden)
+function stufenHakenAktualisieren() {
+    document.querySelectorAll('.stufe-erreicht-checkbox[data-bereich]').forEach(el => {
+        const stufe = ELDIB_DATA[el.dataset.bereich]?.stufen[el.dataset.stufe];
+        const an = !!stufe && stufe.items.every(item => state.selections[item.code]?.status === 'erreicht');
+        el.classList.toggle('checked', an);
+        el.setAttribute('aria-checked', String(an));
+    });
 }
 
 function updateZieltext(code) {
@@ -1356,6 +1399,19 @@ function updateCustomZiel(code) {
         state.selections[code].zielIndex = -1; // custom text
     }
     saveToLocalStorage();
+}
+
+// Eigene Formulierung schon beim Tippen übernehmen – sonst geht sie beim Neuladen oder Sperren verloren,
+// wenn das Feld nicht verlassen wurde. Gespeichert wird kurz nach der letzten Eingabe.
+let zielSpeicherTimer = null;
+function updateCustomZielBald(code) {
+    const customTextarea = document.getElementById(`ziel-custom-${code}`);
+    if (customTextarea && state.selections[code]) {
+        state.selections[code].zieltext = customTextarea.value;
+        state.selections[code].zielIndex = -1; // custom text
+    }
+    clearTimeout(zielSpeicherTimer);
+    zielSpeicherTimer = setTimeout(() => saveToLocalStorage(), 400);
 }
 
 function resolveZieltext(code, selection) {
@@ -1551,6 +1607,7 @@ function loadFromLocalStorage() {
                 }
             }
         }
+        stufenHakenAktualisieren();
 
         // Restore zusätzliche Ziele selections (3-Stufen-System: stufe1, stufe2, stufe3)
         for (const [category, goals] of Object.entries(state.zusaetzlicheZiele)) {

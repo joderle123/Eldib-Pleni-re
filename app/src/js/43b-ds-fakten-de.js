@@ -167,7 +167,12 @@ DS_TEXTE.de.fakten = (function () {
       const v = h.chips(ds, 'verfahren').filter(function (k) { return k !== 'andere' && h.chipText(c, 'verfahren', k); }).map(function (k) { return h.chipText(c, 'verfahren', k); });
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
-      const s = [h.satz(h.fuelle('Die vorliegende Einschätzung beruht auf {liste}, auf Beobachtungen im Unterricht sowie auf Gesprächen mit den Lehrpersonen, den Eltern und {Name}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', 'den Lehrpersonen'], ['eltern', 'den Eltern'], ['kind', '{Name}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['auf {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('auf Beobachtungen im Unterricht'); }
+      if (gespr.length) { teile.push('auf Gesprächen mit ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('auf Gesprächen'); }
+      const s = [h.satz(h.fuelle('Die vorliegende Einschätzung beruht ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' sowie ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(h.satz(h.fuelle('Beobachtungen und Gespräche fanden in {ort} statt.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -235,8 +240,11 @@ DS_TEXTE.de.fakten = (function () {
         t = 'Auf Grundlage der vorliegenden Testergebnisse, Beobachtungen und anamnestischen Informationen wurden spezifische Förderbedarfe identifiziert. In Gesprächen mit ' + wer + ' konnten Empfehlungen zur weiteren Unterstützung der individuellen Entwicklung erarbeitet werden. Dabei wurden einzelne vorgeschlagene Maßnahmen ' + (mitKind ? 'von den Eltern bzw. von {Name}' : 'von den Eltern') + ' kritisch hinterfragt bzw. nicht vollständig befürwortet.';
       } else if (f.abgestimmt === 'nein') {
         t = 'Auf Grundlage der vorliegenden Testergebnisse, Beobachtungen und anamnestischen Informationen wurden spezifische Förderbedarfe identifiziert und Empfehlungen formuliert. Eine Abstimmung dieser Empfehlungen mit ' + wer + ' war bislang nicht möglich.';
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden in enger Abstimmung mit ' + wer + ' gezielte Förderbedarfe identifiziert. Daraus abgeleitet wurden gemeinsam Empfehlungen formuliert, die die individuelle Entwicklung wirksam unterstützen sollen.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden gezielte Förderbedarfe identifiziert. Daraus abgeleitet wurden Empfehlungen formuliert, die die individuelle Entwicklung wirksam unterstützen sollen.';
       }
       return [h.block(h.satz(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },

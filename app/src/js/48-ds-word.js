@@ -257,13 +257,13 @@ const DsWord = (function () {
     if (ps[1] && b.verfasser.funktion) { setzeAbsatz(ps[1], b.verfasser.funktion, lang); }
   }
   function deckblatt(doc, b, lang) {
-    const D = DS_DECKBLATT[lang] || DS_DECKBLATT.de, d = b.deckblatt, w = DsAssistent.get().geschlecht === 'w' ? 1 : 0;
+    const D = DS_DECKBLATT[lang] || DS_DECKBLATT.de, d = b.deckblatt, g = DsAssistent.nachGeschlecht;   // [m, w, ohne Angabe]
     const tabs = alle(doc, 'tbl');
     // Kopfdaten: Name, Matrikel, Alter, Schule, Klasse, Sprachen
     const kopf = tabs.filter(function (t) { return /NAME|NOM/.test(textAlle(t)) && kinder(t, 'tr').length >= 6; })[0];
     if (kopf) {
       const werte = [d.name, d.matricule, d.alter, d.schule, d.klasse, d.sprachen];
-      const labels = [Array.isArray(D.name) ? D.name[w] : D.name, D.matricule, D.alter, D.schule, D.klasse, D.sprachen];
+      const labels = [g(D.name), D.matricule, D.alter, D.schule, D.klasse, D.sprachen];
       kinder(kopf, 'tr').slice(0, 6).forEach(function (tr, i) {
         const tcs = kinder(tr, 'tc');
         if (tcs[1]) { setzeZelle(tcs[1], werte[i] || '', lang); }
@@ -287,7 +287,7 @@ const DsWord = (function () {
         // Das Kästchen ist hier ein Inhaltssteuerelement um die ganze erste Zelle
         if (gewaehlt.indexOf(k) >= 0) { kreuze(tr); }
         if (lang === 'en' || (lang === 'de' && k === 'beratung_eltern')) {
-          let l = D.cni[k]; if (Array.isArray(l)) { l = l[w]; }
+          const l = g(D.cni[k]);
           const p = kinder(tcs[tcs.length - 1], 'p')[0]; if (p && l) { setzeAbsatz(p, l, lang); }
         }
       });
@@ -333,7 +333,7 @@ const DsWord = (function () {
     alle(doc, 'p').forEach(function (p) {
       const t = text(p);
       if (t.indexOf('Name des/der Schüler:in:') >= 0) {
-        setzeAbsatz(p, (lang === 'en' ? 'Student’s name: ' : (DsAssistent.get().geschlecht === 'w' ? 'Name der Schülerin: ' : 'Name des Schülers: ')) + b.deckblatt.name, lang);
+        setzeAbsatz(p, (lang === 'en' ? 'Student’s name: ' : DsAssistent.nachGeschlecht(['Name des Schülers: ', 'Name der Schülerin: ', 'Name des/der Schüler:in: '])) + b.deckblatt.name, lang);
       } else if (t.indexOf('Geburtsdatum (Alter):') >= 0) {
         setzeAbsatz(p, (lang === 'en' ? 'Date of birth (age): ' : 'Geburtsdatum (Alter): ') + (geb ? geb + (alter ? ' (' + alter + ')' : '') : ''), lang);
       } else if (t.indexOf('XX/XX/20XX') >= 0 && /Datum der Einsch/.test(t)) {

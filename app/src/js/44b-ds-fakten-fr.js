@@ -98,7 +98,7 @@ DS_TEXTE.fr.fakten = (function () {
     const teile = zitate(angleichen(String(d || '').trim(), c)).replace(/\.$/, '').split(/\.\s+(?=[A-ZÀ-ÖØ-Ý])/);
     const p = praedikat(teile[0], c);
     if (!p) { return ''; }
-    const il = c.g === 'w' ? 'elle' : 'il';
+    const il = c.g === 'w' ? 'elle' : (c.g === 'm' ? 'il' : 'il/elle');
     return teile.slice(1).reduce(function (acc, t) {
       t = t.replace(/\.$/, '').trim();
       if (!t) { return acc; }
@@ -236,7 +236,12 @@ DS_TEXTE.fr.fakten = (function () {
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
       const eltern = /^(pflegeeltern|grosseltern)$/.test((ds.f || {}).eltern_quelle || '') && c.q ? c.q.d : 'les parents';
-      const s = [S(h.fuelle("Cette évaluation repose sur {liste}, sur des observations en classe ainsi que sur des entretiens avec l'équipe enseignante, " + eltern + ' et {Name}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', "l'équipe enseignante"], ['eltern', eltern], ['kind', '{Name}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['sur {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('sur des observations en classe'); }
+      if (gespr.length) { teile.push('sur des entretiens avec ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('sur des entretiens'); }
+      const s = [S(h.fuelle('Cette évaluation repose ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' ainsi que ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(S(h.fuelle('Lieu des observations et des entretiens : {ort}.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -310,8 +315,11 @@ DS_TEXTE.fr.fakten = (function () {
         t = "Sur la base des résultats des tests disponibles, des observations et des données anamnestiques, des besoins spécifiques de soutien ont été identifiés. Lors des entretiens avec " + (mitKind ? '{Name} et ' + eltern : eltern) + ', des recommandations visant à soutenir davantage le développement individuel ont pu être élaborées. Certaines mesures proposées ont toutefois été remises en question ou n\'ont pas été entièrement approuvées par ' + (mitKind ? eltern + ' ou par {Name}' : eltern) + '.';
       } else if (f.abgestimmt === 'nein') {
         t = "Sur la base des résultats des tests disponibles, des observations et des données anamnestiques, des besoins spécifiques de soutien ont été identifiés et des recommandations ont été formulées. Une concertation sur ces recommandations avec " + (mitKind ? '{Name} et ' + eltern : eltern) + " n'a pas encore pu avoir lieu.";
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = "Sur la base des résultats des tests, des observations et des informations anamnestiques recueillies, des besoins spécifiques de soutien ont pu être identifiés en étroite concertation avec " + (mitKind ? "{Name} ainsi qu'avec " + eltern : eltern) + '. Par la suite, des recommandations ont été formulées conjointement, dans le but de soutenir efficacement le développement individuel.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Sur la base des résultats des tests, des observations et des informations anamnestiques recueillies, des besoins spécifiques de soutien ont pu être identifiés. Par la suite, des recommandations ont été formulées dans le but de soutenir efficacement le développement individuel.';
       }
       return [h.block(S(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },

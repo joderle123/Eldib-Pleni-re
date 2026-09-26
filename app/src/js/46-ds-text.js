@@ -9,12 +9,15 @@
 const DsText = (function () {
 'use strict';
 
+// n = Geschlecht nicht angegeben: beide Formen (nicht einfach männlich)
 const PRON = {
   de: { m: { N: 'er', D: 'ihm', A: 'ihn', T: 'ihm', sein: 'sein', seine: 'seine', seinen: 'seinen', seinem: 'seinem', seiner: 'seiner', seines: 'seines' },
-        w: { N: 'sie', D: 'ihr', A: 'sie', T: 'ihr', sein: 'ihr', seine: 'ihre', seinen: 'ihren', seinem: 'ihrem', seiner: 'ihrer', seines: 'ihres' } },
+        w: { N: 'sie', D: 'ihr', A: 'sie', T: 'ihr', sein: 'ihr', seine: 'ihre', seinen: 'ihren', seinem: 'ihrem', seiner: 'ihrer', seines: 'ihres' },
+        n: { N: 'er/sie', D: 'ihm/ihr', A: 'ihn/sie', T: 'ihm/ihr', sein: 'sein/ihr', seine: 'seine/ihre', seinen: 'seinen/ihren', seinem: 'seinem/ihrem', seiner: 'seiner/ihrer', seines: 'seines/ihres' } },
   // fr: T = betontes Pronomen nach Präposition ("pour lui / pour elle")
-  fr: { m: { N: 'il', D: 'lui', A: 'le', T: 'lui' }, w: { N: 'elle', D: 'lui', A: 'la', T: 'elle' } },
-  en: { m: { N: 'he', D: 'him', A: 'him', T: 'him', his: 'his', himself: 'himself' }, w: { N: 'she', D: 'her', A: 'her', T: 'her', his: 'her', himself: 'herself' } }
+  fr: { m: { N: 'il', D: 'lui', A: 'le', T: 'lui' }, w: { N: 'elle', D: 'lui', A: 'la', T: 'elle' }, n: { N: 'il/elle', D: 'lui', A: 'le/la', T: 'lui/elle' } },
+  en: { m: { N: 'he', D: 'him', A: 'him', T: 'him', his: 'his', himself: 'himself' }, w: { N: 'she', D: 'her', A: 'her', T: 'her', his: 'her', himself: 'herself' },
+        n: { N: 'he/she', D: 'him/her', A: 'him/her', T: 'him/her', his: 'his/her', himself: 'himself/herself' } }
 };
 const KONTRAST_VORSATZ = { fr: ['Toutefois, ', 'En revanche, ', 'Cependant, '], en: ['However, ', 'At the same time, ', 'By contrast, '] };
 
@@ -28,7 +31,7 @@ function kontext(lang, ds, stamm) {
   const voll = String((stamm && stamm.schueler_name) || '').trim();
   let vorname = voll, nachname = '';
   if (voll.indexOf(',') >= 0) { nachname = voll.split(',')[0].trim(); vorname = voll.split(',').slice(1).join(',').trim(); }
-  const g = ds && ds.geschlecht === 'w' ? 'w' : 'm';
+  const g = ds && (ds.geschlecht === 'w' || ds.geschlecht === 'm') ? ds.geschlecht : 'n';   // n: nicht angegeben
   const T = texte(lang);
   const c = {
     lang: lang, T: T, g: g,
@@ -53,9 +56,10 @@ function alterJahre(geb) {
 
 // Name oder Pronomen? Erste Nennung im Absatz = Name, dann Pronomen,
 // jede dritte Nennung wieder der Name - lesbar, ohne Wiederholungen.
+// Geschlecht nicht angegeben: immer der Name.
 function person(c, fall) {
   const p = PRON[c.lang][c.g];
-  if (c.seit === 0 || c.seit >= 3) { c.seit = 1; return c.name; }
+  if (c.g === 'n' || c.seit === 0 || c.seit >= 3) { c.seit = 1; return c.name; }
   c.seit++;
   return p[fall] || c.name;
 }
@@ -63,12 +67,12 @@ function person(c, fall) {
 // ---------- Platzhalter füllen ----------
 // {Name} {N} {Nd} {Na} {Nt} {er} … {T} {Q} {QS} {KONTRAST} {liste} … {feld: bedingter Text}
 // {Nt} = Name bzw. betontes Pronomen nach Präposition (fr: pour lui/elle), {T} immer das Pronomen
-// [[männlich|weiblich]]  {{einzahl|mehrzahl}} (Zahl aus vars.zahl bzw. Quelle)
+// [[männlich|weiblich]] (ohne Angabe: „männlich/weiblich“)  {{einzahl|mehrzahl}} (Zahl aus vars.zahl bzw. Quelle)
 function fuelle(tpl, c, vars) {
   vars = vars || {};
   if (tpl == null) { return ''; }
   let s = String(tpl);
-  s = s.replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g, function (m, a, b) { return c.g === 'w' ? b : a; });
+  s = s.replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g, function (m, a, b) { return c.g === 'w' ? b : (c.g === 'm' ? a : a + '/' + b); });
   const zahl = vars.zahl != null ? vars.zahl : ((c.q && c.q.zahl) || 1);
   s = s.replace(/\{\{([^|}]*)\|([^}]*)\}\}/g, function (m, a, b) { return zahl > 1 ? b : a; });
   return ersetze(s, c, vars);
@@ -216,6 +220,16 @@ function themenAbsaetze(bereich, c, ds, weiter) {
 
 function block(text) { return { typ: 'absatz', text: text }; }
 function frei(ds, feld) { const t = ds.frei && ds.frei[feld]; return t && String(t).trim() ? String(t).trim() : ''; }
+// Gibt es Angaben zu einer Sichtweise bzw. zur Beobachtung (Bewertung, Auswahl, Datum, Gesprächspartner, Freitext)?
+// Nur dann nennt der Bericht das Gespräch bzw. die Beobachtung als Grundlage – nichts erfinden.
+function hatAngaben(ds, bereich) {
+  const f = ds.f || {}, a = DS_AUFBAU[bereich];
+  if (!a) { return false; }
+  if (f[bereich + '_datum'] || f[bereich + '_quelle'] || frei(ds, bereich) || (bereich === 'kind' && frei(ds, 'vertrauensperson'))) { return true; }
+  if (bereich === 'beobachtung' && (f.beobachtungen || []).some(function (b) { return b && (b.datum || b.setting || b.dauer); })) { return true; }
+  if ((a.chips || []).some(function (g) { return chips(ds, g).length; })) { return true; }
+  return a.themen.some(function (th) { return th.aussagen.some(function (x) { return bewertung(ds, x[0]) != null; }); });
+}
 function freiBloecke(ds, feld) {
   return frei(ds, feld) ? frei(ds, feld).split(/\n\s*\n/).map(function (t) { return block(t.replace(/\s*\n\s*/g, ' ').trim()); }) : [];
 }
@@ -227,8 +241,8 @@ function sichtweise(bereich, c, ds, opt) {
   c.neuerAbsatz();
   const vorne = [];
   c.vars = { datum: datumText(f[opt.datum], c.lang) };
-  // Einleitungssatz; beim Kind nur mit Datum (sonst sagt er nichts aus)
-  if (opt.intro && !(opt.introWennNicht && bewertung(ds, opt.introWennNicht) != null) && !(opt.introNurMitDatum && !c.vars.datum)) { vorne.push(satz(fuelle(T[opt.intro], c, c.vars), c)); }
+  // Einleitungssatz; beim Kind nur mit Datum (sonst sagt er nichts aus), sonst nur mit Angaben zu dieser Sichtweise
+  if (opt.intro && hatAngaben(ds, bereich) && !(opt.introWennNicht && bewertung(ds, opt.introWennNicht) != null) && !(opt.introNurMitDatum && !c.vars.datum)) { vorne.push(satz(fuelle(T[opt.intro], c, c.vars), c)); }
   (opt.chipsVorne || []).forEach(function (g) {
     const l = chips(ds, g[0]).map(function (k) { return fuelle(chipText(c, g[0], k), c); });
     if (l.length) { const v = { liste: liste(l, c) }; if (g[2] === 'liste') { v.zahl = l.length > 1 ? 2 : 1; } vorne.push(satz(fuelle(T[g[1]], c, v), c)); }
@@ -364,7 +378,8 @@ function datumText(iso, lang) {
 function bericht(lang, ds, stamm, profil) {
   ds = ds || {};
   const c = kontext(lang, ds, stamm), F = c.T.fakten, T = c.T.s, f = ds.f || {};
-  const h = { fuelle: fuelle, satz: satz, liste: liste, chips: chips, chipText: chipText, frei: frei, freiBloecke: freiBloecke, block: block, datum: datumText, gross: gross, klein: klein };
+  const h = { fuelle: fuelle, satz: satz, liste: liste, chips: chips, chipText: chipText, frei: frei, freiBloecke: freiBloecke, block: block, datum: datumText, gross: gross, klein: klein,
+    angaben: function (bereich) { return hatAngaben(ds, bereich); } };
   const ab = {};
   ab.auftrag = F.auftrag(c, ds, stamm, h);
   ab.vorgeschichte = F.vorgeschichte(c, ds, stamm, h);

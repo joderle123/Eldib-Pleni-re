@@ -146,25 +146,25 @@ svg { flex: 0 0 auto; }
 
 /* ---------- Eingabefelder ---------- */
 .form-group input, .form-group select, .form-group textarea,
-.ziel-select, .ziel-custom, .bereich-notizen textarea, .sm-dialog input {
+.ziel-select, .ziel-custom, .bereich-notizen textarea, .sm-dialog input, .sm-dialog select {
   width: 100%; min-height: 40px; font-size: 14.5px; line-height: 1.4; color: var(--ink);
   background: var(--surface); border: 1px solid var(--line-2); border-radius: 9px; padding: 9px 11px;
   transition: border-color .15s, box-shadow .15s;
 }
 .form-group input:hover, .form-group select:hover, .form-group textarea:hover,
-.ziel-select:hover, .ziel-custom:hover, .bereich-notizen textarea:hover, .sm-dialog input:hover { border-color: #B8C1CE; }
+.ziel-select:hover, .ziel-custom:hover, .bereich-notizen textarea:hover, .sm-dialog input:hover, .sm-dialog select:hover { border-color: #B8C1CE; }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus,
-.ziel-select:focus, .ziel-custom:focus, .bereich-notizen textarea:focus, .sm-dialog input:focus {
+.ziel-select:focus, .ziel-custom:focus, .bereich-notizen textarea:focus, .sm-dialog input:focus, .sm-dialog select:focus {
   outline: 0; border-color: var(--accent); box-shadow: var(--focus);
 }
 .form-group input::placeholder, .ziel-custom::placeholder, .bereich-notizen textarea::placeholder,
 .sm-dialog input::placeholder { color: var(--platzhalter); opacity: 1; }
-.form-group select, .ziel-select {
+.form-group select, .ziel-select, .sm-dialog select {
   -webkit-appearance: none; appearance: none; cursor: pointer; padding-right: 34px;
   background: var(--surface) var(--b-runter) right 10px center / 16px no-repeat;
 }
 /* einzeilige Felder gleich hoch (Datumsfelder wären sonst 2px höher) */
-.form-group input, .form-group select, .ziel-select, .sm-dialog input { height: 40px; }
+.form-group input, .form-group select, .ziel-select, .sm-dialog input, .sm-dialog select { height: 40px; }
 textarea { resize: vertical; }
 
 /* =====================================================================
@@ -264,6 +264,9 @@ textarea { resize: vertical; }
 .sm-alter { font-size: 12.5px; color: var(--muted); min-height: 18px; }
 .sm-alter:empty { min-height: 0; }
 .sm-pflicht-hinweis { font-size: 12.5px; color: var(--muted); }
+/* fehlende Pflichtfelder: Hinweis im Dialog statt alert() */
+.sm-dialog-fehler { font-size: 13px; color: var(--krit-ink); background: var(--krit-soft); border: 1px solid var(--krit-line); border-radius: 9px; padding: 8px 11px; margin-bottom: 10px; }
+.sm-dialog input[aria-invalid="true"] { border-color: var(--krit); }
 .sm-dialog-actions {
   display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line);
 }

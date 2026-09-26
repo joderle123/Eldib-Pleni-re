@@ -45,7 +45,7 @@ const DS_UI = {
     alter: '{j} Jahre', jahreMonate: '{j} Jahre {m} Monate',
     ja: 'ja', nein: 'nein', bitteWaehlen: '– bitte wählen –', anderes: 'Anderes …',
     // Vorschau & Export
-    fertigTitel: 'Fertiger Bericht', pruefen: 'Vor dem Export prüfen', allesDa: 'Alle wichtigen Angaben sind vorhanden.',
+    fertigTitel: 'Fertiger Bericht', pruefen: 'Vor dem Export prüfen', allesDa: 'Alle wichtigen Angaben sind vorhanden.', trotzdem: 'Trotzdem exportieren?',
     fehlt: { geschlecht: 'Geschlecht fehlt (Schritt 1)', name: 'Name des Kindes fehlt (Stammdaten)', geburt: 'Geburtsdatum fehlt (Stammdaten)', verfasser: 'Verfasser/in fehlt (Schritt 1)', auftrag: 'Datum der Beauftragung fehlt (Schritt 2)', eldib: 'Keine ELDiB-Einschätzung', cni: 'Keine Empfehlung an die CNI ausgewählt (Schritt 13)' },
     word: 'Word herunterladen', drucken: 'PDF / Drucken',
     bearbeiten: 'Text bearbeiten', uebernehmen: 'Übernehmen', abbrechen: 'Abbrechen', zuruecksetzen: 'Automatischen Text wiederherstellen',
@@ -118,7 +118,7 @@ const DS_UI = {
     eldibFrei: 'Complément au domaine {b}',
     alter: '{j} ans', jahreMonate: '{j} ans {m} mois',
     ja: 'oui', nein: 'non', bitteWaehlen: '– veuillez choisir –', anderes: 'Autre …',
-    fertigTitel: 'Rapport final', pruefen: 'À vérifier avant l’export', allesDa: 'Toutes les informations importantes sont présentes.',
+    fertigTitel: 'Rapport final', pruefen: 'À vérifier avant l’export', allesDa: 'Toutes les informations importantes sont présentes.', trotzdem: 'Exporter quand même ?',
     fehlt: { geschlecht: 'Sexe manquant (étape 1)', name: 'Nom de l’élève manquant (données de base)', geburt: 'Date de naissance manquante (données de base)', verfasser: 'Auteur·e manquant·e (étape 1)', auftrag: 'Date du mandat manquante (étape 2)', eldib: 'Pas d’évaluation ELDiB', cni: 'Aucune recommandation à la CNI (étape 13)' },
     word: 'Télécharger Word', drucken: 'PDF / Imprimer',
     bearbeiten: 'Modifier le texte', uebernehmen: 'Appliquer', abbrechen: 'Annuler', zuruecksetzen: 'Rétablir le texte automatique',
@@ -191,7 +191,7 @@ const DS_UI = {
     eldibFrei: 'Addition for {b}',
     alter: '{j} years', jahreMonate: '{j} years {m} months',
     ja: 'yes', nein: 'no', bitteWaehlen: '– please choose –', anderes: 'Other …',
-    fertigTitel: 'Final report', pruefen: 'Check before exporting', allesDa: 'All important information is present.',
+    fertigTitel: 'Final report', pruefen: 'Check before exporting', allesDa: 'All important information is present.', trotzdem: 'Export anyway?',
     fehlt: { geschlecht: 'Gender missing (step 1)', name: 'Student’s name missing (basic data)', geburt: 'Date of birth missing (basic data)', verfasser: 'Author missing (step 1)', auftrag: 'Referral date missing (step 2)', eldib: 'No ELDiB assessment', cni: 'No recommendation to the CNI selected (step 13)' },
     word: 'Download Word', drucken: 'PDF / Print',
     bearbeiten: 'Edit text', uebernehmen: 'Apply', abbrechen: 'Cancel', zuruecksetzen: 'Restore automatic text',
@@ -237,7 +237,7 @@ const DS_UI = {
   }
 };
 
-// Gliederung des Berichts (CNI-Vorlage vom 12.11.2025); Titel mit [m, w] je nach Geschlecht
+// Gliederung des Berichts (CNI-Vorlage vom 12.11.2025); Titel mit [m, w, ohne Angabe] je nach Geschlecht
 const DS_GLIEDERUNG = [
   { id: 'auftrag', nr: '1', e: 1 }, { id: 'anamnese', nr: '2', e: 1, nurTitel: true },
   { id: 'vorgeschichte', nr: '2.1', e: 2 }, { id: 'sozialbericht', nr: '2.2', e: 2 },
@@ -249,11 +249,11 @@ const DS_GLIEDERUNG = [
 ];
 const DS_TITEL = {
   de: { auftrag: 'Auftragsklärung', anamnese: 'Anamnese', vorgeschichte: 'Vorgeschichte', sozialbericht: 'Sozialbericht', aktuell: 'Aktuelle Situation',
-    massnahmen: 'Aktuelle schulische und außerschulische Unterstützungsmaßnahmen', schule: 'Sichtweise der Schule', kind: ['Sichtweise des Schülers', 'Sichtweise der Schülerin'],
+    massnahmen: 'Aktuelle schulische und außerschulische Unterstützungsmaßnahmen', schule: 'Sichtweise der Schule', kind: ['Sichtweise des Schülers', 'Sichtweise der Schülerin', 'Sichtweise des Schülers/der Schülerin'],
     eltern: 'Sichtweise der Eltern / Erziehungsberechtigten', verfahren: 'Diagnostische Verfahren', beobachtung: 'Verhaltensbeobachtungen', eldib: 'Ergebnisse der Testverfahren',
-    deutung: 'Interpretation', schluss: 'Schlussfolgerung', beduerfnisse: ['Spezifische Bedürfnisse des Schülers', 'Spezifische Bedürfnisse der Schülerin'], ziele: 'Ziele',
+    deutung: 'Interpretation', schluss: 'Schlussfolgerung', beduerfnisse: ['Spezifische Bedürfnisse des Schülers', 'Spezifische Bedürfnisse der Schülerin', 'Spezifische Bedürfnisse des Schülers/der Schülerin'], ziele: 'Ziele',
     empfehlungen: 'Empfehlungen', cni: 'Empfehlungen – CNI', anhang: 'Anhänge', interventionen: 'Übersicht der Interventionen des CDSE', raster: 'Testergebnisse',
-    produktionen: ['Produktionen des Schülers', 'Produktionen der Schülerin'] },
+    produktionen: ['Produktionen des Schülers', 'Produktionen der Schülerin', 'Produktionen des Schülers/der Schülerin'] },
   fr: { auftrag: 'Demande', anamnese: 'Anamnèse', vorgeschichte: 'Antécédents', sozialbericht: 'Bilan social', aktuell: 'Situation actuelle',
     massnahmen: 'Mesures de soutien scolaires et extrascolaires actuelles', schule: 'Point de vue de l’école', kind: 'Point de vue de l’élève',
     eltern: 'Point de vue des parents / tuteurs', verfahren: 'Procédure diagnostique', beobachtung: 'Observations comportementales', eldib: 'Résultats des tests',
@@ -267,9 +267,9 @@ const DS_TITEL = {
 };
 // Deckblatt
 const DS_DECKBLATT = {
-  de: { titel: 'Spezialisierte Diagnostik', unter: 'des Zentrums für sozio-emotionale Entwicklung (CDSE)', name: ['Name des Schülers', 'Name der Schülerin'], matricule: 'Sozialversicherungsnummer',
+  de: { titel: 'Spezialisierte Diagnostik', unter: 'des Zentrums für sozio-emotionale Entwicklung (CDSE)', name: ['Name des Schülers', 'Name der Schülerin', 'Name des/der Schüler:in'], matricule: 'Sozialversicherungsnummer',
     alter: 'Alter', schule: 'Schule', klasse: 'Klasse', sprachen: 'Sprachen', empfehlungen: 'Empfehlungen des CDSE', unterschrift: 'Unité de diagnostic, de conseil et de suivi',
-    cni: { diag_kompetenzzentrum: 'Spezialisierte Diagnostik in Zusammenarbeit mit einem Kompetenzzentrum', beratung_eltern: ['Beratung und Begleitung der Eltern und des betroffenen Schülers', 'Beratung und Begleitung der Eltern und der betroffenen Schülerin'],
+    cni: { diag_kompetenzzentrum: 'Spezialisierte Diagnostik in Zusammenarbeit mit einem Kompetenzzentrum', beratung_eltern: ['Beratung und Begleitung der Eltern und des betroffenen Schülers', 'Beratung und Begleitung der Eltern und der betroffenen Schülerin', 'Beratung und Begleitung der Eltern und des/der betroffenen Schülers/-in'],
       beratung_fachleute: 'Beratung und Begleitung der Fachleute', lernwerkstatt: 'Spezialisierte Lernwerkstatt', isa: 'Spezialisierte ambulante Intervention (ISA)', beschulung: 'Spezialisierte Beschulung im CDSE',
       clapa: 'Classe de Participation', cst: 'Centre socio-thérapeutique (CST)', annexe: 'Annexe Junglinster', ausland: 'Spezialisierte Beschulung im Ausland', rehabilitation: 'Rehabilitation',
       abschluss: 'Abschluss der Aktivitäten des CDSE', schliessung: 'Schließung der Akte im CDSE' } },
@@ -500,9 +500,13 @@ const DsAssistent = (function () {
   }
 
   // ---------- Bericht zusammensetzen (mit Handbearbeitung) ----------
+  // [m, w, ohne Angabe] -> Form zum Geschlecht; ohne Angabe die neutrale Form (nicht einfach männlich)
+  function nachGeschlecht(t) {
+    if (!Array.isArray(t)) { return t; }
+    return daten.geschlecht === 'w' ? t[1] : (daten.geschlecht === 'm' ? t[0] : (t[2] || t[0]));
+  }
   function titel(lang, id) {
-    const t = (DS_TITEL[lang] || DS_TITEL.de)[id];
-    return Array.isArray(t) ? t[daten.geschlecht === 'w' ? 1 : 0] : t;
+    return nachGeschlecht((DS_TITEL[lang] || DS_TITEL.de)[id]);
   }
   function roh(lang) {
     if (!DS_TEXTE[lang]) { lang = 'de'; } // Sprache noch ohne Texte: deutsch
@@ -882,12 +886,12 @@ const DsAssistent = (function () {
   }
   function deckblattHtml(b) {
     const d = b.deckblatt, D = DS_DECKBLATT[b.lang] || DS_DECKBLATT.de;
-    const nameLabel = Array.isArray(D.name) ? D.name[daten.geschlecht === 'w' ? 1 : 0] : D.name;
+    const nameLabel = nachGeschlecht(D.name);
     const zeile = function (l, w) { return '<tr><th>' + esc(l) + '</th><td>' + esc(w || '—') + '</td></tr>'; };
     const cni = DS_CHIPS.cni.map(function (k) {
       const ein = ['clapa', 'cst', 'annexe'].indexOf(k) >= 0;
       let txt = D.cni[k] || k;
-      if (Array.isArray(txt)) { txt = txt[daten.geschlecht === 'w' ? 1 : 0]; }
+      txt = nachGeschlecht(txt);
       return '<li class="' + (ein ? 'ein' : '') + '"><span class="box">' + (d.cni.indexOf(k) >= 0 ? '☒' : '☐') + '</span> ' + esc(txt) + '</li>';
     }).join('');
     return '<div class="dsb-deckblatt"><p class="dsb-dt">' + esc(D.titel) + '</p><p class="dsb-du">' + esc(D.unter) + '</p><table class="dsb-kopf">' +
@@ -904,6 +908,11 @@ const DsAssistent = (function () {
     if (profil().bereiche.every(function (b) { return !b.erreicht.length; })) { f.push(['eldib', 'eldib']); }
     if (!(daten.chips.cni || []).length) { f.push(['cni', 'empfehlungen']); }
     return f.map(function (x) { return { text: u.fehlt[x[0]], schritt: x[1] }; });
+  }
+  // Vor jedem Export (Word, Drucken – auch über die Seite „Export“): fehlende Angaben zeigen, z. B. „Geschlecht fehlt“
+  function exportPruefen() {
+    const fehlt = fehlendeAngaben(), u = U();
+    return !fehlt.length || window.confirm(u.pruefen + (appSprache() === 'fr' ? ' :' : ':') + '\n- ' + fehlt.map(function (x) { return x.text; }).join('\n- ') + '\n\n' + u.trotzdem);
   }
   function vorschauSeiteHtml() {
     const u = U(), lang = berichtLang(), b = fertig(lang), fehlt = fehlendeAngaben();
@@ -1029,10 +1038,11 @@ const DsAssistent = (function () {
       }
       else if (a === 'zuruecksetzen') { const lang = berichtLang(); if (daten.bearbeitet[lang]) { delete daten.bearbeitet[lang][t.dataset.ab]; } nachAenderung(true); }
       else if (a === 'word') {
+        if (!exportPruefen()) { return; }
         if (typeof dsWordExport === 'function') { dsWordExport(berichtLang()); }
         else if (typeof showToast === 'function') { showToast(U().wordFehlt); }
       }
-      else if (a === 'drucken') { drucken(berichtLang()); }
+      else if (a === 'drucken') { if (exportPruefen()) { drucken(berichtLang()); } }
     });
     el.addEventListener('keydown', function (ev) {
       const z = ev.target.closest && ev.target.closest('.dsa-aussage');
@@ -1085,16 +1095,17 @@ const DsAssistent = (function () {
     if (sichtbar()) { rendern(); }
   }
 
-  return { get: get, laden: laden, zeigen: zeigen, profil: profil, fertig: fertig, raster: raster, drucken: drucken, sprachWechsel: sprachWechsel, bloeckeZuText: bloeckeZuText };
+  return { get: get, laden: laden, zeigen: zeigen, profil: profil, fertig: fertig, raster: raster, drucken: drucken, sprachWechsel: sprachWechsel, bloeckeZuText: bloeckeZuText,
+    exportPruefen: exportPruefen, nachGeschlecht: nachGeschlecht };
 })();
 
 // Schnittstellen für Speichern/Laden (50-speichern.js, 90-schueler.js)
 function getDSData() { return DsAssistent.get(); }
 function loadDSData(d) { DsAssistent.laden(d); }
 function dsEldibProfil(lang) { return DsAssistent.profil(lang); }
-// Knopf im Bereich Export
+// Knopf im Bereich Export (mit derselben Prüfliste wie im DS-Schritt „Vorschau & Export“)
 function dsExportAusExport() {
-  if (typeof dsWordExport === 'function') { dsWordExport(state.language); } else { showMainSection('ds'); }
+  if (typeof dsWordExport === 'function') { if (DsAssistent.exportPruefen()) { dsWordExport(state.language); } } else { showMainSection('ds'); }
 }
 
 // Name aufteilen "Nachname, Vorname" (wird auch von den PEI-Dokumenten genutzt)

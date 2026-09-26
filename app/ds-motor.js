@@ -851,7 +851,12 @@ DS_TEXTE.de.fakten = (function () {
       const v = h.chips(ds, 'verfahren').filter(function (k) { return k !== 'andere' && h.chipText(c, 'verfahren', k); }).map(function (k) { return h.chipText(c, 'verfahren', k); });
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
-      const s = [h.satz(h.fuelle('Die vorliegende Einschätzung beruht auf {liste}, auf Beobachtungen im Unterricht sowie auf Gesprächen mit den Lehrpersonen, den Eltern und {Name}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', 'den Lehrpersonen'], ['eltern', 'den Eltern'], ['kind', '{Name}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['auf {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('auf Beobachtungen im Unterricht'); }
+      if (gespr.length) { teile.push('auf Gesprächen mit ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('auf Gesprächen'); }
+      const s = [h.satz(h.fuelle('Die vorliegende Einschätzung beruht ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' sowie ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(h.satz(h.fuelle('Beobachtungen und Gespräche fanden in {ort} statt.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -919,8 +924,11 @@ DS_TEXTE.de.fakten = (function () {
         t = 'Auf Grundlage der vorliegenden Testergebnisse, Beobachtungen und anamnestischen Informationen wurden spezifische Förderbedarfe identifiziert. In Gesprächen mit ' + wer + ' konnten Empfehlungen zur weiteren Unterstützung der individuellen Entwicklung erarbeitet werden. Dabei wurden einzelne vorgeschlagene Maßnahmen ' + (mitKind ? 'von den Eltern bzw. von {Name}' : 'von den Eltern') + ' kritisch hinterfragt bzw. nicht vollständig befürwortet.';
       } else if (f.abgestimmt === 'nein') {
         t = 'Auf Grundlage der vorliegenden Testergebnisse, Beobachtungen und anamnestischen Informationen wurden spezifische Förderbedarfe identifiziert und Empfehlungen formuliert. Eine Abstimmung dieser Empfehlungen mit ' + wer + ' war bislang nicht möglich.';
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden in enger Abstimmung mit ' + wer + ' gezielte Förderbedarfe identifiziert. Daraus abgeleitet wurden gemeinsam Empfehlungen formuliert, die die individuelle Entwicklung wirksam unterstützen sollen.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden gezielte Förderbedarfe identifiziert. Daraus abgeleitet wurden Empfehlungen formuliert, die die individuelle Entwicklung wirksam unterstützen sollen.';
       }
       return [h.block(h.satz(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },
@@ -1673,7 +1681,7 @@ DS_TEXTE.fr.fakten = (function () {
     const teile = zitate(angleichen(String(d || '').trim(), c)).replace(/\.$/, '').split(/\.\s+(?=[A-ZÀ-ÖØ-Ý])/);
     const p = praedikat(teile[0], c);
     if (!p) { return ''; }
-    const il = c.g === 'w' ? 'elle' : 'il';
+    const il = c.g === 'w' ? 'elle' : (c.g === 'm' ? 'il' : 'il/elle');
     return teile.slice(1).reduce(function (acc, t) {
       t = t.replace(/\.$/, '').trim();
       if (!t) { return acc; }
@@ -1811,7 +1819,12 @@ DS_TEXTE.fr.fakten = (function () {
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
       const eltern = /^(pflegeeltern|grosseltern)$/.test((ds.f || {}).eltern_quelle || '') && c.q ? c.q.d : 'les parents';
-      const s = [S(h.fuelle("Cette évaluation repose sur {liste}, sur des observations en classe ainsi que sur des entretiens avec l'équipe enseignante, " + eltern + ' et {Name}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', "l'équipe enseignante"], ['eltern', eltern], ['kind', '{Name}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['sur {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('sur des observations en classe'); }
+      if (gespr.length) { teile.push('sur des entretiens avec ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('sur des entretiens'); }
+      const s = [S(h.fuelle('Cette évaluation repose ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' ainsi que ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(S(h.fuelle('Lieu des observations et des entretiens : {ort}.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -1885,8 +1898,11 @@ DS_TEXTE.fr.fakten = (function () {
         t = "Sur la base des résultats des tests disponibles, des observations et des données anamnestiques, des besoins spécifiques de soutien ont été identifiés. Lors des entretiens avec " + (mitKind ? '{Name} et ' + eltern : eltern) + ', des recommandations visant à soutenir davantage le développement individuel ont pu être élaborées. Certaines mesures proposées ont toutefois été remises en question ou n\'ont pas été entièrement approuvées par ' + (mitKind ? eltern + ' ou par {Name}' : eltern) + '.';
       } else if (f.abgestimmt === 'nein') {
         t = "Sur la base des résultats des tests disponibles, des observations et des données anamnestiques, des besoins spécifiques de soutien ont été identifiés et des recommandations ont été formulées. Une concertation sur ces recommandations avec " + (mitKind ? '{Name} et ' + eltern : eltern) + " n'a pas encore pu avoir lieu.";
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = "Sur la base des résultats des tests, des observations et des informations anamnestiques recueillies, des besoins spécifiques de soutien ont pu être identifiés en étroite concertation avec " + (mitKind ? "{Name} ainsi qu'avec " + eltern : eltern) + '. Par la suite, des recommandations ont été formulées conjointement, dans le but de soutenir efficacement le développement individuel.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Sur la base des résultats des tests, des observations et des informations anamnestiques recueillies, des besoins spécifiques de soutien ont pu être identifiés. Par la suite, des recommandations ont été formulées dans le but de soutenir efficacement le développement individuel.';
       }
       return [h.block(S(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },
@@ -2808,7 +2824,12 @@ DS_TEXTE.en.fakten = (function () {
       const v = h.chips(ds, 'verfahren').filter(function (k) { return k !== 'andere' && h.chipText(c, 'verfahren', k); }).map(function (k) { return h.chipText(c, 'verfahren', k); });
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
-      const s = [h.satz(h.fuelle('This assessment is based on {liste}, on classroom observations and on interviews with {QSd}, {Qd} and {Name} {himself}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', '{QSd}'], ['eltern', '{Qd}'], ['kind', '{Name} {himself}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['on {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('on classroom observations'); }
+      if (gespr.length) { teile.push('on interviews with ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('on interviews'); }
+      const s = [h.satz(h.fuelle('This assessment is based ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' and ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(h.satz(h.fuelle('Observations and interviews took place in {ort}.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -2885,8 +2906,11 @@ DS_TEXTE.en.fakten = (function () {
         t = 'Based on the available test results, observations and case history information, specific support needs were identified. In discussions with ' + wer + ', recommendations were developed to further support ' + ihre + ' individual development. Some of the proposed measures were, however, questioned or not fully endorsed by ' + (mitKind ? '{Qd} and/or by {Name}' : '{Qd}') + '.';
       } else if (f.abgestimmt === 'nein') {
         t = 'Based on the available test results, observations and case history information, specific support needs were identified and recommendations formulated. It has not yet been possible to agree on these recommendations with ' + wer + '.';
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = 'Based on the test results, observations and case history information gathered, specific support needs were identified in close consultation with ' + wer + '. On this basis, recommendations were jointly formulated to support ' + ihre + ' individual development effectively.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Based on the test results, observations and case history information gathered, specific support needs were identified. On this basis, recommendations were formulated to support {Name}’s individual development effectively.';
       }
       return [h.block(h.satz(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },
@@ -2950,12 +2974,15 @@ DS_TEXTE.en.fakten = (function () {
 const DsText = (function () {
 'use strict';
 
+// n = Geschlecht nicht angegeben: beide Formen (nicht einfach männlich)
 const PRON = {
   de: { m: { N: 'er', D: 'ihm', A: 'ihn', T: 'ihm', sein: 'sein', seine: 'seine', seinen: 'seinen', seinem: 'seinem', seiner: 'seiner', seines: 'seines' },
-        w: { N: 'sie', D: 'ihr', A: 'sie', T: 'ihr', sein: 'ihr', seine: 'ihre', seinen: 'ihren', seinem: 'ihrem', seiner: 'ihrer', seines: 'ihres' } },
+        w: { N: 'sie', D: 'ihr', A: 'sie', T: 'ihr', sein: 'ihr', seine: 'ihre', seinen: 'ihren', seinem: 'ihrem', seiner: 'ihrer', seines: 'ihres' },
+        n: { N: 'er/sie', D: 'ihm/ihr', A: 'ihn/sie', T: 'ihm/ihr', sein: 'sein/ihr', seine: 'seine/ihre', seinen: 'seinen/ihren', seinem: 'seinem/ihrem', seiner: 'seiner/ihrer', seines: 'seines/ihres' } },
   // fr: T = betontes Pronomen nach Präposition ("pour lui / pour elle")
-  fr: { m: { N: 'il', D: 'lui', A: 'le', T: 'lui' }, w: { N: 'elle', D: 'lui', A: 'la', T: 'elle' } },
-  en: { m: { N: 'he', D: 'him', A: 'him', T: 'him', his: 'his', himself: 'himself' }, w: { N: 'she', D: 'her', A: 'her', T: 'her', his: 'her', himself: 'herself' } }
+  fr: { m: { N: 'il', D: 'lui', A: 'le', T: 'lui' }, w: { N: 'elle', D: 'lui', A: 'la', T: 'elle' }, n: { N: 'il/elle', D: 'lui', A: 'le/la', T: 'lui/elle' } },
+  en: { m: { N: 'he', D: 'him', A: 'him', T: 'him', his: 'his', himself: 'himself' }, w: { N: 'she', D: 'her', A: 'her', T: 'her', his: 'her', himself: 'herself' },
+        n: { N: 'he/she', D: 'him/her', A: 'him/her', T: 'him/her', his: 'his/her', himself: 'himself/herself' } }
 };
 const KONTRAST_VORSATZ = { fr: ['Toutefois, ', 'En revanche, ', 'Cependant, '], en: ['However, ', 'At the same time, ', 'By contrast, '] };
 
@@ -2969,7 +2996,7 @@ function kontext(lang, ds, stamm) {
   const voll = String((stamm && stamm.schueler_name) || '').trim();
   let vorname = voll, nachname = '';
   if (voll.indexOf(',') >= 0) { nachname = voll.split(',')[0].trim(); vorname = voll.split(',').slice(1).join(',').trim(); }
-  const g = ds && ds.geschlecht === 'w' ? 'w' : 'm';
+  const g = ds && (ds.geschlecht === 'w' || ds.geschlecht === 'm') ? ds.geschlecht : 'n';   // n: nicht angegeben
   const T = texte(lang);
   const c = {
     lang: lang, T: T, g: g,
@@ -2994,9 +3021,10 @@ function alterJahre(geb) {
 
 // Name oder Pronomen? Erste Nennung im Absatz = Name, dann Pronomen,
 // jede dritte Nennung wieder der Name - lesbar, ohne Wiederholungen.
+// Geschlecht nicht angegeben: immer der Name.
 function person(c, fall) {
   const p = PRON[c.lang][c.g];
-  if (c.seit === 0 || c.seit >= 3) { c.seit = 1; return c.name; }
+  if (c.g === 'n' || c.seit === 0 || c.seit >= 3) { c.seit = 1; return c.name; }
   c.seit++;
   return p[fall] || c.name;
 }
@@ -3004,12 +3032,12 @@ function person(c, fall) {
 // ---------- Platzhalter füllen ----------
 // {Name} {N} {Nd} {Na} {Nt} {er} … {T} {Q} {QS} {KONTRAST} {liste} … {feld: bedingter Text}
 // {Nt} = Name bzw. betontes Pronomen nach Präposition (fr: pour lui/elle), {T} immer das Pronomen
-// [[männlich|weiblich]]  {{einzahl|mehrzahl}} (Zahl aus vars.zahl bzw. Quelle)
+// [[männlich|weiblich]] (ohne Angabe: „männlich/weiblich“)  {{einzahl|mehrzahl}} (Zahl aus vars.zahl bzw. Quelle)
 function fuelle(tpl, c, vars) {
   vars = vars || {};
   if (tpl == null) { return ''; }
   let s = String(tpl);
-  s = s.replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g, function (m, a, b) { return c.g === 'w' ? b : a; });
+  s = s.replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g, function (m, a, b) { return c.g === 'w' ? b : (c.g === 'm' ? a : a + '/' + b); });
   const zahl = vars.zahl != null ? vars.zahl : ((c.q && c.q.zahl) || 1);
   s = s.replace(/\{\{([^|}]*)\|([^}]*)\}\}/g, function (m, a, b) { return zahl > 1 ? b : a; });
   return ersetze(s, c, vars);
@@ -3157,6 +3185,16 @@ function themenAbsaetze(bereich, c, ds, weiter) {
 
 function block(text) { return { typ: 'absatz', text: text }; }
 function frei(ds, feld) { const t = ds.frei && ds.frei[feld]; return t && String(t).trim() ? String(t).trim() : ''; }
+// Gibt es Angaben zu einer Sichtweise bzw. zur Beobachtung (Bewertung, Auswahl, Datum, Gesprächspartner, Freitext)?
+// Nur dann nennt der Bericht das Gespräch bzw. die Beobachtung als Grundlage – nichts erfinden.
+function hatAngaben(ds, bereich) {
+  const f = ds.f || {}, a = DS_AUFBAU[bereich];
+  if (!a) { return false; }
+  if (f[bereich + '_datum'] || f[bereich + '_quelle'] || frei(ds, bereich) || (bereich === 'kind' && frei(ds, 'vertrauensperson'))) { return true; }
+  if (bereich === 'beobachtung' && (f.beobachtungen || []).some(function (b) { return b && (b.datum || b.setting || b.dauer); })) { return true; }
+  if ((a.chips || []).some(function (g) { return chips(ds, g).length; })) { return true; }
+  return a.themen.some(function (th) { return th.aussagen.some(function (x) { return bewertung(ds, x[0]) != null; }); });
+}
 function freiBloecke(ds, feld) {
   return frei(ds, feld) ? frei(ds, feld).split(/\n\s*\n/).map(function (t) { return block(t.replace(/\s*\n\s*/g, ' ').trim()); }) : [];
 }
@@ -3168,8 +3206,8 @@ function sichtweise(bereich, c, ds, opt) {
   c.neuerAbsatz();
   const vorne = [];
   c.vars = { datum: datumText(f[opt.datum], c.lang) };
-  // Einleitungssatz; beim Kind nur mit Datum (sonst sagt er nichts aus)
-  if (opt.intro && !(opt.introWennNicht && bewertung(ds, opt.introWennNicht) != null) && !(opt.introNurMitDatum && !c.vars.datum)) { vorne.push(satz(fuelle(T[opt.intro], c, c.vars), c)); }
+  // Einleitungssatz; beim Kind nur mit Datum (sonst sagt er nichts aus), sonst nur mit Angaben zu dieser Sichtweise
+  if (opt.intro && hatAngaben(ds, bereich) && !(opt.introWennNicht && bewertung(ds, opt.introWennNicht) != null) && !(opt.introNurMitDatum && !c.vars.datum)) { vorne.push(satz(fuelle(T[opt.intro], c, c.vars), c)); }
   (opt.chipsVorne || []).forEach(function (g) {
     const l = chips(ds, g[0]).map(function (k) { return fuelle(chipText(c, g[0], k), c); });
     if (l.length) { const v = { liste: liste(l, c) }; if (g[2] === 'liste') { v.zahl = l.length > 1 ? 2 : 1; } vorne.push(satz(fuelle(T[g[1]], c, v), c)); }
@@ -3305,7 +3343,8 @@ function datumText(iso, lang) {
 function bericht(lang, ds, stamm, profil) {
   ds = ds || {};
   const c = kontext(lang, ds, stamm), F = c.T.fakten, T = c.T.s, f = ds.f || {};
-  const h = { fuelle: fuelle, satz: satz, liste: liste, chips: chips, chipText: chipText, frei: frei, freiBloecke: freiBloecke, block: block, datum: datumText, gross: gross, klein: klein };
+  const h = { fuelle: fuelle, satz: satz, liste: liste, chips: chips, chipText: chipText, frei: frei, freiBloecke: freiBloecke, block: block, datum: datumText, gross: gross, klein: klein,
+    angaben: function (bereich) { return hatAngaben(ds, bereich); } };
   const ab = {};
   ab.auftrag = F.auftrag(c, ds, stamm, h);
   ab.vorgeschichte = F.vorgeschichte(c, ds, stamm, h);

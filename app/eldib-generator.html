@@ -165,25 +165,25 @@ svg { flex: 0 0 auto; }
 
 /* ---------- Eingabefelder ---------- */
 .form-group input, .form-group select, .form-group textarea,
-.ziel-select, .ziel-custom, .bereich-notizen textarea, .sm-dialog input {
+.ziel-select, .ziel-custom, .bereich-notizen textarea, .sm-dialog input, .sm-dialog select {
   width: 100%; min-height: 40px; font-size: 14.5px; line-height: 1.4; color: var(--ink);
   background: var(--surface); border: 1px solid var(--line-2); border-radius: 9px; padding: 9px 11px;
   transition: border-color .15s, box-shadow .15s;
 }
 .form-group input:hover, .form-group select:hover, .form-group textarea:hover,
-.ziel-select:hover, .ziel-custom:hover, .bereich-notizen textarea:hover, .sm-dialog input:hover { border-color: #B8C1CE; }
+.ziel-select:hover, .ziel-custom:hover, .bereich-notizen textarea:hover, .sm-dialog input:hover, .sm-dialog select:hover { border-color: #B8C1CE; }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus,
-.ziel-select:focus, .ziel-custom:focus, .bereich-notizen textarea:focus, .sm-dialog input:focus {
+.ziel-select:focus, .ziel-custom:focus, .bereich-notizen textarea:focus, .sm-dialog input:focus, .sm-dialog select:focus {
   outline: 0; border-color: var(--accent); box-shadow: var(--focus);
 }
 .form-group input::placeholder, .ziel-custom::placeholder, .bereich-notizen textarea::placeholder,
 .sm-dialog input::placeholder { color: var(--platzhalter); opacity: 1; }
-.form-group select, .ziel-select {
+.form-group select, .ziel-select, .sm-dialog select {
   -webkit-appearance: none; appearance: none; cursor: pointer; padding-right: 34px;
   background: var(--surface) var(--b-runter) right 10px center / 16px no-repeat;
 }
 /* einzeilige Felder gleich hoch (Datumsfelder wären sonst 2px höher) */
-.form-group input, .form-group select, .ziel-select, .sm-dialog input { height: 40px; }
+.form-group input, .form-group select, .ziel-select, .sm-dialog input, .sm-dialog select { height: 40px; }
 textarea { resize: vertical; }
 
 /* =====================================================================
@@ -283,6 +283,9 @@ textarea { resize: vertical; }
 .sm-alter { font-size: 12.5px; color: var(--muted); min-height: 18px; }
 .sm-alter:empty { min-height: 0; }
 .sm-pflicht-hinweis { font-size: 12.5px; color: var(--muted); }
+/* fehlende Pflichtfelder: Hinweis im Dialog statt alert() */
+.sm-dialog-fehler { font-size: 13px; color: var(--krit-ink); background: var(--krit-soft); border: 1px solid var(--krit-line); border-radius: 9px; padding: 8px 11px; margin-bottom: 10px; }
+.sm-dialog input[aria-invalid="true"] { border-color: var(--krit); }
 .sm-dialog-actions {
   display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line);
 }
@@ -1246,7 +1249,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
         <!-- Verhalten Tab -->
         <div id="verhalten" class="tab-content">
             <div class="bereich">
-                <div class="bereich-header verhalten" onclick="toggleBereich('verhalten-content')">
+                <div class="bereich-header verhalten" role="button" tabindex="0" aria-expanded="true" aria-controls="verhalten-content" onclick="toggleBereich('verhalten-content')">
                     <div>
                         <h2>Bereich Verhalten</h2>
                         <p>V-1 bis V-33</p>
@@ -1268,7 +1271,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe I: Mit Freude auf die Umwelt reagieren</strong>
                                 <em>Bereichsziel: Den eigenen körperlichen Fähigkeiten vertrauen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('verhalten', 1, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="verhalten" data-stufe="1" onclick="toggleStufeErreicht('verhalten', 1, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1285,7 +1288,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe II: Erfolgreich auf die Umwelt reagieren</strong>
                                 <em>Bereichsziel: Erfolgreich an Routineabläufen und Aktivitäten teilnehmen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('verhalten', 2, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="verhalten" data-stufe="2" onclick="toggleStufeErreicht('verhalten', 2, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1302,7 +1305,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe III: Erwerben von Fähigkeiten zur erfolgreichen Teilnahme in Gruppen</strong>
                                 <em>Bereichsziel: Erworbene Fähigkeiten anwenden, um innerhalb einer Gruppe das eigene Verhalten erfolgreich zu steuern</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('verhalten', 3, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="verhalten" data-stufe="3" onclick="toggleStufeErreicht('verhalten', 3, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1319,7 +1322,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe IV: Sich einbringen in Gruppenprozesse</strong>
                                 <em>Bereichsziel: Persönliche Fähigkeiten einsetzen, um zum Gruppenerfolg beizutragen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('verhalten', 4, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="verhalten" data-stufe="4" onclick="toggleStufeErreicht('verhalten', 4, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1336,7 +1339,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe V: Anwenden von individuellen und gruppenbezogenen Fähigkeiten in neuen Situationen</strong>
                                 <em>Bereichsziel: Realen Lebenserfahrungen mit konstruktivem Verhalten begegnen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('verhalten', 5, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="verhalten" data-stufe="5" onclick="toggleStufeErreicht('verhalten', 5, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1357,7 +1360,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
         <!-- Kommunikation Tab -->
         <div id="kommunikation" class="tab-content">
             <div class="bereich">
-                <div class="bereich-header kommunikation" onclick="toggleBereich('kommunikation-content')">
+                <div class="bereich-header kommunikation" role="button" tabindex="0" aria-expanded="true" aria-controls="kommunikation-content" onclick="toggleBereich('kommunikation-content')">
                     <div>
                         <h2>Bereich Kommunikation</h2>
                         <p>K-1 bis K-35</p>
@@ -1379,7 +1382,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe I: Mit Freude auf die Umwelt reagieren</strong>
                                 <em>Bereichsziel: Gebraucht Wörter, um Bedürfnisse zu befriedigen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kommunikation', 1, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kommunikation" data-stufe="1" onclick="toggleStufeErreicht('kommunikation', 1, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1396,7 +1399,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe II: Erfolgreich auf die Umwelt reagieren</strong>
                                 <em>Bereichsziel: Gebraucht Wörter, um andere in konstruktiver Weise zu beeinflussen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kommunikation', 2, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kommunikation" data-stufe="2" onclick="toggleStufeErreicht('kommunikation', 2, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1413,7 +1416,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe III: Erwerben von Fähigkeiten zur erfolgreichen Teilnahme in Gruppen</strong>
                                 <em>Bereichsziel: Gebraucht Wörter, um sich auf konstruktive Weise innerhalb einer Gruppe zu äußern</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kommunikation', 3, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kommunikation" data-stufe="3" onclick="toggleStufeErreicht('kommunikation', 3, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1430,7 +1433,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe IV: Sich einbringen in Gruppenprozesse</strong>
                                 <em>Bereichsziel: Verwendet Wörter, um Verständnis von Gefühlen und Verhaltensweisen von sich und anderen zu zeigen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kommunikation', 4, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kommunikation" data-stufe="4" onclick="toggleStufeErreicht('kommunikation', 4, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1447,7 +1450,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe V: Anwenden von individuellen und gruppenbezogenen Fähigkeiten in neuen Situationen</strong>
                                 <em>Bereichsziel: Verwendet Wörter, um Beziehungen auszubauen und zu pflegen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kommunikation', 5, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kommunikation" data-stufe="5" onclick="toggleStufeErreicht('kommunikation', 5, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1468,7 +1471,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
         <!-- Sozialisation Tab -->
         <div id="sozialisation" class="tab-content">
             <div class="bereich">
-                <div class="bereich-header sozialisation" onclick="toggleBereich('sozialisation-content')">
+                <div class="bereich-header sozialisation" role="button" tabindex="0" aria-expanded="true" aria-controls="sozialisation-content" onclick="toggleBereich('sozialisation-content')">
                     <div>
                         <h2>Bereich Sozialisation</h2>
                         <p>SOZ-1 bis SOZ-41</p>
@@ -1490,7 +1493,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe I: Mit Freude auf die Umwelt reagieren</strong>
                                 <em>Bereichsziel: Einem Erwachsenen genügend vertrauen, um auf ihn zu reagieren</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('sozialisation', 1, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="sozialisation" data-stufe="1" onclick="toggleStufeErreicht('sozialisation', 1, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1507,7 +1510,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe II: Erfolgreich auf die Umwelt reagieren</strong>
                                 <em>Bereichsziel: Sich erfolgreich an Aktivitäten beteiligen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('sozialisation', 2, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="sozialisation" data-stufe="2" onclick="toggleStufeErreicht('sozialisation', 2, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1524,7 +1527,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe III: Erwerben von Fähigkeiten zur erfolgreichen Teilnahme in Gruppen</strong>
                                 <em>Bereichsziel: Gruppenaktivitäten als befriedigend erleben</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('sozialisation', 3, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="sozialisation" data-stufe="3" onclick="toggleStufeErreicht('sozialisation', 3, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1541,7 +1544,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe IV: Sich einbringen in Gruppenprozesse</strong>
                                 <em>Bereichsziel: Nimmt von sich aus und erfolgreich als Gruppenmitglied an Aktivitäten teil</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('sozialisation', 4, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="sozialisation" data-stufe="4" onclick="toggleStufeErreicht('sozialisation', 4, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1558,7 +1561,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe V: Anwenden von individuellen und gruppenbezogenen Fähigkeiten in neuen Situationen</strong>
                                 <em>Bereichsziel: Beginnt und pflegt selbständig dauerhafte und tragfähige Beziehungen mit anderen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('sozialisation', 5, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="sozialisation" data-stufe="5" onclick="toggleStufeErreicht('sozialisation', 5, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1579,7 +1582,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
         <!-- Kognition Tab -->
         <div id="kognition" class="tab-content">
             <div class="bereich">
-                <div class="bereich-header kognition" onclick="toggleBereich('kognition-content')">
+                <div class="bereich-header kognition" role="button" tabindex="0" aria-expanded="true" aria-controls="kognition-content" onclick="toggleBereich('kognition-content')">
                     <div>
                         <h2>Bereich Kognition</h2>
                         <p>KOG-1 bis KOG-62</p>
@@ -1601,7 +1604,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe I: Mit Freude auf die Umwelt reagieren</strong>
                                 <em>Bereichsziel: Auf die Umgebung reagieren mit gezielten Körperbewegungen und elementaren mentalen Verarbeitungsprozessen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kognition', 1, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kognition" data-stufe="1" onclick="toggleStufeErreicht('kognition', 1, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1618,7 +1621,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe II: Erfolgreich auf die Umwelt reagieren</strong>
                                 <em>Bereichsziel: Beteiligung an Aktivitäten, die Fähigkeiten der Selbsthilfe, motorischen Koordination, Sprache sowie mentale Prozesse erfordern</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kognition', 2, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kognition" data-stufe="2" onclick="toggleStufeErreicht('kognition', 2, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1635,7 +1638,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe III: Erwerben von Fähigkeiten zur erfolgreichen Teilnahme in Gruppen</strong>
                                 <em>Bereichsziel: Beteiligt sich erfolgreich in einer Lerngruppe und setzt dabei grundlegende Lernkompetenzen ein</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kognition', 3, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kognition" data-stufe="3" onclick="toggleStufeErreicht('kognition', 3, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1652,7 +1655,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe IV: Sich einbringen in Gruppenprozesse</strong>
                                 <em>Bereichsziel: Gebraucht kognitive und schulische Fähigkeiten, um sich erfolgreich an sozialen Gruppenerfahrungen zu beteiligen</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kognition', 4, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kognition" data-stufe="4" onclick="toggleStufeErreicht('kognition', 4, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1669,7 +1672,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
                                 <strong>Stufe V: Anwenden von individuellen und gruppenbezogenen Fähigkeiten in neuen Situationen</strong>
                                 <em>Bereichsziel: Setzt erfolgreich kognitive Fähigkeiten zur Bereicherung persönlicher Erfahrungen ein</em>
                             </div>
-                            <div class="stufe-erreicht-checkbox" onclick="toggleStufeErreicht('kognition', 5, this)">
+                            <div class="stufe-erreicht-checkbox" role="checkbox" aria-checked="false" tabindex="0" data-bereich="kognition" data-stufe="5" onclick="toggleStufeErreicht('kognition', 5, this)">
                                 <div class="checkbox-circle">
                                     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 </div>
@@ -1705,7 +1708,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
             <div class="category-grid">
                 <!-- Démarches mentales -->
                 <div class="category-section demarches" id="section-demarches_mentales">
-                    <div class="category-header" onclick="toggleCategory('demarches_mentales')">
+                    <div class="category-header" role="button" tabindex="0" aria-expanded="false" aria-controls="category-demarches_mentales" onclick="toggleCategory('demarches_mentales')">
                         <div class="category-header-left">
                             <div class="category-icon">DM</div>
                             <span class="category-title">Démarches mentales</span>
@@ -1720,7 +1723,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 
                 <!-- Manières d'apprendre -->
                 <div class="category-section manieres" id="section-manieres_apprendre">
-                    <div class="category-header" onclick="toggleCategory('manieres_apprendre')">
+                    <div class="category-header" role="button" tabindex="0" aria-expanded="false" aria-controls="category-manieres_apprendre" onclick="toggleCategory('manieres_apprendre')">
                         <div class="category-header-left">
                             <div class="category-icon">MA</div>
                             <span class="category-title">Manières d'apprendre</span>
@@ -1735,7 +1738,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 
                 <!-- Attitudes relationnelles -->
                 <div class="category-section relationnelles" id="section-attitudes_relationnelles">
-                    <div class="category-header" onclick="toggleCategory('attitudes_relationnelles')">
+                    <div class="category-header" role="button" tabindex="0" aria-expanded="false" aria-controls="category-attitudes_relationnelles" onclick="toggleCategory('attitudes_relationnelles')">
                         <div class="category-header-left">
                             <div class="category-icon">AR</div>
                             <span class="category-title">Attitudes relationnelles</span>
@@ -1750,7 +1753,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 
                 <!-- Attitudes affectives -->
                 <div class="category-section affectives" id="section-attitudes_affectives">
-                    <div class="category-header" onclick="toggleCategory('attitudes_affectives')">
+                    <div class="category-header" role="button" tabindex="0" aria-expanded="false" aria-controls="category-attitudes_affectives" onclick="toggleCategory('attitudes_affectives')">
                         <div class="category-header-left">
                             <div class="category-icon">AA</div>
                             <span class="category-title">Attitudes affectives</span>
@@ -1765,7 +1768,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 
                 <!-- Compétences essentielles -->
                 <div class="category-section competences" id="section-competences_essentielles">
-                    <div class="category-header" onclick="toggleCategory('competences_essentielles')">
+                    <div class="category-header" role="button" tabindex="0" aria-expanded="false" aria-controls="category-competences_essentielles" onclick="toggleCategory('competences_essentielles')">
                         <div class="category-header-left">
                             <div class="category-icon">CE</div>
                             <span class="category-title">Compétences essentielles</span>
@@ -1780,7 +1783,7 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 
                 <!-- Culture et loisirs -->
                 <div class="category-section culture" id="section-culture_loisirs">
-                    <div class="category-header" onclick="toggleCategory('culture_loisirs')">
+                    <div class="category-header" role="button" tabindex="0" aria-expanded="false" aria-controls="category-culture_loisirs" onclick="toggleCategory('culture_loisirs')">
                         <div class="category-header-left">
                             <div class="category-icon">CL</div>
                             <span class="category-title">Culture et loisirs</span>
@@ -22632,6 +22635,9 @@ const UI_STRINGS = {
         smDialogTitel: 'Neuen Schüler anlegen', smNachname: 'Nachname', smVorname: 'Vorname',
         smPflichtfelder: 'Pflichtfelder', smAbbrechen: 'Abbrechen', smAnlegen: 'Anlegen', smAlter: 'Alter: {n}',
         smPflichtFehlt: 'Bitte folgende Pflichtfelder ausfüllen:',
+        smGeschlecht: 'Geschlecht (für den DS-Bericht)', smGeschlechtLeer: '– keine Angabe –', smJunge: 'Junge', smMaedchen: 'Mädchen',
+        stufeUeberschreibenFrage: 'In Stufe {n} gibt es abweichende Einschätzungen: {liste}.\n\nTrotzdem alle Items als „Erreicht“ markieren? Diese Einschätzungen werden überschrieben.',
+        stufeLoeschenFrage: 'Alle Einschätzungen der Stufe {n} löschen?\n\nDas lässt sich nicht rückgängig machen.',
         smLoeschenFrage: '"{name}" wirklich löschen?\n\nAlle Einschätzungen dieses Schülers werden unwiderruflich gelöscht!',
         smImportiert: '{n} Schüler importiert', smEinzelnImportiert: '"{name}" importiert',
         smFormatUnbekannt: 'Unbekanntes Dateiformat.', smImportFehler: 'Fehler beim Import: ',
@@ -22712,6 +22718,9 @@ const UI_STRINGS = {
         smDialogTitel: 'Ajouter un élève', smNachname: 'Nom', smVorname: 'Prénom',
         smPflichtfelder: 'Champs obligatoires', smAbbrechen: 'Annuler', smAnlegen: 'Créer', smAlter: 'Âge : {n}',
         smPflichtFehlt: 'Veuillez remplir les champs obligatoires suivants :',
+        smGeschlecht: 'Sexe (pour le rapport DS)', smGeschlechtLeer: '– non précisé –', smJunge: 'garçon', smMaedchen: 'fille',
+        stufeUeberschreibenFrage: 'Le stade {n} contient des évaluations différentes : {liste}.\n\nMarquer quand même tous les items comme « Atteint » ? Ces évaluations seront remplacées.',
+        stufeLoeschenFrage: 'Supprimer toutes les évaluations du stade {n} ?\n\nCette action est irréversible.',
         smLoeschenFrage: 'Supprimer vraiment « {name} » ?\n\nToutes les évaluations de cet élève seront définitivement supprimées !',
         smImportiert: '{n} élève(s) importé(s)', smEinzelnImportiert: '« {name} » importé',
         smFormatUnbekannt: 'Format de fichier inconnu.', smImportFehler: 'Erreur lors de l\'importation : ',
@@ -22792,6 +22801,9 @@ const UI_STRINGS = {
         smDialogTitel: 'Add new student', smNachname: 'Last name', smVorname: 'First name',
         smPflichtfelder: 'Required fields', smAbbrechen: 'Cancel', smAnlegen: 'Create', smAlter: 'Age: {n}',
         smPflichtFehlt: 'Please fill in the following required fields:',
+        smGeschlecht: 'Gender (for the DS report)', smGeschlechtLeer: '– not specified –', smJunge: 'boy', smMaedchen: 'girl',
+        stufeUeberschreibenFrage: 'Stage {n} contains different ratings: {liste}.\n\nMark all items as “Mastered” anyway? These ratings will be overwritten.',
+        stufeLoeschenFrage: 'Delete all ratings of stage {n}?\n\nThis cannot be undone.',
         smLoeschenFrage: 'Really delete "{name}"?\n\nAll assessments of this student will be permanently deleted!',
         smImportiert: '{n} student(s) imported', smEinzelnImportiert: '"{name}" imported',
         smFormatUnbekannt: 'Unknown file format.', smImportFehler: 'Import error: ',
@@ -23200,6 +23212,7 @@ function rerenderItems() {
                     if (keywordEl) keywordEl.textContent = item.keyword + ':';
                     const descEl = itemEl.querySelector('.item-description');
                     if (descEl) {
+                        descEl.title = texte.details;
                         // Preserve the keyword span, update the text after it
                         const keywordSpan = descEl.querySelector('.item-keyword');
                         if (keywordSpan) {
@@ -23442,8 +23455,19 @@ function showToast(message) {
 }
 
 function toggleBereich(contentId) {
-    document.getElementById(contentId).classList.toggle('hidden');
+    const zu = document.getElementById(contentId).classList.toggle('hidden');
+    document.querySelector(`[aria-controls="${contentId}"]`)?.setAttribute('aria-expanded', String(!zu));
 }
+
+// Tastatur: „Alle erreicht“, Bereichs- und Kategorie-Köpfe und Item-Beschreibung (Details) mit Enter oder Leertaste
+document.addEventListener('keydown', function (ev) {
+    if ((ev.key !== 'Enter' && ev.key !== ' ') || ev.altKey || ev.ctrlKey || ev.metaKey) return;
+    const el = ev.target;
+    if (!el || !el.matches || !el.matches('.stufe-erreicht-checkbox, .bereich-header, .category-header, .item-description')) return;
+    ev.preventDefault();
+    if (el.classList.contains('item-description')) showItemModal(el.closest('.item').id.slice('item-'.length));
+    else el.click();
+});
 
 function initializeItems() {
     const data = getCurrentEldibData();
@@ -23495,7 +23519,8 @@ function initializeZusaetzlicheZiele() {
 function toggleCategory(category) {
     const section = document.getElementById(`section-${category}`);
     if (section) {
-        section.classList.toggle('expanded');
+        const auf = section.classList.toggle('expanded');
+        section.querySelector('.category-header')?.setAttribute('aria-expanded', String(auf));
     }
 }
 
@@ -23651,7 +23676,7 @@ function createItemElement(item, bereichKey) {
         : '';
     itemDiv.innerHTML = `
         <div class="item-code">${getDisplayCode(item.code)}</div>
-        <div class="item-description" ondblclick="showItemModal('${item.code}')"><span class="item-keyword">${item.keyword}:</span> ${item.description} ${duplicateBadge}</div>
+        <div class="item-description" ondblclick="showItemModal('${item.code}')" tabindex="0" role="button" title="${texte.details}"><span class="item-keyword">${item.keyword}:</span> ${item.description} ${duplicateBadge}</div>
         ${beispieleHtml ? `<details class="item-beispiele-details"><summary>${texte.beispiele} (${beispieleArr.length})</summary>${beispieleHtml}</details>` : ''}
         <div class="item-options">
             <button class="option-btn erreicht" onclick="selectOption('${item.code}', 'erreicht', this)">${texte.erreicht}</button>
@@ -23661,7 +23686,7 @@ function createItemElement(item, bereichKey) {
         <div class="ziel-box" id="ziel-box-${item.code}">
             <h4>${texte.zielformulierung}:</h4>
             <select class="ziel-select" id="ziel-select-${item.code}" onchange="updateZieltext('${item.code}')">${zielOptions}</select>
-            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="${texte.placeholder}" onchange="updateCustomZiel('${item.code}')"></textarea>
+            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="${texte.placeholder}" oninput="updateCustomZielBald('${item.code}')" onchange="updateCustomZiel('${item.code}')"></textarea>
         </div>`;
     return itemDiv;
 }
@@ -23678,7 +23703,8 @@ function itemTexte() {
         erreicht: tri('Erreicht', 'Atteint', 'Mastered'),
         nichtErreicht: tri('Nicht erreicht', 'Non atteint', 'Not mastered'),
         ziel: tri('Ziel', 'Objectif', 'Goal'),
-        placeholder: tri('Oder eigene Formulierung...', 'Ou formulation personnelle...', 'Or custom formulation...')
+        placeholder: tri('Oder eigene Formulierung...', 'Ou formulation personnelle...', 'Or custom formulation...'),
+        details: tri('Details: Doppelklick oder Enter', 'Détails : double-clic ou Entrée', 'Details: double-click or Enter')
     };
 }
 
@@ -23718,6 +23744,7 @@ function selectOption(code, status, button) {
         const zielBox = document.getElementById(`ziel-box-${code}`);
         if (zielBox) zielBox.classList.remove('visible');
         saveToLocalStorage();
+        stufenHakenAktualisieren();
 
         // Wenn "nicht erreicht" oder "ziel" aufgehoben wurde, aktualisiere alle Blockaden im Bereich
         if (previousStatus === 'nicht-erreicht' || previousStatus === 'ziel') {
@@ -23746,6 +23773,7 @@ function selectOption(code, status, button) {
     if (status === 'ziel') { zielBox.classList.add('visible'); updateZieltext(code); }
     else zielBox.classList.remove('visible');
     saveToLocalStorage();
+    stufenHakenAktualisieren();
 
     // Wenn "nicht erreicht" gewählt wurde, aktualisiere die UI für nachfolgende Items
     if (status === 'nicht-erreicht') {
@@ -23822,7 +23850,9 @@ function updateBlockedZielButtons(blockedCode) {
     }
 }
 
-// Toggle all items in a Stufe as "erreicht" with checkbox animation
+// Toggle all items in a Stufe as "erreicht" with checkbox animation.
+// Abweichende Einschätzungen (Ziel, Nicht erreicht) werden nur nach Rückfrage überschrieben, Löschen nur
+// nach Rückfrage; der Haken selbst folgt den gespeicherten Daten (stufenHakenAktualisieren).
 function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
     const stufe = ELDIB_DATA[bereich]?.stufen[stufeNr];
     if (!stufe) return;
@@ -23830,8 +23860,8 @@ function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
     const isChecked = checkboxElement.classList.contains('checked');
 
     if (isChecked) {
+        if (!confirm(tf('stufeLoeschenFrage', { n: stufeNr }))) return;
         // Uncheck: Remove "erreicht" from all items
-        checkboxElement.classList.remove('checked');
         stufe.items.forEach(item => {
             const code = item.code;
             const itemDiv = document.getElementById(`item-${code}`);
@@ -23845,8 +23875,10 @@ function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
         saveToLocalStorage();
         showToast(tf('stufeZurueckgesetzt', { n: stufeNr }));
     } else {
+        const anders = stufe.items.filter(item => { const st = state.selections[item.code]?.status; return st && st !== 'erreicht'; });
+        const statusText = st => ({ ziel: t('ziel'), 'nicht-erreicht': t('nichtErreicht') })[st] || st;
+        if (anders.length && !confirm(tf('stufeUeberschreibenFrage', { n: stufeNr, liste: anders.map(item => getDisplayCode(item.code) + ' (' + statusText(state.selections[item.code].status) + ')').join(', ') }))) return;
         // Check: Mark all items as "erreicht"
-        checkboxElement.classList.add('checked');
         let count = 0;
         stufe.items.forEach(item => {
             const code = item.code;
@@ -23867,6 +23899,20 @@ function toggleStufeErreicht(bereich, stufeNr, checkboxElement) {
         saveToLocalStorage();
         showToast(tf('itemsErreicht', { n: count }));
     }
+    stufenHakenAktualisieren();
+    // überschriebene „Nicht erreicht“/Ziele geben Ziel-Knöpfe wieder frei
+    refreshBlockedButtonsInBereich(stufe.items[0].code);
+}
+
+// „Alle erreicht“ folgt den gespeicherten Einschätzungen: angehakt, wenn jedes Item der Stufe erreicht ist
+// (auch nach dem Neuladen und wenn einzelne Items geändert werden)
+function stufenHakenAktualisieren() {
+    document.querySelectorAll('.stufe-erreicht-checkbox[data-bereich]').forEach(el => {
+        const stufe = ELDIB_DATA[el.dataset.bereich]?.stufen[el.dataset.stufe];
+        const an = !!stufe && stufe.items.every(item => state.selections[item.code]?.status === 'erreicht');
+        el.classList.toggle('checked', an);
+        el.setAttribute('aria-checked', String(an));
+    });
 }
 
 function updateZieltext(code) {
@@ -23890,6 +23936,19 @@ function updateCustomZiel(code) {
         state.selections[code].zielIndex = -1; // custom text
     }
     saveToLocalStorage();
+}
+
+// Eigene Formulierung schon beim Tippen übernehmen – sonst geht sie beim Neuladen oder Sperren verloren,
+// wenn das Feld nicht verlassen wurde. Gespeichert wird kurz nach der letzten Eingabe.
+let zielSpeicherTimer = null;
+function updateCustomZielBald(code) {
+    const customTextarea = document.getElementById(`ziel-custom-${code}`);
+    if (customTextarea && state.selections[code]) {
+        state.selections[code].zieltext = customTextarea.value;
+        state.selections[code].zielIndex = -1; // custom text
+    }
+    clearTimeout(zielSpeicherTimer);
+    zielSpeicherTimer = setTimeout(() => saveToLocalStorage(), 400);
 }
 
 function resolveZieltext(code, selection) {
@@ -24085,6 +24144,7 @@ function loadFromLocalStorage() {
                 }
             }
         }
+        stufenHakenAktualisieren();
 
         // Restore zusätzliche Ziele selections (3-Stufen-System: stufe1, stufe2, stufe3)
         for (const [category, goals] of Object.entries(state.zusaetzlicheZiele)) {
@@ -25030,7 +25090,12 @@ DS_TEXTE.de.fakten = (function () {
       const v = h.chips(ds, 'verfahren').filter(function (k) { return k !== 'andere' && h.chipText(c, 'verfahren', k); }).map(function (k) { return h.chipText(c, 'verfahren', k); });
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
-      const s = [h.satz(h.fuelle('Die vorliegende Einschätzung beruht auf {liste}, auf Beobachtungen im Unterricht sowie auf Gesprächen mit den Lehrpersonen, den Eltern und {Name}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', 'den Lehrpersonen'], ['eltern', 'den Eltern'], ['kind', '{Name}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['auf {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('auf Beobachtungen im Unterricht'); }
+      if (gespr.length) { teile.push('auf Gesprächen mit ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('auf Gesprächen'); }
+      const s = [h.satz(h.fuelle('Die vorliegende Einschätzung beruht ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' sowie ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(h.satz(h.fuelle('Beobachtungen und Gespräche fanden in {ort} statt.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -25098,8 +25163,11 @@ DS_TEXTE.de.fakten = (function () {
         t = 'Auf Grundlage der vorliegenden Testergebnisse, Beobachtungen und anamnestischen Informationen wurden spezifische Förderbedarfe identifiziert. In Gesprächen mit ' + wer + ' konnten Empfehlungen zur weiteren Unterstützung der individuellen Entwicklung erarbeitet werden. Dabei wurden einzelne vorgeschlagene Maßnahmen ' + (mitKind ? 'von den Eltern bzw. von {Name}' : 'von den Eltern') + ' kritisch hinterfragt bzw. nicht vollständig befürwortet.';
       } else if (f.abgestimmt === 'nein') {
         t = 'Auf Grundlage der vorliegenden Testergebnisse, Beobachtungen und anamnestischen Informationen wurden spezifische Förderbedarfe identifiziert und Empfehlungen formuliert. Eine Abstimmung dieser Empfehlungen mit ' + wer + ' war bislang nicht möglich.';
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden in enger Abstimmung mit ' + wer + ' gezielte Förderbedarfe identifiziert. Daraus abgeleitet wurden gemeinsam Empfehlungen formuliert, die die individuelle Entwicklung wirksam unterstützen sollen.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Auf Basis der erhobenen Testergebnisse, Beobachtungen und anamnestischen Informationen wurden gezielte Förderbedarfe identifiziert. Daraus abgeleitet wurden Empfehlungen formuliert, die die individuelle Entwicklung wirksam unterstützen sollen.';
       }
       return [h.block(h.satz(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },
@@ -25852,7 +25920,7 @@ DS_TEXTE.fr.fakten = (function () {
     const teile = zitate(angleichen(String(d || '').trim(), c)).replace(/\.$/, '').split(/\.\s+(?=[A-ZÀ-ÖØ-Ý])/);
     const p = praedikat(teile[0], c);
     if (!p) { return ''; }
-    const il = c.g === 'w' ? 'elle' : 'il';
+    const il = c.g === 'w' ? 'elle' : (c.g === 'm' ? 'il' : 'il/elle');
     return teile.slice(1).reduce(function (acc, t) {
       t = t.replace(/\.$/, '').trim();
       if (!t) { return acc; }
@@ -25990,7 +26058,12 @@ DS_TEXTE.fr.fakten = (function () {
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
       const eltern = /^(pflegeeltern|grosseltern)$/.test((ds.f || {}).eltern_quelle || '') && c.q ? c.q.d : 'les parents';
-      const s = [S(h.fuelle("Cette évaluation repose sur {liste}, sur des observations en classe ainsi que sur des entretiens avec l'équipe enseignante, " + eltern + ' et {Name}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', "l'équipe enseignante"], ['eltern', eltern], ['kind', '{Name}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['sur {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('sur des observations en classe'); }
+      if (gespr.length) { teile.push('sur des entretiens avec ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('sur des entretiens'); }
+      const s = [S(h.fuelle('Cette évaluation repose ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' ainsi que ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(S(h.fuelle('Lieu des observations et des entretiens : {ort}.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -26064,8 +26137,11 @@ DS_TEXTE.fr.fakten = (function () {
         t = "Sur la base des résultats des tests disponibles, des observations et des données anamnestiques, des besoins spécifiques de soutien ont été identifiés. Lors des entretiens avec " + (mitKind ? '{Name} et ' + eltern : eltern) + ', des recommandations visant à soutenir davantage le développement individuel ont pu être élaborées. Certaines mesures proposées ont toutefois été remises en question ou n\'ont pas été entièrement approuvées par ' + (mitKind ? eltern + ' ou par {Name}' : eltern) + '.';
       } else if (f.abgestimmt === 'nein') {
         t = "Sur la base des résultats des tests disponibles, des observations et des données anamnestiques, des besoins spécifiques de soutien ont été identifiés et des recommandations ont été formulées. Une concertation sur ces recommandations avec " + (mitKind ? '{Name} et ' + eltern : eltern) + " n'a pas encore pu avoir lieu.";
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = "Sur la base des résultats des tests, des observations et des informations anamnestiques recueillies, des besoins spécifiques de soutien ont pu être identifiés en étroite concertation avec " + (mitKind ? "{Name} ainsi qu'avec " + eltern : eltern) + '. Par la suite, des recommandations ont été formulées conjointement, dans le but de soutenir efficacement le développement individuel.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Sur la base des résultats des tests, des observations et des informations anamnestiques recueillies, des besoins spécifiques de soutien ont pu être identifiés. Par la suite, des recommandations ont été formulées dans le but de soutenir efficacement le développement individuel.';
       }
       return [h.block(S(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },
@@ -26987,7 +27063,12 @@ DS_TEXTE.en.fakten = (function () {
       const v = h.chips(ds, 'verfahren').filter(function (k) { return k !== 'andere' && h.chipText(c, 'verfahren', k); }).map(function (k) { return h.chipText(c, 'verfahren', k); });
       if (h.frei(ds, 'verfahren_andere')) { v.push(h.frei(ds, 'verfahren_andere')); }
       if (!v.length) { v.push(h.chipText(c, 'verfahren', 'eldib')); }
-      const s = [h.satz(h.fuelle('This assessment is based on {liste}, on classroom observations and on interviews with {QSd}, {Qd} and {Name} {himself}.', c, { liste: h.liste(v, c) }), c)];
+      // Beobachtung und Gespräche nur nennen, wenn dazu Angaben vorliegen (sonst nichts erfinden)
+      const gespr = [['schule', '{QSd}'], ['eltern', '{Qd}'], ['kind', '{Name} {himself}']].filter(function (x) { return h.angaben(x[0]); }).map(function (x) { return x[1]; });
+      const teile = ['on {liste}'];
+      if (h.angaben('beobachtung') || h.chips(ds, 'verfahren').indexOf('beobachtung') >= 0) { teile.push('on classroom observations'); }
+      if (gespr.length) { teile.push('on interviews with ' + h.liste(gespr, c)); } else if (h.chips(ds, 'verfahren').indexOf('gespraeche') >= 0) { teile.push('on interviews'); }
+      const s = [h.satz(h.fuelle('This assessment is based ' + (teile.length > 1 ? teile.slice(0, -1).join(', ') + ' and ' + teile[teile.length - 1] : teile[0]) + '.', c, { liste: h.liste(v, c) }), c)];
       if (h.frei(ds, 'verfahren_ort')) { s.push(h.satz(h.fuelle('Observations and interviews took place in {ort}.', c, { ort: h.frei(ds, 'verfahren_ort') }), c)); }
       return [h.block(s.join(' '))];
     },
@@ -27064,8 +27145,11 @@ DS_TEXTE.en.fakten = (function () {
         t = 'Based on the available test results, observations and case history information, specific support needs were identified. In discussions with ' + wer + ', recommendations were developed to further support ' + ihre + ' individual development. Some of the proposed measures were, however, questioned or not fully endorsed by ' + (mitKind ? '{Qd} and/or by {Name}' : '{Qd}') + '.';
       } else if (f.abgestimmt === 'nein') {
         t = 'Based on the available test results, observations and case history information, specific support needs were identified and recommendations formulated. It has not yet been possible to agree on these recommendations with ' + wer + '.';
-      } else {
+      } else if (f.abgestimmt === 'ja') {
         t = 'Based on the test results, observations and case history information gathered, specific support needs were identified in close consultation with ' + wer + '. On this basis, recommendations were jointly formulated to support ' + ihre + ' individual development effectively.';
+      } else {
+        // keine Angabe zur Abstimmung: keine Abstimmung behaupten
+        t = 'Based on the test results, observations and case history information gathered, specific support needs were identified. On this basis, recommendations were formulated to support {Name}’s individual development effectively.';
       }
       return [h.block(h.satz(h.fuelle(t, c), c))].concat(h.freiBloecke(ds, 'vorbehalte'));
     },
@@ -27129,12 +27213,15 @@ DS_TEXTE.en.fakten = (function () {
 const DsText = (function () {
 'use strict';
 
+// n = Geschlecht nicht angegeben: beide Formen (nicht einfach männlich)
 const PRON = {
   de: { m: { N: 'er', D: 'ihm', A: 'ihn', T: 'ihm', sein: 'sein', seine: 'seine', seinen: 'seinen', seinem: 'seinem', seiner: 'seiner', seines: 'seines' },
-        w: { N: 'sie', D: 'ihr', A: 'sie', T: 'ihr', sein: 'ihr', seine: 'ihre', seinen: 'ihren', seinem: 'ihrem', seiner: 'ihrer', seines: 'ihres' } },
+        w: { N: 'sie', D: 'ihr', A: 'sie', T: 'ihr', sein: 'ihr', seine: 'ihre', seinen: 'ihren', seinem: 'ihrem', seiner: 'ihrer', seines: 'ihres' },
+        n: { N: 'er/sie', D: 'ihm/ihr', A: 'ihn/sie', T: 'ihm/ihr', sein: 'sein/ihr', seine: 'seine/ihre', seinen: 'seinen/ihren', seinem: 'seinem/ihrem', seiner: 'seiner/ihrer', seines: 'seines/ihres' } },
   // fr: T = betontes Pronomen nach Präposition ("pour lui / pour elle")
-  fr: { m: { N: 'il', D: 'lui', A: 'le', T: 'lui' }, w: { N: 'elle', D: 'lui', A: 'la', T: 'elle' } },
-  en: { m: { N: 'he', D: 'him', A: 'him', T: 'him', his: 'his', himself: 'himself' }, w: { N: 'she', D: 'her', A: 'her', T: 'her', his: 'her', himself: 'herself' } }
+  fr: { m: { N: 'il', D: 'lui', A: 'le', T: 'lui' }, w: { N: 'elle', D: 'lui', A: 'la', T: 'elle' }, n: { N: 'il/elle', D: 'lui', A: 'le/la', T: 'lui/elle' } },
+  en: { m: { N: 'he', D: 'him', A: 'him', T: 'him', his: 'his', himself: 'himself' }, w: { N: 'she', D: 'her', A: 'her', T: 'her', his: 'her', himself: 'herself' },
+        n: { N: 'he/she', D: 'him/her', A: 'him/her', T: 'him/her', his: 'his/her', himself: 'himself/herself' } }
 };
 const KONTRAST_VORSATZ = { fr: ['Toutefois, ', 'En revanche, ', 'Cependant, '], en: ['However, ', 'At the same time, ', 'By contrast, '] };
 
@@ -27148,7 +27235,7 @@ function kontext(lang, ds, stamm) {
   const voll = String((stamm && stamm.schueler_name) || '').trim();
   let vorname = voll, nachname = '';
   if (voll.indexOf(',') >= 0) { nachname = voll.split(',')[0].trim(); vorname = voll.split(',').slice(1).join(',').trim(); }
-  const g = ds && ds.geschlecht === 'w' ? 'w' : 'm';
+  const g = ds && (ds.geschlecht === 'w' || ds.geschlecht === 'm') ? ds.geschlecht : 'n';   // n: nicht angegeben
   const T = texte(lang);
   const c = {
     lang: lang, T: T, g: g,
@@ -27173,9 +27260,10 @@ function alterJahre(geb) {
 
 // Name oder Pronomen? Erste Nennung im Absatz = Name, dann Pronomen,
 // jede dritte Nennung wieder der Name - lesbar, ohne Wiederholungen.
+// Geschlecht nicht angegeben: immer der Name.
 function person(c, fall) {
   const p = PRON[c.lang][c.g];
-  if (c.seit === 0 || c.seit >= 3) { c.seit = 1; return c.name; }
+  if (c.g === 'n' || c.seit === 0 || c.seit >= 3) { c.seit = 1; return c.name; }
   c.seit++;
   return p[fall] || c.name;
 }
@@ -27183,12 +27271,12 @@ function person(c, fall) {
 // ---------- Platzhalter füllen ----------
 // {Name} {N} {Nd} {Na} {Nt} {er} … {T} {Q} {QS} {KONTRAST} {liste} … {feld: bedingter Text}
 // {Nt} = Name bzw. betontes Pronomen nach Präposition (fr: pour lui/elle), {T} immer das Pronomen
-// [[männlich|weiblich]]  {{einzahl|mehrzahl}} (Zahl aus vars.zahl bzw. Quelle)
+// [[männlich|weiblich]] (ohne Angabe: „männlich/weiblich“)  {{einzahl|mehrzahl}} (Zahl aus vars.zahl bzw. Quelle)
 function fuelle(tpl, c, vars) {
   vars = vars || {};
   if (tpl == null) { return ''; }
   let s = String(tpl);
-  s = s.replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g, function (m, a, b) { return c.g === 'w' ? b : a; });
+  s = s.replace(/\[\[([^|\]]*)\|([^\]]*)\]\]/g, function (m, a, b) { return c.g === 'w' ? b : (c.g === 'm' ? a : a + '/' + b); });
   const zahl = vars.zahl != null ? vars.zahl : ((c.q && c.q.zahl) || 1);
   s = s.replace(/\{\{([^|}]*)\|([^}]*)\}\}/g, function (m, a, b) { return zahl > 1 ? b : a; });
   return ersetze(s, c, vars);
@@ -27336,6 +27424,16 @@ function themenAbsaetze(bereich, c, ds, weiter) {
 
 function block(text) { return { typ: 'absatz', text: text }; }
 function frei(ds, feld) { const t = ds.frei && ds.frei[feld]; return t && String(t).trim() ? String(t).trim() : ''; }
+// Gibt es Angaben zu einer Sichtweise bzw. zur Beobachtung (Bewertung, Auswahl, Datum, Gesprächspartner, Freitext)?
+// Nur dann nennt der Bericht das Gespräch bzw. die Beobachtung als Grundlage – nichts erfinden.
+function hatAngaben(ds, bereich) {
+  const f = ds.f || {}, a = DS_AUFBAU[bereich];
+  if (!a) { return false; }
+  if (f[bereich + '_datum'] || f[bereich + '_quelle'] || frei(ds, bereich) || (bereich === 'kind' && frei(ds, 'vertrauensperson'))) { return true; }
+  if (bereich === 'beobachtung' && (f.beobachtungen || []).some(function (b) { return b && (b.datum || b.setting || b.dauer); })) { return true; }
+  if ((a.chips || []).some(function (g) { return chips(ds, g).length; })) { return true; }
+  return a.themen.some(function (th) { return th.aussagen.some(function (x) { return bewertung(ds, x[0]) != null; }); });
+}
 function freiBloecke(ds, feld) {
   return frei(ds, feld) ? frei(ds, feld).split(/\n\s*\n/).map(function (t) { return block(t.replace(/\s*\n\s*/g, ' ').trim()); }) : [];
 }
@@ -27347,8 +27445,8 @@ function sichtweise(bereich, c, ds, opt) {
   c.neuerAbsatz();
   const vorne = [];
   c.vars = { datum: datumText(f[opt.datum], c.lang) };
-  // Einleitungssatz; beim Kind nur mit Datum (sonst sagt er nichts aus)
-  if (opt.intro && !(opt.introWennNicht && bewertung(ds, opt.introWennNicht) != null) && !(opt.introNurMitDatum && !c.vars.datum)) { vorne.push(satz(fuelle(T[opt.intro], c, c.vars), c)); }
+  // Einleitungssatz; beim Kind nur mit Datum (sonst sagt er nichts aus), sonst nur mit Angaben zu dieser Sichtweise
+  if (opt.intro && hatAngaben(ds, bereich) && !(opt.introWennNicht && bewertung(ds, opt.introWennNicht) != null) && !(opt.introNurMitDatum && !c.vars.datum)) { vorne.push(satz(fuelle(T[opt.intro], c, c.vars), c)); }
   (opt.chipsVorne || []).forEach(function (g) {
     const l = chips(ds, g[0]).map(function (k) { return fuelle(chipText(c, g[0], k), c); });
     if (l.length) { const v = { liste: liste(l, c) }; if (g[2] === 'liste') { v.zahl = l.length > 1 ? 2 : 1; } vorne.push(satz(fuelle(T[g[1]], c, v), c)); }
@@ -27484,7 +27582,8 @@ function datumText(iso, lang) {
 function bericht(lang, ds, stamm, profil) {
   ds = ds || {};
   const c = kontext(lang, ds, stamm), F = c.T.fakten, T = c.T.s, f = ds.f || {};
-  const h = { fuelle: fuelle, satz: satz, liste: liste, chips: chips, chipText: chipText, frei: frei, freiBloecke: freiBloecke, block: block, datum: datumText, gross: gross, klein: klein };
+  const h = { fuelle: fuelle, satz: satz, liste: liste, chips: chips, chipText: chipText, frei: frei, freiBloecke: freiBloecke, block: block, datum: datumText, gross: gross, klein: klein,
+    angaben: function (bereich) { return hatAngaben(ds, bereich); } };
   const ab = {};
   ab.auftrag = F.auftrag(c, ds, stamm, h);
   ab.vorgeschichte = F.vorgeschichte(c, ds, stamm, h);
@@ -27576,7 +27675,7 @@ const DS_UI = {
     alter: '{j} Jahre', jahreMonate: '{j} Jahre {m} Monate',
     ja: 'ja', nein: 'nein', bitteWaehlen: '– bitte wählen –', anderes: 'Anderes …',
     // Vorschau & Export
-    fertigTitel: 'Fertiger Bericht', pruefen: 'Vor dem Export prüfen', allesDa: 'Alle wichtigen Angaben sind vorhanden.',
+    fertigTitel: 'Fertiger Bericht', pruefen: 'Vor dem Export prüfen', allesDa: 'Alle wichtigen Angaben sind vorhanden.', trotzdem: 'Trotzdem exportieren?',
     fehlt: { geschlecht: 'Geschlecht fehlt (Schritt 1)', name: 'Name des Kindes fehlt (Stammdaten)', geburt: 'Geburtsdatum fehlt (Stammdaten)', verfasser: 'Verfasser/in fehlt (Schritt 1)', auftrag: 'Datum der Beauftragung fehlt (Schritt 2)', eldib: 'Keine ELDiB-Einschätzung', cni: 'Keine Empfehlung an die CNI ausgewählt (Schritt 13)' },
     word: 'Word herunterladen', drucken: 'PDF / Drucken',
     bearbeiten: 'Text bearbeiten', uebernehmen: 'Übernehmen', abbrechen: 'Abbrechen', zuruecksetzen: 'Automatischen Text wiederherstellen',
@@ -27649,7 +27748,7 @@ const DS_UI = {
     eldibFrei: 'Complément au domaine {b}',
     alter: '{j} ans', jahreMonate: '{j} ans {m} mois',
     ja: 'oui', nein: 'non', bitteWaehlen: '– veuillez choisir –', anderes: 'Autre …',
-    fertigTitel: 'Rapport final', pruefen: 'À vérifier avant l’export', allesDa: 'Toutes les informations importantes sont présentes.',
+    fertigTitel: 'Rapport final', pruefen: 'À vérifier avant l’export', allesDa: 'Toutes les informations importantes sont présentes.', trotzdem: 'Exporter quand même ?',
     fehlt: { geschlecht: 'Sexe manquant (étape 1)', name: 'Nom de l’élève manquant (données de base)', geburt: 'Date de naissance manquante (données de base)', verfasser: 'Auteur·e manquant·e (étape 1)', auftrag: 'Date du mandat manquante (étape 2)', eldib: 'Pas d’évaluation ELDiB', cni: 'Aucune recommandation à la CNI (étape 13)' },
     word: 'Télécharger Word', drucken: 'PDF / Imprimer',
     bearbeiten: 'Modifier le texte', uebernehmen: 'Appliquer', abbrechen: 'Annuler', zuruecksetzen: 'Rétablir le texte automatique',
@@ -27722,7 +27821,7 @@ const DS_UI = {
     eldibFrei: 'Addition for {b}',
     alter: '{j} years', jahreMonate: '{j} years {m} months',
     ja: 'yes', nein: 'no', bitteWaehlen: '– please choose –', anderes: 'Other …',
-    fertigTitel: 'Final report', pruefen: 'Check before exporting', allesDa: 'All important information is present.',
+    fertigTitel: 'Final report', pruefen: 'Check before exporting', allesDa: 'All important information is present.', trotzdem: 'Export anyway?',
     fehlt: { geschlecht: 'Gender missing (step 1)', name: 'Student’s name missing (basic data)', geburt: 'Date of birth missing (basic data)', verfasser: 'Author missing (step 1)', auftrag: 'Referral date missing (step 2)', eldib: 'No ELDiB assessment', cni: 'No recommendation to the CNI selected (step 13)' },
     word: 'Download Word', drucken: 'PDF / Print',
     bearbeiten: 'Edit text', uebernehmen: 'Apply', abbrechen: 'Cancel', zuruecksetzen: 'Restore automatic text',
@@ -27768,7 +27867,7 @@ const DS_UI = {
   }
 };
 
-// Gliederung des Berichts (CNI-Vorlage vom 12.11.2025); Titel mit [m, w] je nach Geschlecht
+// Gliederung des Berichts (CNI-Vorlage vom 12.11.2025); Titel mit [m, w, ohne Angabe] je nach Geschlecht
 const DS_GLIEDERUNG = [
   { id: 'auftrag', nr: '1', e: 1 }, { id: 'anamnese', nr: '2', e: 1, nurTitel: true },
   { id: 'vorgeschichte', nr: '2.1', e: 2 }, { id: 'sozialbericht', nr: '2.2', e: 2 },
@@ -27780,11 +27879,11 @@ const DS_GLIEDERUNG = [
 ];
 const DS_TITEL = {
   de: { auftrag: 'Auftragsklärung', anamnese: 'Anamnese', vorgeschichte: 'Vorgeschichte', sozialbericht: 'Sozialbericht', aktuell: 'Aktuelle Situation',
-    massnahmen: 'Aktuelle schulische und außerschulische Unterstützungsmaßnahmen', schule: 'Sichtweise der Schule', kind: ['Sichtweise des Schülers', 'Sichtweise der Schülerin'],
+    massnahmen: 'Aktuelle schulische und außerschulische Unterstützungsmaßnahmen', schule: 'Sichtweise der Schule', kind: ['Sichtweise des Schülers', 'Sichtweise der Schülerin', 'Sichtweise des Schülers/der Schülerin'],
     eltern: 'Sichtweise der Eltern / Erziehungsberechtigten', verfahren: 'Diagnostische Verfahren', beobachtung: 'Verhaltensbeobachtungen', eldib: 'Ergebnisse der Testverfahren',
-    deutung: 'Interpretation', schluss: 'Schlussfolgerung', beduerfnisse: ['Spezifische Bedürfnisse des Schülers', 'Spezifische Bedürfnisse der Schülerin'], ziele: 'Ziele',
+    deutung: 'Interpretation', schluss: 'Schlussfolgerung', beduerfnisse: ['Spezifische Bedürfnisse des Schülers', 'Spezifische Bedürfnisse der Schülerin', 'Spezifische Bedürfnisse des Schülers/der Schülerin'], ziele: 'Ziele',
     empfehlungen: 'Empfehlungen', cni: 'Empfehlungen – CNI', anhang: 'Anhänge', interventionen: 'Übersicht der Interventionen des CDSE', raster: 'Testergebnisse',
-    produktionen: ['Produktionen des Schülers', 'Produktionen der Schülerin'] },
+    produktionen: ['Produktionen des Schülers', 'Produktionen der Schülerin', 'Produktionen des Schülers/der Schülerin'] },
   fr: { auftrag: 'Demande', anamnese: 'Anamnèse', vorgeschichte: 'Antécédents', sozialbericht: 'Bilan social', aktuell: 'Situation actuelle',
     massnahmen: 'Mesures de soutien scolaires et extrascolaires actuelles', schule: 'Point de vue de l’école', kind: 'Point de vue de l’élève',
     eltern: 'Point de vue des parents / tuteurs', verfahren: 'Procédure diagnostique', beobachtung: 'Observations comportementales', eldib: 'Résultats des tests',
@@ -27798,9 +27897,9 @@ const DS_TITEL = {
 };
 // Deckblatt
 const DS_DECKBLATT = {
-  de: { titel: 'Spezialisierte Diagnostik', unter: 'des Zentrums für sozio-emotionale Entwicklung (CDSE)', name: ['Name des Schülers', 'Name der Schülerin'], matricule: 'Sozialversicherungsnummer',
+  de: { titel: 'Spezialisierte Diagnostik', unter: 'des Zentrums für sozio-emotionale Entwicklung (CDSE)', name: ['Name des Schülers', 'Name der Schülerin', 'Name des/der Schüler:in'], matricule: 'Sozialversicherungsnummer',
     alter: 'Alter', schule: 'Schule', klasse: 'Klasse', sprachen: 'Sprachen', empfehlungen: 'Empfehlungen des CDSE', unterschrift: 'Unité de diagnostic, de conseil et de suivi',
-    cni: { diag_kompetenzzentrum: 'Spezialisierte Diagnostik in Zusammenarbeit mit einem Kompetenzzentrum', beratung_eltern: ['Beratung und Begleitung der Eltern und des betroffenen Schülers', 'Beratung und Begleitung der Eltern und der betroffenen Schülerin'],
+    cni: { diag_kompetenzzentrum: 'Spezialisierte Diagnostik in Zusammenarbeit mit einem Kompetenzzentrum', beratung_eltern: ['Beratung und Begleitung der Eltern und des betroffenen Schülers', 'Beratung und Begleitung der Eltern und der betroffenen Schülerin', 'Beratung und Begleitung der Eltern und des/der betroffenen Schülers/-in'],
       beratung_fachleute: 'Beratung und Begleitung der Fachleute', lernwerkstatt: 'Spezialisierte Lernwerkstatt', isa: 'Spezialisierte ambulante Intervention (ISA)', beschulung: 'Spezialisierte Beschulung im CDSE',
       clapa: 'Classe de Participation', cst: 'Centre socio-thérapeutique (CST)', annexe: 'Annexe Junglinster', ausland: 'Spezialisierte Beschulung im Ausland', rehabilitation: 'Rehabilitation',
       abschluss: 'Abschluss der Aktivitäten des CDSE', schliessung: 'Schließung der Akte im CDSE' } },
@@ -28031,9 +28130,13 @@ const DsAssistent = (function () {
   }
 
   // ---------- Bericht zusammensetzen (mit Handbearbeitung) ----------
+  // [m, w, ohne Angabe] -> Form zum Geschlecht; ohne Angabe die neutrale Form (nicht einfach männlich)
+  function nachGeschlecht(t) {
+    if (!Array.isArray(t)) { return t; }
+    return daten.geschlecht === 'w' ? t[1] : (daten.geschlecht === 'm' ? t[0] : (t[2] || t[0]));
+  }
   function titel(lang, id) {
-    const t = (DS_TITEL[lang] || DS_TITEL.de)[id];
-    return Array.isArray(t) ? t[daten.geschlecht === 'w' ? 1 : 0] : t;
+    return nachGeschlecht((DS_TITEL[lang] || DS_TITEL.de)[id]);
   }
   function roh(lang) {
     if (!DS_TEXTE[lang]) { lang = 'de'; } // Sprache noch ohne Texte: deutsch
@@ -28413,12 +28516,12 @@ const DsAssistent = (function () {
   }
   function deckblattHtml(b) {
     const d = b.deckblatt, D = DS_DECKBLATT[b.lang] || DS_DECKBLATT.de;
-    const nameLabel = Array.isArray(D.name) ? D.name[daten.geschlecht === 'w' ? 1 : 0] : D.name;
+    const nameLabel = nachGeschlecht(D.name);
     const zeile = function (l, w) { return '<tr><th>' + esc(l) + '</th><td>' + esc(w || '—') + '</td></tr>'; };
     const cni = DS_CHIPS.cni.map(function (k) {
       const ein = ['clapa', 'cst', 'annexe'].indexOf(k) >= 0;
       let txt = D.cni[k] || k;
-      if (Array.isArray(txt)) { txt = txt[daten.geschlecht === 'w' ? 1 : 0]; }
+      txt = nachGeschlecht(txt);
       return '<li class="' + (ein ? 'ein' : '') + '"><span class="box">' + (d.cni.indexOf(k) >= 0 ? '☒' : '☐') + '</span> ' + esc(txt) + '</li>';
     }).join('');
     return '<div class="dsb-deckblatt"><p class="dsb-dt">' + esc(D.titel) + '</p><p class="dsb-du">' + esc(D.unter) + '</p><table class="dsb-kopf">' +
@@ -28435,6 +28538,11 @@ const DsAssistent = (function () {
     if (profil().bereiche.every(function (b) { return !b.erreicht.length; })) { f.push(['eldib', 'eldib']); }
     if (!(daten.chips.cni || []).length) { f.push(['cni', 'empfehlungen']); }
     return f.map(function (x) { return { text: u.fehlt[x[0]], schritt: x[1] }; });
+  }
+  // Vor jedem Export (Word, Drucken – auch über die Seite „Export“): fehlende Angaben zeigen, z. B. „Geschlecht fehlt“
+  function exportPruefen() {
+    const fehlt = fehlendeAngaben(), u = U();
+    return !fehlt.length || window.confirm(u.pruefen + (appSprache() === 'fr' ? ' :' : ':') + '\n- ' + fehlt.map(function (x) { return x.text; }).join('\n- ') + '\n\n' + u.trotzdem);
   }
   function vorschauSeiteHtml() {
     const u = U(), lang = berichtLang(), b = fertig(lang), fehlt = fehlendeAngaben();
@@ -28560,10 +28668,11 @@ const DsAssistent = (function () {
       }
       else if (a === 'zuruecksetzen') { const lang = berichtLang(); if (daten.bearbeitet[lang]) { delete daten.bearbeitet[lang][t.dataset.ab]; } nachAenderung(true); }
       else if (a === 'word') {
+        if (!exportPruefen()) { return; }
         if (typeof dsWordExport === 'function') { dsWordExport(berichtLang()); }
         else if (typeof showToast === 'function') { showToast(U().wordFehlt); }
       }
-      else if (a === 'drucken') { drucken(berichtLang()); }
+      else if (a === 'drucken') { if (exportPruefen()) { drucken(berichtLang()); } }
     });
     el.addEventListener('keydown', function (ev) {
       const z = ev.target.closest && ev.target.closest('.dsa-aussage');
@@ -28616,16 +28725,17 @@ const DsAssistent = (function () {
     if (sichtbar()) { rendern(); }
   }
 
-  return { get: get, laden: laden, zeigen: zeigen, profil: profil, fertig: fertig, raster: raster, drucken: drucken, sprachWechsel: sprachWechsel, bloeckeZuText: bloeckeZuText };
+  return { get: get, laden: laden, zeigen: zeigen, profil: profil, fertig: fertig, raster: raster, drucken: drucken, sprachWechsel: sprachWechsel, bloeckeZuText: bloeckeZuText,
+    exportPruefen: exportPruefen, nachGeschlecht: nachGeschlecht };
 })();
 
 // Schnittstellen für Speichern/Laden (50-speichern.js, 90-schueler.js)
 function getDSData() { return DsAssistent.get(); }
 function loadDSData(d) { DsAssistent.laden(d); }
 function dsEldibProfil(lang) { return DsAssistent.profil(lang); }
-// Knopf im Bereich Export
+// Knopf im Bereich Export (mit derselben Prüfliste wie im DS-Schritt „Vorschau & Export“)
 function dsExportAusExport() {
-  if (typeof dsWordExport === 'function') { dsWordExport(state.language); } else { showMainSection('ds'); }
+  if (typeof dsWordExport === 'function') { if (DsAssistent.exportPruefen()) { dsWordExport(state.language); } } else { showMainSection('ds'); }
 }
 
 // Name aufteilen "Nachname, Vorname" (wird auch von den PEI-Dokumenten genutzt)
@@ -28901,13 +29011,13 @@ const DsWord = (function () {
     if (ps[1] && b.verfasser.funktion) { setzeAbsatz(ps[1], b.verfasser.funktion, lang); }
   }
   function deckblatt(doc, b, lang) {
-    const D = DS_DECKBLATT[lang] || DS_DECKBLATT.de, d = b.deckblatt, w = DsAssistent.get().geschlecht === 'w' ? 1 : 0;
+    const D = DS_DECKBLATT[lang] || DS_DECKBLATT.de, d = b.deckblatt, g = DsAssistent.nachGeschlecht;   // [m, w, ohne Angabe]
     const tabs = alle(doc, 'tbl');
     // Kopfdaten: Name, Matrikel, Alter, Schule, Klasse, Sprachen
     const kopf = tabs.filter(function (t) { return /NAME|NOM/.test(textAlle(t)) && kinder(t, 'tr').length >= 6; })[0];
     if (kopf) {
       const werte = [d.name, d.matricule, d.alter, d.schule, d.klasse, d.sprachen];
-      const labels = [Array.isArray(D.name) ? D.name[w] : D.name, D.matricule, D.alter, D.schule, D.klasse, D.sprachen];
+      const labels = [g(D.name), D.matricule, D.alter, D.schule, D.klasse, D.sprachen];
       kinder(kopf, 'tr').slice(0, 6).forEach(function (tr, i) {
         const tcs = kinder(tr, 'tc');
         if (tcs[1]) { setzeZelle(tcs[1], werte[i] || '', lang); }
@@ -28931,7 +29041,7 @@ const DsWord = (function () {
         // Das Kästchen ist hier ein Inhaltssteuerelement um die ganze erste Zelle
         if (gewaehlt.indexOf(k) >= 0) { kreuze(tr); }
         if (lang === 'en' || (lang === 'de' && k === 'beratung_eltern')) {
-          let l = D.cni[k]; if (Array.isArray(l)) { l = l[w]; }
+          const l = g(D.cni[k]);
           const p = kinder(tcs[tcs.length - 1], 'p')[0]; if (p && l) { setzeAbsatz(p, l, lang); }
         }
       });
@@ -28977,7 +29087,7 @@ const DsWord = (function () {
     alle(doc, 'p').forEach(function (p) {
       const t = text(p);
       if (t.indexOf('Name des/der Schüler:in:') >= 0) {
-        setzeAbsatz(p, (lang === 'en' ? 'Student’s name: ' : (DsAssistent.get().geschlecht === 'w' ? 'Name der Schülerin: ' : 'Name des Schülers: ')) + b.deckblatt.name, lang);
+        setzeAbsatz(p, (lang === 'en' ? 'Student’s name: ' : DsAssistent.nachGeschlecht(['Name des Schülers: ', 'Name der Schülerin: ', 'Name des/der Schüler:in: '])) + b.deckblatt.name, lang);
       } else if (t.indexOf('Geburtsdatum (Alter):') >= 0) {
         setzeAbsatz(p, (lang === 'en' ? 'Date of birth (age): ' : 'Geburtsdatum (Alter): ') + (geb ? geb + (alter ? ' (' + alter + ')' : '') : ''), lang);
       } else if (t.indexOf('XX/XX/20XX') >= 0 && /Datum der Einsch/.test(t)) {
@@ -38442,15 +38552,22 @@ function smNeuerSchueler() {
                     <div id="sm-new-alter" class="sm-alter"></div></div>
                 <div class="sm-feld"><label for="sm-new-klasse">${smEscapeHtml(t('klasse'))}</label>
                     <input type="text" id="sm-new-klasse" placeholder="${smEscapeHtml(t('klassePlaceholder'))}"></div>
+                <div class="sm-feld"><label for="sm-new-geschlecht">${smEscapeHtml(t('smGeschlecht'))}</label>
+                    <select id="sm-new-geschlecht"><option value="">${smEscapeHtml(t('smGeschlechtLeer'))}</option><option value="m">${smEscapeHtml(t('smJunge'))}</option><option value="w">${smEscapeHtml(t('smMaedchen'))}</option></select></div>
             </div>
+            <p class="sm-dialog-fehler" id="sm-dialog-fehler" role="alert" hidden></p>
             <p class="sm-pflicht-hinweis"><b class="sm-pflicht">*</b> ${smEscapeHtml(t('smPflichtfelder'))}</p>
             <div class="sm-dialog-actions">
-                <button type="button" class="sm-btn sm-btn-secondary" onclick="document.getElementById('sm-dialog-overlay').remove()">${smEscapeHtml(t('smAbbrechen'))}</button>
+                <button type="button" class="sm-btn sm-btn-secondary" onclick="smDialogSchliessen()">${smEscapeHtml(t('smAbbrechen'))}</button>
                 <button type="button" class="sm-btn sm-btn-primary" onclick="smSchuelerAnlegen()">${smEscapeHtml(t('smAnlegen'))}</button>
             </div>
         </div>`;
     document.body.appendChild(overlay);
     setTimeout(() => document.getElementById('sm-new-nachname')?.focus(), 100);
+    // Enter in einem Eingabefeld legt an (Esc schließt: siehe unten)
+    overlay.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); smSchuelerAnlegen(); }
+    });
 
     // Alter berechnen bei Geburtsdatum-Eingabe
     document.getElementById('sm-new-geburtsdatum')?.addEventListener('change', function() {
@@ -38465,35 +38582,61 @@ function smNeuerSchueler() {
     });
 }
 
+// Dialog schließen; der Fokus geht zurück auf „Neuen Schüler anlegen“
+function smDialogSchliessen() {
+    document.getElementById('sm-dialog-overlay')?.remove();
+    document.querySelector('[onclick="smNeuerSchueler()"]')?.focus();
+}
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('sm-dialog-overlay')) { e.preventDefault(); smDialogSchliessen(); }
+});
+
 function smSchuelerAnlegen() {
     const nachname = document.getElementById('sm-new-nachname')?.value?.trim();
     const vorname = document.getElementById('sm-new-vorname')?.value?.trim();
     const geburtsdatum = document.getElementById('sm-new-geburtsdatum')?.value;
     const klasse = document.getElementById('sm-new-klasse')?.value?.trim();
+    const geschlecht = document.getElementById('sm-new-geschlecht')?.value || '';
 
     const fehlende = [];
     if (!nachname) fehlende.push(t('smNachname'));
     if (!vorname) fehlende.push(t('smVorname'));
     if (!geburtsdatum) fehlende.push(t('geburtsdatum'));
 
+    // Pflichtfelder: Hinweis im Dialog (statt alert), Felder markieren, Fokus ins erste fehlende Feld
+    [['sm-new-nachname', nachname], ['sm-new-vorname', vorname], ['sm-new-geburtsdatum', geburtsdatum]].forEach(([id, wert]) => {
+        document.getElementById(id)?.setAttribute('aria-invalid', wert ? 'false' : 'true');
+    });
     if (fehlende.length > 0) {
-        alert(t('smPflichtFehlt') + '\n- ' + fehlende.join('\n- '));
+        const fehler = document.getElementById('sm-dialog-fehler');
+        if (fehler) { fehler.textContent = t('smPflichtFehlt') + ' ' + fehlende.join(', '); fehler.hidden = false; }
+        document.getElementById(!nachname ? 'sm-new-nachname' : (!vorname ? 'sm-new-vorname' : 'sm-new-geburtsdatum'))?.focus();
         return;
     }
 
     const name = nachname + ', ' + vorname;
     const liste = smGetListe();
-    liste.push({
+    const neu = {
         id: smGenerateId(),
         name: name,
         klasse: klasse || '',
         geburtsdatum: geburtsdatum,
         einschaetzung1: null,
         einschaetzung2: null
-    });
+    };
+    if (geschlecht) neu.geschlecht = geschlecht; // optional; wird in den DS neuer Einschätzungen übernommen
+    liste.push(neu);
     smSaveListe(liste);
-    document.getElementById('sm-dialog-overlay')?.remove();
+    smDialogSchliessen();
     smRenderListe();
+}
+
+// DS einer neuen Einschätzung: Geschlecht aus „Neuen Schüler anlegen“ übernehmen (für die Grammatik im Bericht).
+// Nur für leere bzw. aktuelle DS-Daten (v: 2); ein früheres DS-Format bleibt unverändert.
+function smDsMitGeschlecht(ds, schueler) {
+    const d = ds && typeof ds === 'object' ? ds : {};
+    if (!schueler.geschlecht || d.geschlecht || (Object.keys(d).length && d.v !== 2)) return d;
+    return Object.assign({ v: 2 }, d, { geschlecht: schueler.geschlecht });
 }
 
 function smLoescheSchueler(id) {
@@ -38798,7 +38941,7 @@ function smExportAlleJSON() {
                                 eltern1_tel: basisStammdaten.eltern1_tel || '',
                                 eltern1_email: basisStammdaten.eltern1_email || ''
                             },
-                            dsData: JSON.parse(JSON.stringify(basis.dsData || {}))
+                            dsData: smDsMitGeschlecht(JSON.parse(JSON.stringify(basis.dsData || {})), schueler)
                         };
                         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
                     } else {
@@ -38826,7 +38969,7 @@ function smExportAlleJSON() {
                                 eltern1_tel: '',
                                 eltern1_email: ''
                             },
-                            dsData: {}
+                            dsData: smDsMitGeschlecht({}, schueler)
                         };
                         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
                     }
@@ -38955,7 +39098,7 @@ smOeffneEinschaetzung = function(id, nr) {
                 eltern1_tel: basisStammdaten.eltern1_tel || '',
                 eltern1_email: basisStammdaten.eltern1_email || ''
             },
-            dsData: JSON.parse(JSON.stringify(basis.dsData || {}))
+            dsData: smDsMitGeschlecht(JSON.parse(JSON.stringify(basis.dsData || {})), schueler)
         };
         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
     } else {
@@ -38986,7 +39129,7 @@ smOeffneEinschaetzung = function(id, nr) {
                 eltern1_tel: '',
                 eltern1_email: ''
             },
-            dsData: {}
+            dsData: smDsMitGeschlecht({}, schueler)
         };
         localStorage.setItem('eldib-data', JSON.stringify(neueDaten));
     }
