@@ -224,7 +224,7 @@ DS_TEXTE.fr.fakten = (function () {
       if (h.frei(ds, 'eseb_referenz')) {
         s.push(S(h.fuelle(s.length ? "Sa personne de référence au sein de l'ESEB est {x}." : "La personne de référence de {Name} au sein de l'ESEB est {x}.", c, { x: h.frei(ds, 'eseb_referenz') }), c));
       }
-      const b = s.length ? [h.block(s.join(' '))] : [];
+      const b = (s.length ? [h.block(s.join(' '))] : []).concat(h.freiBloecke(ds, 'aktuell'));   // eigene Ergänzung
       const rows = ((ds.tabellen && ds.tabellen.aktuell) || []).filter(function (r) { return r && (r.zeitraum || r.massnahme || r.akteur); });
       if (rows.length) { b.push({ typ: 'tabelle', id: 'aktuell', kopf: ['Période', 'Classe', 'Intervention', 'Acteur·ice'], zeilen: rows.map(function (r) { return [r.zeitraum || '', r.klasse || '', r.massnahme || '', r.akteur || '']; }), abschnitt: 'massnahmen' }); }
       return b;

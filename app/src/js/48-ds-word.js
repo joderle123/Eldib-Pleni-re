@@ -428,6 +428,8 @@ const DsWord = (function () {
     const teile = Object.keys(zip.files).filter(function (n) { return /^word\/(header|footer)\d*\.xml$/.test(n); });
     for (const n of teile) { zip.file(n, kopfzeilen(await zip.file(n).async('string'), b, lang, n)); }
     if (zip.file('word/settings.xml')) { zip.file('word/settings.xml', einstellungen(await zip.file('word/settings.xml').async('string'))); }
+    // Daten unsichtbar einbetten (für den CDSE Hub, 55-daten-einbetten.js); der Text bleibt unverändert
+    if (typeof cdseDatenEinbetten === 'function') { await cdseDatenEinbetten(zip, 'ds', lang); }
     return zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
   }
 

@@ -7,7 +7,7 @@
 // Aufruf:  node app/build.cjs            baut die Datei
 //          node app/build.cjs --pruefen  baut und prüft zusätzlich die Syntax
 'use strict';
-const fs = require('fs'), path = require('path'), vm = require('vm');
+const fs = require('fs'), path = require('path'), vm = require('vm'), crypto = require('crypto');
 const SRC = path.join(__dirname, 'src');
 const ZIEL = path.join(__dirname, 'eldib-generator.html');
 const lies = (p, bin) => fs.readFileSync(path.join(SRC, p), bin ? undefined : 'utf8');
@@ -32,10 +32,15 @@ const css = STILE.map(f => '/* ---- ' + f + ' ---- */\n' + lies('styles/' + f)).
 const vorlagen = Object.keys(VORLAGEN).map(k =>
   'const ' + k + " = '" + lies('vorlagen/' + VORLAGEN[k], true).toString('base64') + "';").join('\n');
 const programm = PROGRAMM.map(f => '// ==== ' + f + ' ====\n' + lies('js/' + f)).join('\n');
+// Stand des Programms für die in Word-Dateien eingebetteten Daten ("generator"): Prüfsumme
+// über Programm, Stile, Vorlagen und Gerüst – ändert sich mit jeder Änderung, bleibt aber
+// bei unverändertem Quelltext gleich (die gebaute Datei bleibt so reproduzierbar).
+const stand = crypto.createHash('sha256').update(programm).update(css).update(vorlagen).update(lies('shell.html')).digest('hex').slice(0, 12);
 
 const skripte =
   BIBLIOTHEKEN.map(f => '<script>/* ' + f + ' */\n' + sicher(lies(f)) + '\n</script>').join('\n') + '\n' +
   '<script>/* Word-Vorlagen (Base64) */\n' + vorlagen + '\n</script>\n' +
+  '<script>/* Stand des Programms */\nconst ELDIB_GENERATOR_STAND = \'' + stand + '\';\n</script>\n' +
   '<script>\n' + sicher(programm) + '\n</script>\n';
 
 if (html.indexOf('/*@@CSS@@*/') < 0 || html.indexOf('<!--@@SKRIPTE@@-->') < 0) { throw new Error('Platzhalter in shell.html fehlen'); }
@@ -44,8 +49,46 @@ fs.writeFileSync(ZIEL, html);
 console.log('✓ ' + path.relative(process.cwd(), ZIEL) + ' (' + Math.round(html.length / 1024) + ' KB, ' + PROGRAMM.length + ' Programmteile)');
 
 // Text-Motor des DS zusätzlich als eigene Datei: der CDSE Hub nutzt ihn für das
-// Schülerprofil im Dossier (Stärken, Schwierigkeiten, was hilft …)
-const MOTOR = PROGRAMM.filter(f => /^4[2-6].*ds-(bank|texte|fakten|text)/.test(f));
+// Schülerprofil im Dossier (Stärken, Schwierigkeiten, was hilft …) und liest mit dem
+// DS-Leser (46b) fertige DS-Berichte zurück in den DS-Assistenten.
+const MOTOR = PROGRAMM.filter(f => /^4[2-6].*ds-(bank|texte|fakten|text|leser)/.test(f));
+// Gliederung, Überschriften, Tabellen und Beschriftungen des DS stehen in 47-ds-assistent.js
+// (Oberfläche, nicht im Motor). Der DS-Leser braucht sie auch im Hub: als reine Daten.
+function dsTafeln() {
+  const ds = lies('js/47-ds-assistent.js');
+  const ende = ds.indexOf('const DsAssistent = ');
+  if (ende < 0) { throw new Error('47-ds-assistent.js: "const DsAssistent" nicht gefunden'); }
+  const ctx = { console };
+  vm.createContext(ctx);
+  const r = vm.runInContext(ds.slice(0, ende) + '\n;({ DS_UI, DS_GLIEDERUNG, DS_TITEL, DS_DECKBLATT, DS_RICHTZIEL, DS_STUFEN_ALTER, DS_SCHRITTE, DS_TABELLEN, DS_SKALA_THEMA })', ctx);
+  const ui = {};
+  for (const l of Object.keys(r.DS_UI)) {
+    const u = r.DS_UI[l];
+    ui[l] = { l: u.l, tab: u.tab, opt: u.opt, skala: u.skala, wirkung: u.wirkung, tabelleMarke: u.tabelleMarke };
+  }
+  return { gliederung: r.DS_GLIEDERUNG, titel: r.DS_TITEL, tabellen: r.DS_TABELLEN, skalaThema: r.DS_SKALA_THEMA, schritte: r.DS_SCHRITTE,
+    deckblatt: r.DS_DECKBLATT, richtziel: r.DS_RICHTZIEL, stufenAlter: r.DS_STUFEN_ALTER, ui: ui };
+}
+// Beschriftungen aller Auswahlfelder je Sprache { de: { gruppe: { schlüssel: 'Beschriftung' } } }:
+// aus den Texten (43–45) und den Auswahllisten der Oberfläche (47: Interventionen, Arbeitszeit)
+function chipLabels(tafeln) {
+  const ctx = { console };
+  vm.createContext(ctx);
+  const texte = vm.runInContext(['43-ds-texte-de.js', '44-ds-texte-fr.js', '45-ds-texte-en.js'].map(f => lies('js/' + f)).join('\n') + '\n;DS_TEXTE', ctx);
+  const aus = {};
+  for (const l of Object.keys(texte)) {
+    const g = {};
+    for (const [gruppe, eintraege] of Object.entries(texte[l].chips || {})) {
+      g[gruppe] = {};
+      for (const [k, v] of Object.entries(eintraege)) { g[gruppe][k] = Array.isArray(v) ? v[0] : String(v); }
+    }
+    const opt = (tafeln.ui[l] || tafeln.ui.de).opt || {};
+    g.interventionen = Object.assign({}, opt.interventionen || {});
+    g.arbeitszeit = Object.assign({}, opt.arbeitszeit || {});
+    aus[l] = g;
+  }
+  return aus;
+}
 // Dazu die ELDiB-Itembank (deutsch) als reine Daten: Stufen mit Alter, Items mit
 // Ziel-Formulierungen, Förderideen, Beobachtungsbeispiele und Zusatzziele. Der Hub
 // zeigt damit im Dossier den Entwicklungsstand, überfällige Items und die PEI-Ziele.
@@ -85,8 +128,13 @@ function itemBank() {
   bank.dsStufenAlter = hole('DS_STUFEN_ALTER');
   return bank;
 }
+const tafeln = dsTafeln();
 const motor = '/* DS-Text-Motor des ELDiB-Generators (erzeugt von app/build.cjs, nicht von Hand ändern).\n' +
   '   Wird vom CDSE Hub geladen: apps/ds-motor.js */\n' + MOTOR.map(f => '// ==== ' + f + ' ====\n' + lies('js/' + f)).join('\n') +
+  '\n// ==== Gliederung, Überschriften, Tabellen, Beschriftungen des DS (aus 47-ds-assistent.js) ====\n' +
+  'var DS_BERICHT_TAFELN = ' + JSON.stringify(tafeln) + ';\n' +
+  '// ==== Beschriftungen der Auswahlfelder je Sprache (aus 43–45 und 47) ====\n' +
+  'var DS_CHIP_LABELS = ' + JSON.stringify(chipLabels(tafeln)) + ';\n' +
   '\n// ==== ELDiB-Itembank (deutsch, aus 10/20/60) ====\nvar ELDIB_BANK = ' + JSON.stringify(itemBank()) + ';\n';
 fs.writeFileSync(path.join(__dirname, 'ds-motor.js'), motor);
 console.log('✓ ds-motor.js (' + Math.round(motor.length / 1024) + ' KB, ' + MOTOR.length + ' Teile)');

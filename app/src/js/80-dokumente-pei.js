@@ -768,6 +768,7 @@ async function generatePEI() {
     //   zwei Einschätzungen: linke Spalte = 1., rechte Spalte = 2. Einschätzung
     //   eine Einschätzung:   linke Spalte = aktuelle Einschätzung
     // Die Zeile "Datum" bekommt das Datum der jeweiligen Einschätzung.
+    const berichtDaten = [];
     {
         // Fill a specific cell (cellIndex: 1=left/2nd cell, 2=right/3rd cell) in a Bericht row
         function fillBerichtCell(xml, tableLabel, rowLabel, items, cellIndex, alsListe = true) {
@@ -857,6 +858,9 @@ async function generatePEI() {
 
         for (const [spalte, zusatz, spaltenDatum] of spalten) {
             const listen = peiBerichtListen(zusatz, lang);
+            // für die eingebetteten Daten: woraus der Bericht besteht (je Spalte)
+            berichtDaten.push({ spalte, nr: hatZweiEinschaetzungen ? spalte : (smAktuellerSchueler?.einschaetzungNr === 2 ? 2 : 1),
+                datum: spaltenDatum || '', fortschritte: listen.fortschritte, themen: listen.themen });
             if (listen.fortschritte.length > 0) {
                 docXml = fillBerichtCell(docXml, L.fortschritte, 'CDSE', listen.fortschritte, spalte);
             }
@@ -883,6 +887,13 @@ async function generatePEI() {
             zip.file('word/styles.xml', styles.replace(/<w:lang w:val="(?:de-LU|de-DE|lb-LU)"/g, '<w:lang w:val="en-US"'));
         }
         zip.file('word/document.xml', docXml.replace(/<w:lang w:val="(?:de-LU|de-DE|lb-LU)"/g, '<w:lang w:val="en-US"'));
+    }
+    // --- 12. Daten unsichtbar einbetten (für den CDSE Hub, 55-daten-einbetten.js) ---
+    // Zielsätze und Bericht genau so, wie sie im Dokument stehen; der Text bleibt unverändert.
+    if (typeof cdseDatenEinbetten === 'function') {
+        const zieltexte = {};
+        Object.values(ziele).forEach(liste => liste.forEach(z => { zieltexte[z.code] = z.zieltext; }));
+        await cdseDatenEinbetten(zip, 'pei', lang, { zieltexte, bericht: berichtDaten });
     }
     const blob = await zip.generateAsync({
         type: 'blob',
@@ -1268,7 +1279,9 @@ async function generateComplement() {
         }]
     });
 
-    const blob = await Packer.toBlob(doc);
+    let blob = await Packer.toBlob(doc);
+    // Daten unsichtbar einbetten (für den CDSE Hub, 55-daten-einbetten.js); der Text bleibt unverändert
+    if (typeof cdseDatenInBlob === 'function') { blob = await cdseDatenInBlob(blob, 'complement', state.language); }
     saveAs(blob, buildFilename('Complement'));
 }
 
@@ -1468,7 +1481,13 @@ async function generateSchlankPEI() {
         }]
     });
 
-    const blob = await Packer.toBlob(doc);
+    let blob = await Packer.toBlob(doc);
+    // Daten unsichtbar einbetten (für den CDSE Hub): ein PEI in schlanker Fassung
+    if (typeof cdseDatenInBlob === 'function') {
+        const zieltexte = {};
+        Object.values(zielePerBereich).forEach(liste => liste.forEach(z => { zieltexte[z.code] = z.zieltext; }));
+        blob = await cdseDatenInBlob(blob, 'pei', state.language, { variante: 'schlank', zieltexte });
+    }
     // Dateiname in der Sprache des Dokuments
     saveAs(blob, buildFilename(isEN ? 'IEP-lean' : (isFR ? 'PEI-allege' : 'PEI-schlank')));
 }

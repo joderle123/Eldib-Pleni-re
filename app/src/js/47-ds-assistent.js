@@ -80,7 +80,7 @@ const DS_UI = {
       empf_familie: 'Empfehlungen – familiärer Kontext', empf_schule: 'Empfehlungen – schulischer Kontext (lokal)', empf_region: 'Empfehlungen – regionaler Kontext (ESEB / CDSE)',
       empfehlung_familie: 'Weitere Empfehlungen (eine pro Zeile)', empfehlung_schule: 'Weitere Empfehlungen (eine pro Zeile)', empfehlung_region: 'Weitere Empfehlungen (eine pro Zeile)',
       cni: 'Empfehlung an die CNI (wird auf dem Deckblatt angekreuzt)', cni_begruendung: 'Begründung (optional)',
-      schule: 'Eigene Ergänzung', kind: 'Eigene Ergänzung', eltern: 'Eigene Ergänzung', beobachtung: 'Eigene Ergänzung', familie: 'Eigene Ergänzung', vorgeschichte: 'Eigene Ergänzung'
+      schule: 'Eigene Ergänzung', kind: 'Eigene Ergänzung', eltern: 'Eigene Ergänzung', beobachtung: 'Eigene Ergänzung', familie: 'Eigene Ergänzung', vorgeschichte: 'Eigene Ergänzung', aktuell: 'Eigene Ergänzung'
     },
     tab: { zeitraum: 'Zeitraum', klasse: 'Klasse', massnahme: 'Maßnahme', akteur: 'Akteur', datum: 'Datum', art: 'Art der Intervention' },
     opt: {
@@ -153,7 +153,7 @@ const DS_UI = {
       empf_familie: 'Recommandations – contexte familial', empf_schule: 'Recommandations – contexte scolaire (local)', empf_region: 'Recommandations – contexte régional (ESEB / CDSE)',
       empfehlung_familie: 'Autres recommandations (une par ligne)', empfehlung_schule: 'Autres recommandations (une par ligne)', empfehlung_region: 'Autres recommandations (une par ligne)',
       cni: 'Recommandation à la CNI (cochée sur la page de garde)', cni_begruendung: 'Justification (facultatif)',
-      schule: 'Complément personnel', kind: 'Complément personnel', eltern: 'Complément personnel', beobachtung: 'Complément personnel', familie: 'Complément personnel', vorgeschichte: 'Complément personnel'
+      schule: 'Complément personnel', kind: 'Complément personnel', eltern: 'Complément personnel', beobachtung: 'Complément personnel', familie: 'Complément personnel', vorgeschichte: 'Complément personnel', aktuell: 'Complément personnel'
     },
     tab: { zeitraum: 'Période', klasse: 'Classe', massnahme: 'Intervention', akteur: 'Acteur', datum: 'Date', art: 'Type d’intervention' },
     opt: {
@@ -226,7 +226,7 @@ const DS_UI = {
       empf_familie: 'Recommendations – family context', empf_schule: 'Recommendations – school context (local)', empf_region: 'Recommendations – regional context (ESEB / CDSE)',
       empfehlung_familie: 'Further recommendations (one per line)', empfehlung_schule: 'Further recommendations (one per line)', empfehlung_region: 'Further recommendations (one per line)',
       cni: 'Recommendation to the CNI (ticked on the cover page)', cni_begruendung: 'Justification (optional)',
-      schule: 'Own addition', kind: 'Own addition', eltern: 'Own addition', beobachtung: 'Own addition', familie: 'Own addition', vorgeschichte: 'Own addition'
+      schule: 'Own addition', kind: 'Own addition', eltern: 'Own addition', beobachtung: 'Own addition', familie: 'Own addition', vorgeschichte: 'Own addition', aktuell: 'Own addition'
     },
     tab: { zeitraum: 'Period', klasse: 'Class', massnahme: 'Measure', akteur: 'Provider', datum: 'Date', art: 'Type of intervention' },
     opt: {
@@ -324,6 +324,7 @@ const DS_SCHRITTE = [
   { id: 'aktuell', abschnitte: ['aktuell', 'massnahmen'], felder: [
     { typ: 'reihe', felder: [{ typ: 'kurz', f: 'klasse', stamm: 'klasse' }, { typ: 'kurz', f: 'schule_name', stamm: 'foerderort' }] },
     { typ: 'reihe', felder: [{ typ: 'kurz', frei: 'lehrperson' }, { typ: 'kurz', frei: 'eseb_referenz' }] },
+    { typ: 'lang', frei: 'aktuell', frei2: true },
     { typ: 'tabelle', t: 'aktuell' }] },
   { id: 'schule', abschnitte: ['schule'], felder: [
     { typ: 'reihe', felder: [{ typ: 'quelle', f: 'schule_quelle', art: 'schule' }, { typ: 'datum', f: 'schule_datum' }] },
