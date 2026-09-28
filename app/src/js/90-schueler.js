@@ -489,6 +489,17 @@ function smExportAlleJSON() {
                 smAktuellerSchueler = parsed;
                 showEditor = true;
 
+                // Aus dem Hub gleich zu einem Teil springen (z. B. „DS anlegen“ → DS-Assistent) – nur dieses eine Mal
+                if (parsed.bereich) {
+                    const bereich = String(parsed.bereich);
+                    delete smAktuellerSchueler.bereich;
+                    localStorage.setItem(SM_AKTIV_KEY, JSON.stringify(smAktuellerSchueler));
+                    if (['stammdaten', 'eldib', 'ds', 'export'].includes(bereich)) {
+                        const springen = () => setTimeout(() => { if (typeof showMainSection === 'function') showMainSection(bereich); }, 150);
+                        if (document.readyState === 'complete') springen(); else window.addEventListener('load', springen);
+                    }
+                }
+
                 // Sicherstellen dass eldib-data aus der Schülerliste geladen wird
                 // (kann verloren gehen wenn Browser/Tab geschlossen wurde)
                 const existingData = localStorage.getItem('eldib-data');
