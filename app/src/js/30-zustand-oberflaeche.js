@@ -107,7 +107,14 @@ const UI_STRINGS = {
         smLoeschenFrage: '"{name}" wirklich löschen?\n\nAlle Einschätzungen dieses Schülers werden unwiderruflich gelöscht!',
         smImportiert: '{n} Schüler importiert', smEinzelnImportiert: '"{name}" importiert',
         smFormatUnbekannt: 'Unbekanntes Dateiformat.', smImportFehler: 'Fehler beim Import: ',
-        smKeineSchueler: 'Keine Schüler zum Exportieren vorhanden.'
+        smKeineSchueler: 'Keine Schüler zum Exportieren vorhanden.',
+        // PEI/DS einlesen über den CDSE Hub (92-hub-einlesen.js)
+        hubEinlesen: 'PEI/DS einlesen',
+        hubEinlesenTitelListe: 'PEI oder DS einlesen (Word, PDF oder Scan) – auch mehrere Dateien. Der Hub liest sie, ordnet sie den Kindern zu und zeigt vor dem Übernehmen eine Vorschau. Dateien lassen sich auch auf die Übersicht ziehen.',
+        hubEinlesenTitelKind: 'Einen PEI oder DS dieses Kindes einlesen (Word, PDF oder Scan) – der Hub zeigt eine Vorschau und trägt alles hier und im Dossier ein.',
+        hubEinlesenStumm: 'Der Hub antwortet nicht. Bitte den Hub neu laden und es noch einmal versuchen.',
+        hubEinlesenLaeuft: 'Der Hub liest gerade andere Dateien – bitte kurz warten.',
+        hubEinlesenFehler: 'Das Einlesen hat nicht geklappt. Bitte im Hub beim Kind „PEI/DS einlesen“ verwenden.'
     },
     fr: {
         subtitle: 'Fiche de diagnostic pour les objectifs éducatifs de la thérapie de développement',
@@ -190,7 +197,13 @@ const UI_STRINGS = {
         smLoeschenFrage: 'Supprimer vraiment « {name} » ?\n\nToutes les évaluations de cet élève seront définitivement supprimées !',
         smImportiert: '{n} élève(s) importé(s)', smEinzelnImportiert: '« {name} » importé',
         smFormatUnbekannt: 'Format de fichier inconnu.', smImportFehler: 'Erreur lors de l\'importation : ',
-        smKeineSchueler: 'Aucun élève à exporter.'
+        smKeineSchueler: 'Aucun élève à exporter.',
+        hubEinlesen: 'Importer PEI/DS',
+        hubEinlesenTitelListe: 'Importer un PEI ou un DS (Word, PDF ou scan) – aussi plusieurs fichiers. Le Hub les lit, les attribue aux élèves et affiche un aperçu avant la reprise. Les fichiers peuvent aussi être glissés sur la vue d\'ensemble.',
+        hubEinlesenTitelKind: 'Importer un PEI ou un DS de cet élève (Word, PDF ou scan) – le Hub affiche un aperçu et reprend tout ici et dans le dossier.',
+        hubEinlesenStumm: 'Le Hub ne répond pas. Veuillez recharger le Hub et réessayer.',
+        hubEinlesenLaeuft: 'Le Hub lit déjà d\'autres fichiers – veuillez patienter un instant.',
+        hubEinlesenFehler: 'L\'import n\'a pas fonctionné. Veuillez utiliser « PEI/DS einlesen » dans le dossier de l\'élève (Hub).'
     },
     en: {
         subtitle: 'Developmental Teaching Objectives Rating Form – Revised (DTORF-R)',
@@ -273,7 +286,13 @@ const UI_STRINGS = {
         smLoeschenFrage: 'Really delete "{name}"?\n\nAll assessments of this student will be permanently deleted!',
         smImportiert: '{n} student(s) imported', smEinzelnImportiert: '"{name}" imported',
         smFormatUnbekannt: 'Unknown file format.', smImportFehler: 'Import error: ',
-        smKeineSchueler: 'No students to export.'
+        smKeineSchueler: 'No students to export.',
+        hubEinlesen: 'Import PEI/DS',
+        hubEinlesenTitelListe: 'Import a PEI or DS (Word, PDF or scan) – several files at once, too. The Hub reads them, assigns them to the students and shows a preview before anything is taken over. Files can also be dragged onto the overview.',
+        hubEinlesenTitelKind: 'Import a PEI or DS for this student (Word, PDF or scan) – the Hub shows a preview and takes everything over here and into the student file.',
+        hubEinlesenStumm: 'The Hub is not responding. Please reload the Hub and try again.',
+        hubEinlesenLaeuft: 'The Hub is already reading other files – please wait a moment.',
+        hubEinlesenFehler: 'The import did not work. Please use “PEI/DS einlesen” in the student file in the Hub.'
     }
 };
 
@@ -433,6 +452,7 @@ function updateUILanguage() {
     if (smUntertitel) smUntertitel.textContent = t('subtitle');
     const smNeuBtn = document.querySelector('#schueler-manager .sm-actions .sm-btn-primary');
     if (smNeuBtn) smNeuBtn.textContent = t('smNeu');
+    if (typeof HubEinlesen !== 'undefined' && HubEinlesen) HubEinlesen.beschriften();
 
     // Main nav
     const mainNavBtns = document.querySelectorAll('.main-nav .main-nav-item');

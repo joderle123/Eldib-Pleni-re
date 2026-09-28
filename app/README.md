@@ -39,6 +39,20 @@ beim Lesen deshalb alle `customXml/*.xml` nach `urn:cdse:eldib-generator:1` durc
 PEI und Complément tragen nur ELDiB-Daten (beide Einschätzungen, Zielsätze, zusätzliche Ziele,
 Bericht), der DS die Daten des DS-Assistenten und die ELDiB-Auswahl für das Raster 6.2.
 
+## PEI/DS einlesen (im CDSE Hub)
+
+Läuft der Generator im CDSE Hub (in dessen Rahmen), zeigt er den Knopf **„PEI/DS einlesen“**
+(`92-hub-einlesen.js`): auf der Übersicht für eine oder mehrere Dateien (der Hub ordnet sie den
+Kindern zu; Dateien lassen sich auch auf die Übersicht ziehen), beim geöffneten Schüler für genau
+dieses Kind. Gewählt wird hier, gelesen im Hub (Word, PDF oder Scan, immer mit Vorschau). Der Hub
+trägt alles ins Dossier und in die Schülerliste des Generators ein und lädt ihn danach neu.
+Ohne Hub (per Doppelklick geöffnet) bleibt der Knopf verborgen – der Leser steckt im Hub.
+
+Nachrichten nur mit dem Hub, der den Rahmen geöffnet hat (`window.parent`, unter http nur derselbe Ursprung):
+`{cdseEldib:1, n, op:'hallo'}` → Antwort mit `erg.einlesen` (erst dann erscheint der Knopf);
+`{cdseEldib:1, n, op:'einlesen', arg:{dateien:[File], schueler:{id, hubId, name, geburtsdatum, klasse}|null}}`
+→ Antwort `ok` oder `grund` (`laeuft`, `fehlt`, `keine`).
+
 ## Aufbau von `app/src/`
 
 | Ordner/Datei   | Inhalt |

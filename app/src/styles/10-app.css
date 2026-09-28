@@ -52,6 +52,7 @@
   --i-speichern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z'/%3E%3Cpolyline points='17 21 17 13 7 13 7 21'/%3E%3Cpolyline points='7 3 7 8 15 8'/%3E%3C/svg%3E");
   --i-haken: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
   --i-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E");
+  --i-hoch: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='17 8 12 3 7 8'/%3E%3Cline x1='12' y1='3' x2='12' y2='15'/%3E%3C/svg%3E");
   --i-laden: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' y1='15' x2='12' y2='3'/%3E%3C/svg%3E");
   --i-schloss: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='11' width='16' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E");
   --i-warnung: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/%3E%3Cline x1='12' y1='9' x2='12' y2='13'/%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'/%3E%3C/svg%3E");
@@ -103,7 +104,7 @@ svg { flex: 0 0 auto; }
 ::selection { background: #D9DDF5; }
 
 /* Linien-Icons: das Element setzt --ic, das Pseudo-Element zeichnet es */
-.back-to-manager-btn::before, .save-btn-fixed::before, .sm-actions .sm-btn-primary::before,
+.back-to-manager-btn::before, .save-btn-fixed::before, .sm-actions .sm-btn-primary::before, .sm-einlesen::before, .einlesen-btn::before,
 .sm-card-delete::before, .option-btn.selected::before, .option-btn.ziel.blocked::before,
 .ziel-box h4::before, .item-beispiele-details summary::before, .examples-list li::before,
 .item-modal-hint::before, .toast-warning::before, #export-disclaimer::before, .export-ic::before,
@@ -185,6 +186,10 @@ textarea { resize: vertical; }
 .sm-werkzeuge { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .sm-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .sm-actions .sm-btn-primary { --ic: var(--i-plus); padding-left: 14px; }
+/* PEI/DS einlesen – nur im CDSE Hub (92-hub-einlesen.js); Dateien lassen sich auch auf die Übersicht ziehen */
+.sm-einlesen { --ic: var(--i-hoch); padding-left: 14px; }
+.sm-einlesen[hidden], .einlesen-btn[hidden] { display: none; }
+#schueler-manager.sm-drop .sm-seite { outline: 2px dashed var(--accent); outline-offset: 12px; border-radius: var(--radius-lg); }
 
 .sm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
 .sm-card {
@@ -315,6 +320,14 @@ textarea { resize: vertical; }
 .save-btn-fixed::before { vertical-align: -3px; margin-right: 7px; }
 .save-btn-fixed:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
 .save-btn-fixed.saved { --ic: var(--i-haken); background: var(--ok); border-color: var(--ok); }
+.einlesen-btn {
+  --ic: var(--i-hoch); flex: 0 0 auto; white-space: nowrap;
+  border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); border-radius: 9px;
+  font-size: 13.5px; font-weight: 600; line-height: 20px; padding: 7px 13px 7px 11px;
+  transition: border-color .15s, background .15s;
+}
+.einlesen-btn::before { vertical-align: -3px; margin-right: 7px; }
+.einlesen-btn:hover { border-color: var(--ink-2); background: var(--surface-2); }
 
 /* Seitenkopf und Spalte */
 .header, .main-nav, .sub-nav, .tab-content { margin-inline: max(var(--rand), calc((100% - var(--seite)) / 2)); }
@@ -785,6 +798,8 @@ html:lang(en) .item-description:hover::after { content: ' (double-click for deta
   .back-to-manager-btn::before { margin: 0; vertical-align: top; }
   .save-btn-fixed { font-size: 0; line-height: 0; padding: 9px; }
   .save-btn-fixed::before { margin: 0; width: 17px; height: 17px; vertical-align: top; }
+  .einlesen-btn { font-size: 0; line-height: 0; padding: 9px; }
+  .einlesen-btn::before { margin: 0; width: 17px; height: 17px; vertical-align: top; }
   .app-bar-trenner { display: none; }
   .app-bar-aktionen { gap: 6px; }
   .lang-btn { padding: 8px 8px; }

@@ -25,6 +25,8 @@
                         <button type="button" onclick="switchLanguage('en')" id="sm-lang-btn-en" class="lang-btn">EN</button>
                     </div>
                     <div class="sm-actions">
+                        <!-- PEI/DS einlesen: nur im CDSE Hub sichtbar (92-hub-einlesen.js) -->
+                        <button type="button" class="sm-btn sm-einlesen" id="sm-einlesen-btn" hidden onclick="HubEinlesen.waehlen(false)">PEI/DS einlesen</button>
                         <button type="button" class="sm-btn sm-btn-primary" onclick="smNeuerSchueler()">Neuen Sch&uuml;ler anlegen</button>
                     </div>
                 </div>
@@ -42,6 +44,8 @@
             <span class="app-bar-trenner" aria-hidden="true"></span>
             <div class="sm-current-info" id="smCurrentInfo"></div>
             <div class="app-bar-aktionen">
+                <!-- PEI/DS dieses Kindes einlesen: nur im CDSE Hub sichtbar (92-hub-einlesen.js) -->
+                <button type="button" class="einlesen-btn" id="einlesenBtn" hidden onclick="HubEinlesen.waehlen(true)">PEI/DS einlesen</button>
                 <div class="language-toggle" role="group" aria-label="Sprache · Langue · Language">
                     <button type="button" onclick="switchLanguage('de')" id="lang-btn-de" class="lang-btn active">DE</button>
                     <button type="button" onclick="switchLanguage('fr')" id="lang-btn-fr" class="lang-btn">FR</button>
