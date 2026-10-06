@@ -398,6 +398,8 @@ function bericht(lang, ds, stamm, profil) {
     ab.beobachtung = [block(ab.beobachtung[0].text + ' ' + ab.beobachtung[1].text)].concat(ab.beobachtung.slice(2));
   }
   ab.eldib = F.eldib(c, ds, stamm, h, profil);
+  // Testergebnisse (z. B. WISC-V) aus dem Hub, nach den ELDiB-Ergebnissen: Zwischenzeile, Tabelle, kurzer Text (46c-ds-tests.js)
+  if (typeof DsTests !== 'undefined') { ab.eldib = ab.eldib.concat(DsTests.bloecke(lang, ds)); }
   ab.deutung = deutung(c, ds);
   ab.schluss = F.schluss(c, ds, stamm, h);
   ab.beduerfnisse = beduerfnisse(c, ds);

@@ -339,7 +339,7 @@ const DS_SCHRITTE = [
   { id: 'beobachtung', abschnitte: ['verfahren', 'beobachtung'], felder: [
     { typ: 'chips', g: 'verfahren' }, { typ: 'reihe', felder: [{ typ: 'kurz', frei: 'verfahren_andere' }, { typ: 'kurz', frei: 'verfahren_ort' }] },
     { typ: 'beob' }, { typ: 'aussagen', bereich: 'beobachtung' }, { typ: 'lang', frei: 'beobachtung', frei2: true }] },
-  { id: 'eldib', abschnitte: ['eldib'], felder: [{ typ: 'eldib' }] },
+  { id: 'eldib', abschnitte: ['eldib'], felder: [{ typ: 'eldib' }, { typ: 'tests' }] },   // tests: Testergebnisse aus dem Hub (46c-ds-tests.js)
   { id: 'deutung', abschnitte: ['deutung'], felder: [
     { typ: 'aussagen', bereich: 'deutung' }, { typ: 'lang', frei: 'abwehr' }, { typ: 'lang', frei: 'deutung' }] },
   { id: 'beduerfnisse', abschnitte: ['beduerfnisse'], felder: [
@@ -371,7 +371,8 @@ const DsAssistent = (function () {
   let wurzel = null;
   let zeitVorschau = null, zeitSpeichern = null;
 
-  function leer() { return { v: 2, geschlecht: '', bewertungen: {}, chips: {}, f: {}, frei: {}, tabellen: { vorgeschichte: [], aktuell: [], interventionen: [] }, bearbeitet: {} }; }
+  // tests: Testergebnisse (z. B. WISC-V) für 4.2, siehe 46c-ds-tests.js – fehlt in älteren Daten (dann leer)
+  function leer() { return { v: 2, geschlecht: '', bewertungen: {}, chips: {}, f: {}, frei: {}, tabellen: { vorgeschichte: [], aktuell: [], interventionen: [] }, bearbeitet: {}, tests: [] }; }
   function appSprache() { return (typeof state !== 'undefined' && state.language) || 'de'; }
   function U() { return DS_UI[appSprache()] || DS_UI.de; }
   function T(lang) { return DS_TEXTE[lang || appSprache()] || DS_TEXTE.de; }
@@ -392,6 +393,7 @@ const DsAssistent = (function () {
     ['bewertungen', 'chips', 'f', 'frei', 'bearbeitet'].forEach(function (k) { if (d[k] && typeof d[k] === 'object') { n[k] = d[k]; } });
     if (d.tabellen && typeof d.tabellen === 'object') { Object.keys(DS_TABELLEN).forEach(function (k) { n.tabellen[k] = Array.isArray(d.tabellen[k]) ? d.tabellen[k] : []; }); }
     if (d.alt) { n.alt = d.alt; }
+    n.tests = typeof DsTests !== 'undefined' ? DsTests.normListe(d.tests) : (Array.isArray(d.tests) ? d.tests : []);
     return n;
   }
   // Übernimmt, was sich aus dem früheren DS-Formular eindeutig zuordnen lässt;
@@ -760,6 +762,7 @@ const DsAssistent = (function () {
       case 'tabelle': return tabelleHtml(fd.t);
       case 'beob': return beobHtml();
       case 'eldib': return eldibHtml();
+      case 'tests': return typeof DsTests !== 'undefined' ? DsTests.html(daten, DsTests.hubTests(), appSprache()) : '';
     }
     return '';
   }
@@ -1018,6 +1021,8 @@ const DsAssistent = (function () {
       if (t.dataset.schritt) { geheZu(t.dataset.schritt); return; }
       const a = t.dataset.aktion;
       if (!a) { return; }
+      // Testergebnisse (46c-ds-tests.js): übernehmen, entfernen, Zeilen, von Hand
+      if (/^tests?[A-Z]/.test(a)) { if (typeof DsTests !== 'undefined' && DsTests.aktion(daten, a, t)) { nachAenderung(true); } return; }
       const i = schrittIndex(schritt);
       if (a === 'weiter' && i < DS_SCHRITTE.length - 1) { geheZu(DS_SCHRITTE[i + 1].id); }
       else if (a === 'zurueck' && i > 0) { geheZu(DS_SCHRITTE[i - 1].id); }
@@ -1078,6 +1083,10 @@ const DsAssistent = (function () {
       } else if (t.dataset.beob != null) {
         const b = (daten.f.beobachtungen || [])[+t.dataset.beob];
         if (b) { b[t.dataset.s] = t.value; }
+      } else if (t.dataset.ti != null) {
+        // Felder der Testergebnisse (46c-ds-tests.js)
+        if (typeof DsTests === 'undefined') { return; }
+        neu = DsTests.eingabe(daten, t);
       } else { return; }
       nachAenderung(neu);
     };

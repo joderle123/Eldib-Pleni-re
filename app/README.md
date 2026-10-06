@@ -24,6 +24,7 @@ Die Tests laufen mit Node und einem Chromium ohne Netz (Playwright; anderer Ort 
 node app/tests/ds-leser.test.cjs              # DS-Leser: Rundlauf DE/FR (je 30 Datensätze, auch mit OCR-Rauschen), Freitext
 node app/tests/ds-leser.test.cjs --anzahl 5   # schneller; --start 500 andere Zufallsdaten; --laut alle Hinweise
 node app/tests/daten-einbetten.test.cjs       # eingebettete Daten in PEI, Complément und DS
+node app/tests/ds-tests.test.cjs              # Testergebnisse (WISC-V u. a.) aus dem Hub im DS: Übernehmen, Bearbeiten, Word DE/FR/EN
 ```
 
 ## Eingebettete Daten (für den CDSE Hub)
@@ -52,6 +53,22 @@ Nachrichten nur mit dem Hub, der den Rahmen geöffnet hat (`window.parent`, unte
 `{cdseEldib:1, n, op:'hallo'}` → Antwort mit `erg.einlesen` (erst dann erscheint der Knopf);
 `{cdseEldib:1, n, op:'einlesen', arg:{dateien:[File], schueler:{id, hubId, name, geburtsdatum, klasse}|null}}`
 → Antwort `ok` oder `grund` (`laeuft`, `fehlt`, `keine`).
+
+## Testergebnisse aus dem Hub im DS (4.2)
+
+Das Team Diagnostique trägt Tests (z. B. den WISC-V) im CDSE Hub beim Kind ein. Öffnet der Hub das Kind im
+Generator, liegen sie beim Schüler in der Schülerliste (`cdseTests`, Ebene des Schülers – bleibt beim Speichern
+erhalten; ältere Fassungen übergehen das Feld). Der DS-Assistent zeigt sie im Schritt „ELDiB-Ergebnisse“
+(`46c-ds-tests.js`): „Übernehmen“ kopiert sie nach `dsData.tests` (mit Herkunft `hub: {id, stand}`), kreuzt bei
+einem WISC-V das Verfahren in 4 an und setzt unter 4.2 „Ergebnisse der Testverfahren“ – nach dem ELDiB – je Test
+eine Zwischenzeile, einen Einleitungssatz, die Tabelle (Index, Standardwert, Prozentrang, Konfidenzintervall,
+Einordnung; Untertests mit Wertpunkten) und die Interpretation. Danach sind die Werte dort bearbeitbar; ein von
+Hand bearbeiteter Abschnitt 4.2 wird nie überschrieben (er gilt nur als „veraltet“). Ändert der Hub einen Test,
+erscheint „Im Hub geändert … Neu übernehmen“. Im Word-Export sind es feste Tabellen mit wiederholter Kopfzeile
+(`neueTabelle` in `48-ds-word.js` mit `breiten`). Bezeichnungen für DE, FR und EN stehen in `46c-ds-tests.js`
+(WISC-V-Indizes und Untertests; Einordnungen nach Wertebereich ≥130, 120–129, 110–119, 90–109, 80–89, 70–79,
+≤69 – Wortlaut DE/FR gegen das Handbuch prüfen). `46c` ist auch Teil von `ds-motor.js`, damit der Hub die
+Tabelle im Profil zeigt.
 
 ## Aufbau von `app/src/`
 

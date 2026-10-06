@@ -137,6 +137,28 @@ textarea.dsa-eingabe { resize: vertical; min-height: 44px; line-height: 1.45; }
 .dsa-ziele { margin: 0 0 10px; padding-left: 18px; font-size: .84rem; }
 .dsa-ziele li { margin-bottom: 2px; }
 
+/* Testergebnisse (46c-ds-tests.js): aus dem Hub übernehmen, bearbeiten */
+.dsa-leise { font-size: .82rem; color: var(--d-muted); }
+.dsa-tests .dsa-hinweis { margin-bottom: 10px; }
+.dsa-testhub { padding: 12px 14px; border-radius: var(--d-radius); margin-bottom: 12px; }
+.dsa-testhub > p { margin: 0 0 8px; }
+.dsa-testvorschau { background: var(--d-surface); border: 1px solid var(--d-line); border-radius: var(--d-radius-sm); padding: 10px 12px; margin-bottom: 10px; }
+.dsa-testvorschau .dsb-tab { margin: 6px 0 8px; font-size: .86rem; }
+.dsa-testvorschau .dsa-knopf { min-height: 34px; padding: 6px 12px; font-size: 13px; }
+.dsa-test { border-top: 1px solid var(--d-line); padding-top: 12px; margin-top: 12px; }
+.dsa-test:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+.dsa-testtab th[scope="row"] { text-align: left; font-size: .86rem; font-weight: 600; color: var(--d-ink); padding: 4px 8px 4px 0; white-space: nowrap; border-bottom: 0; }
+.dsa-testtab td { min-width: 70px; }
+.dsa-testtab td:last-of-type { min-width: 150px; }
+.dsa-untertests { margin: 4px 0 12px; }
+.dsa-untertests summary { cursor: pointer; font-size: .86rem; font-weight: 600; color: var(--d-ink-2); }
+.dsa-unterliste { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; margin-top: 8px; }
+.dsa-unterzeile { display: grid; grid-template-columns: minmax(0, 1fr) 72px; gap: 6px; }
+.dsa-unterzeile .dsa-eingabe { height: 32px; padding: 5px 8px; font-size: .88rem; }
+.dsa-testfuss { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: -4px 0 4px; }
+.dsa-testfuss .dsa-link { color: var(--d-warn); text-decoration-color: var(--d-warn-2); }
+@media (max-width: 700px) { .dsa-unterliste { grid-template-columns: minmax(0, 1fr); } }
+
 /* Knöpfe */
 .dsa-navi { display: flex; justify-content: space-between; gap: 10px; margin: 18px 0 8px; }
 .dsa-knopfreihe { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 14px; }

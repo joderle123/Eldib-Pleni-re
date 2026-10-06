@@ -51,7 +51,8 @@ console.log('✓ ' + path.relative(process.cwd(), ZIEL) + ' (' + Math.round(html
 // Text-Motor des DS zusätzlich als eigene Datei: der CDSE Hub nutzt ihn für das
 // Schülerprofil im Dossier (Stärken, Schwierigkeiten, was hilft …) und liest mit dem
 // DS-Leser (46b) fertige DS-Berichte zurück in den DS-Assistenten.
-const MOTOR = PROGRAMM.filter(f => /^4[2-6].*ds-(bank|texte|fakten|text|leser)/.test(f));
+// 46c-ds-tests.js (Testergebnisse, z. B. WISC-V) gehört dazu: DsText.bericht setzt damit die Tabelle in 4.2
+const MOTOR = PROGRAMM.filter(f => /^4[2-6].*ds-(bank|texte|fakten|text|tests|leser)/.test(f));
 // Gliederung, Überschriften, Tabellen und Beschriftungen des DS stehen in 47-ds-assistent.js
 // (Oberfläche, nicht im Motor). Der DS-Leser braucht sie auch im Hub: als reine Daten.
 function dsTafeln() {

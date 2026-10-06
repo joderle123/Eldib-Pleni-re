@@ -164,7 +164,7 @@ const DsWord = (function () {
       else if (b.typ === 'tabelle') {
         const t = tabellen && tabellen[b.id];
         if (t) { fuelleTabelle(t, b.zeilen, lang, b.kopf); setze(t); delete tabellen[b.id]; setze(leer(doc)); }
-        else { setze(neueTabelle(doc, b.kopf, b.zeilen, lang)); setze(leer(doc)); }
+        else { setze(neueTabelle(doc, b.kopf, b.zeilen, lang, b.breiten)); setze(leer(doc)); }
       }
     });
     return nach;
@@ -181,16 +181,23 @@ const DsWord = (function () {
     });
   }
   function fett(tc) { alle(tc, 'rPr').forEach(function (rPr) { if (!kinder(rPr, 'b').length) { rPr.insertBefore(neu(tc.ownerDocument, 'b'), rPr.firstChild); } }); }
-  function neueTabelle(doc, kopf, zeilen, lang) {
+  // breiten (optional): Verhältnis der Spaltenbreiten, z. B. [3, 1, 1, 2] – sonst gleich breit; die Kopfzeile
+  // wiederholt sich auf der nächsten Seite, die Spalten bleiben fest (Testergebnisse aus 46c-ds-tests.js)
+  function neueTabelle(doc, kopf, zeilen, lang, breiten) {
     const tbl = neu(doc, 'tbl'), tblPr = neu(doc, 'tblPr');
     tblPr.appendChild(neu(doc, 'tblStyle', { val: 'TableGrid' }));
     tblPr.appendChild(neu(doc, 'tblW', { w: '5000', type: 'pct' }));
+    const b = Array.isArray(breiten) && breiten.length === kopf.length && breiten.every(function (x) { return x > 0; }) ? breiten : kopf.map(function () { return 1; });
+    const summe = b.reduce(function (s, x) { return s + x; }, 0), spalten = b.map(function (x) { return Math.floor(9000 * x / summe); });
+    if (Array.isArray(breiten)) { tblPr.appendChild(neu(doc, 'tblLayout', { type: 'fixed' })); }
     tbl.appendChild(tblPr);
-    const grid = neu(doc, 'tblGrid'); kopf.forEach(function () { grid.appendChild(neu(doc, 'gridCol', { w: String(Math.floor(9000 / kopf.length)) })); }); tbl.appendChild(grid);
+    const grid = neu(doc, 'tblGrid'); spalten.forEach(function (w) { grid.appendChild(neu(doc, 'gridCol', { w: String(w) })); }); tbl.appendChild(grid);
     const zeile = function (werte, istKopf) {
       const tr = neu(doc, 'tr');
-      werte.forEach(function (w) {
+      if (istKopf) { const trPr = neu(doc, 'trPr'); trPr.appendChild(neu(doc, 'tblHeader')); tr.appendChild(trPr); }
+      werte.forEach(function (w, i) {
         const tc = neu(doc, 'tc'), tcPr = neu(doc, 'tcPr');
+        tcPr.appendChild(neu(doc, 'tcW', { w: String(spalten[i] || spalten[0]), type: 'dxa' }));
         if (istKopf) { tcPr.appendChild(neu(doc, 'shd', { val: 'clear', color: 'auto', fill: 'D9D9D9' })); }
         tc.appendChild(tcPr);
         const p = neu(doc, 'p'); p.appendChild(lauf(doc, w || '', lang, istKopf)); tc.appendChild(p);
